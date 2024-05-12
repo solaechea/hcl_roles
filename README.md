@@ -35,15 +35,16 @@
 
 
 ## HCL Roles
-HCL Roles is a collection of Ansible roles designed to secure and prepare virtual machines (VMs) for use with SSL, configure services, and install dependencies. It is part of the STARTcloud ecosystem, working in conjunction with the Core Provisioner to automate the provisioning and configuration of VMs. This project enhances the security and functionality of VMs by providing a structured approach to role management and deployment.
+HCL Roles is a collection of Ansible roles designed to install HCL technologies such as Verse, Domino, Traveler, and Nomad. These roles are part of the STARTcloud ecosystem, working in conjunction with the Core Provisioner to automate the provisioning and configuration of VMs. This project streamlines the setup process for these technologies, ensuring a more efficient and manageable deployment.
 
 ## Key Features
 
 - **Role Management**: Offers a comprehensive set of Ansible roles for various aspects of VM preparation and configuration.
-- **SSL Preparation**: Automates the process of securing VMs with SSL certificates, ensuring secure communication.
+- **Technology Installation**: Automates the installation of proprietary technologies like Verse, Domino, Traveler, and Nomad, simplifying the deployment process.
 - **Service Configuration**: Simplifies the setup of necessary services on VMs, streamlining the deployment process.
 - **Dependency Installation**: Handles the installation of required dependencies, reducing manual setup efforts.
 
+### Including HCL Roles
 
 ### ~~Including HCL Roles~~
 
@@ -77,7 +78,6 @@ roles:
 2. **Execution in `Hosts.rb`**: The `Hosts.rb` script is responsible for interpreting the `Hosts.yml` file and generating the necessary Vagrant configurations. When the `Hosts.rb` script encounters a host configuration that includes roles, it automatically applies these roles during the provisioning process. There's no need for additional modifications in `Hosts.rb` for this purpose, as the script is designed to handle role application based on the `Hosts.yml` configurations.
 
 By following these steps, you can seamlessly integrate HCL Roles with the Core Provisioner, leveraging the power of Ansible roles to automate the configuration and security of your VMs. This approach enhances the flexibility and extensibility of your provisioning process, allowing for a more declarative and manageable setup.
-
 
 ## Roadmap
 See the [open issues](https://github.com/STARTcloud/hcl_roles/issues) for a list of proposed features (and known issues).
@@ -117,6 +117,7 @@ See the [open issues](https://github.com/STARTcloud/hcl_roles/issues) for a list
 * [Vagrant](https://www.vagrantup.com/) - Portable Development Environment Suite.
 * [VirtualBox](https://www.virtualbox.org/wiki/Downloads) - Hypervisor.
 * [Ansible](https://www.ansible.com/) - Virtual Machine Automation Management.
+* [Core Provisioner](https://github.com/STARTcloud/core_provisioner) - Core Provisioner.
 
 ## Contributing
 
