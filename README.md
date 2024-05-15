@@ -68,8 +68,8 @@ HCL Roles enhances the provisioning process by automating the configuration of V
 ```
 hosts: all
 roles: 
-  - startcloud.roles.ssl_setup
-  - startcloud.roles.service_configuration
+  - startcloud.hcl_roles.ssl_setup
+  - startcloud.hcl_roles.service_configuration
 ```
 
 
