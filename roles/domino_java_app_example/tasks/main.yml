@@ -45,7 +45,7 @@
     - "{{ service_home_dir }}/ExampleServlet.class"
 
 -
-  name: "Placing templated notes.ini into {{ service_home_dir }}"
+  name: "Placing templated build-servlet-example.bsh into {{ service_home_dir }}"
   become: true
   ansible.builtin.template:
     dest: "{{ service_home_dir }}/ExampleServlet/build-servlet-example.bsh"
