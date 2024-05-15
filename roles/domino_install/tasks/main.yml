@@ -26,15 +26,16 @@
     get_md5: false
 
 -
-  name: "Downloading Domino from {{ domino_installer_base_url }}"
+  name: "Downloading Domino from {{ secrets.domino_installer_base_url }}"
   register: domlsresult
   until: "domlsresult is not failed"
   retries: 3
   ansible.builtin.get_url:
     mode: '0755'
-    url: "{{ domino_installer_base_url }}/ND{{ domino_major_version }}/{{ domino_server_installer_tar }}"
+    validate_certs: false
+    url: "{{ secrets.domino_installer_base_url }}/Super.Human.Installer/Domino/{{ domino_server_installer_tar }}"
     dest: "{{ installer_dir }}/domino/archives/{{ domino_server_installer_tar }}"
-    username: "{{ domino_installer_url_user }}"
+    username: "{{ secrets.domino_installer_url_user }}"
     password: "{{ secrets.domino_installer_url_pass }}"
   when: not domino_server_installer_check.stat.exists and not domino_server_installed.stat.exists
 
@@ -69,16 +70,17 @@
     get_md5: false
 
 -
-  name: "Downloading Domino Fixpack from {{ domino_installer_base_url }}"
+  name: "Downloading Domino Fixpack from {{ secrets.domino_installer_base_url }}"
   register: fplsresult
   until: "fplsresult is not failed"
   retries: 3
   when: not fixpack_archive.stat.exists and not fixpack_extracted.stat.exists and not domino_installer_fixpack_install and fixpack_installed.stat.exists
   ansible.builtin.get_url:
+    validate_certs: false
     mode: '0755'
-    url: "{{ domino_installer_base_url }}/ND{{ domino_major_version }}/{{ domino_server_fixpack_tar }}"
+    url: "{{ secrets.domino_installer_base_url }}/Super.Human.Installer/Domino/{{ domino_server_fixpack_tar }}"
     dest: "{{ installer_dir }}/domino/archives/{{ domino_server_fixpack_tar }}"
-    username: "{{ domino_installer_url_user }}"
+    username: "{{ secrets.domino_installer_url_user }}"
     password: "{{ secrets.domino_installer_url_pass }}"
 
 -
@@ -112,15 +114,16 @@
     get_md5: false
 
 -
-  name: "Downloading Domino hotfix from {{ domino_installer_base_url }}"
+  name: "Downloading Domino hotfix from {{ secrets.domino_installer_base_url }}"
   register: hflsresult
   until: "hflsresult is not failed"
   retries: 3
   ansible.builtin.get_url:
+    validate_certs: false
     mode: '0755'
-    url: "{{ domino_installer_base_url }}/ND{{ domino_major_version }}/{{ domino_server_hotfix_tar }}"
+    url: "{{ secrets.domino_installer_base_url }}/Super.Human.Installer/Domino/{{ domino_server_hotfix_tar }}"
     dest: "{{ installer_dir }}/domino/archives/{{ domino_server_hotfix_tar }}"
-    username: "{{ domino_installer_url_user }}"
+    username: "{{ secrets.domino_installer_url_user }}"
     password: "{{ secrets.domino_installer_url_pass }}"
   when: not hotfix_installer_check.stat.exists and not hotfix_extracted.stat.exists and domino_installer_hotfix_install and not hotfix_installed.stat.exists
 
@@ -225,3 +228,10 @@
   when: domino_installer_hotfix_install and not domino_server_hostfix_installed.stat.exists
   with_items:
     - "bash ./install -script ./script.dat  && touch {{ completed_dir }}/hfinstalled"
+
+  - name: "Append ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION to notes.ini"
+    ansible.builtin.blockinfile:
+      path: "/local/notesdata/notes.ini"
+      insertafter: EOF
+      content: "ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION=1"
+    when: domino_major_version == 12 and domino_patch_version == 1

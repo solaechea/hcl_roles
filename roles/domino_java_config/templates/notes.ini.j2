@@ -45,9 +45,3 @@ PhoneLog=2
 Log=log.nsf, 1, 0, 7, 40000
 MailType=0
 
-
-{% if domino_major_version == 12 and domino_patch_version == 1 %}
-: HCL Domino Team removes default of allowing Dots/Periods in Hostnames/Server Names
-: https://github.com/STARTcloud/hcl_roles/issues/5
-ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION=1
-{% endif %}
