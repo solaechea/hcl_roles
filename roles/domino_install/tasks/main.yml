@@ -229,9 +229,10 @@
   with_items:
     - "bash ./install -script ./script.dat  && touch {{ completed_dir }}/hfinstalled"
 
-  - name: "Append ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION to notes.ini"
-    ansible.builtin.blockinfile:
-      path: "/local/notesdata/notes.ini"
-      insertafter: EOF
-      content: "ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION=1"
-    when: domino_major_version == 12 and domino_patch_version == 1
+- 
+  name: "Append ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION to notes.ini"
+  ansible.builtin.blockinfile:
+    path: "/local/notesdata/notes.ini"
+    insertafter: EOF
+    content: "ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION=1"
+  when: domino_major_version == 12 and domino_patch_version == 1
