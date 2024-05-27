@@ -54,7 +54,7 @@
   become_user: "{{ service_user }}"
   ansible.builtin.expect:
     chdir: "{{ service_home_dir }}"
-    command: >
+    ansible.builtin.command: >
       /bin/bash -c "
         . {{ service_home_dir }}/.bash_profile &&
         . {{ service_home_dir }}/.bashrc &&
