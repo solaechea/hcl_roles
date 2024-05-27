@@ -74,6 +74,7 @@
   args:
     executable: "/bin/bash"
     chdir: "{{ installer_dir }}/traveler/Traveler"
+    creates: "{{ completed_dir }}/traveler_install"
   with_items:
     - "./TravelerSetup -f ./installer.properties -i SILENT -l en && touch {{ completed_dir }}/traveler_install"
 

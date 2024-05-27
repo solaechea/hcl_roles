@@ -99,6 +99,7 @@
   args:
     chdir: ~
     executable: /bin/bash
+    creates: "{{ domino_home_dir }}/names.nsf"
   environment:
     PASSWORD: "{{ domino_admin_notes_id_password }}"
   when: java_helpers_install
@@ -150,6 +151,7 @@
   ansible.builtin.command: "cat {{ domino_home_dir }}/IBM_TECHNICAL_SUPPORT/autoconfigure.log"
   register: autoconf_result
   when: ( debug_autoconfigure or debug_all ) and not domino_server_touched.stat.exists
+  changed_when: false
 
 -
   name: "Outputting Autoconfigure Log"
@@ -179,6 +181,7 @@
   register: domino_stop_status
   with_items:
     - 'domino cmd "quit" 20'
+  changed_when: false
 
 -
   name: "Outputting Domino Stop Status"

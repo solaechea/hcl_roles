@@ -64,6 +64,7 @@
   args:
     chdir: "{{ installer_dir }}/domino-rest-api"
     executable: /bin/bash
+    creates: "/opt/hcl/restapi/notices.txt"
   when: not domino_rest_api_installed_check.stat.exists
   with_items:
     - "sudo java -jar restapiInstall.jar -d={{ domino_home_dir }} -i={{ domino_home_dir }}/notes.ini -r=/opt/hcl/restapi -p={{ domino_install_dir }} -a"

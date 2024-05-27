@@ -20,7 +20,7 @@
         },
         {% if existing_server_ip is defined and existing_server is defined and is_additional_server %}
         "existingServer": {
-            "CN":  "{{ existing_server }}",
+            "CN": "{{ existing_server }}",
             "hostNameOrIP": "{{ existing_server_ip }}"
         },
         {% endif %}

@@ -65,6 +65,7 @@
   args:
     executable: "/bin/bash"
     chdir: "{{ installer_dir }}/leap/Leap/Leap-{{ leap_version }}/linux"
+    creates: "{{ domino_install_dir }}/osgi/volt"
   with_items:
     - ./install silent
 
@@ -72,6 +73,7 @@
   name: "Registering leap installation Output"
   when: not leap_installed_check.stat.exists
   ansible.builtin.shell: cat /var/log/volt_install_*.log
+  changed_when: false
   register: leap_install
 
 -

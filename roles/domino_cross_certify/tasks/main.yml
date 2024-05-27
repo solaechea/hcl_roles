@@ -35,6 +35,7 @@
   args:
     executable: /bin/bash
     chdir: "{{ service_home_dir }}"
+  changed_when: false
 
 -
   name: "Waiting until the Cross Certification JAR writes to CrossCertifyNotesID.out"

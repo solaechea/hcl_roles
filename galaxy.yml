@@ -9,8 +9,9 @@ issues: https://github.com/STARTcloud/hcl_roles/issues
 description: "A collection of roles HCL products for the STARTcloud Environment"
 authors:
   - "MarkProminic"
-license: 
+license:
   - GPL-2.0-or-later
 tags:
   - hcl
   - roles
+  - linux

@@ -91,6 +91,7 @@
   args:
     executable: "/bin/bash"
     chdir: "/opt/hcl/domino/notes/latest/linux"
+    creates: "/opt/hcl/domino/notes/latest/linux/libiamclient.so"
   with_items:
     - sh -v ./setup_proton.sh
 

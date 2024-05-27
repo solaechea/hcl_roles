@@ -64,6 +64,7 @@
   args:
     executable: "/bin/bash"
   register: nomadweb_config_status
+  changed_when: false
   with_items:
     - 'domino cmd "set config NOMAD_WEB_HOST={{ domino_nomadweb_proxy_url }}" 20'
 

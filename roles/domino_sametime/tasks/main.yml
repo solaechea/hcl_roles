@@ -3,7 +3,7 @@
 -
   name: "Creating installation directories for Sametime"
   ansible.builtin.file:
-    mode: '0644'
+    mode: '0755'
     path: "{{ item }}"
     state: directory
   with_items:
@@ -66,9 +66,9 @@
   args:
     executable: "/bin/bash"
     chdir: "{{ installer_dir }}/sametime/Sametime/Sametime-{{ sametime_version }}/linux"
+    creates: "{{ completed_dir }}/sametime_install"
   with_items:
-    - ./install silent
-    - touch {{ completed_dir }}/sametime_install
+    - ./install silent && touch {{ completed_dir }}/sametime_install
 
 -
   name: "Registering sametime installation Output"

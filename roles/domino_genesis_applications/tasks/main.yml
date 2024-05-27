@@ -20,6 +20,7 @@
   args:
     executable: "/bin/bash"
   register: domino_genesis_applications
+  changed_when: false
   with_items:
     - "{{ genesis_packages }}"
 

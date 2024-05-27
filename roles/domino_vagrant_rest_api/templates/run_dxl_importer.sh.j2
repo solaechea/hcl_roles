@@ -25,7 +25,7 @@ cd $TMP_DIR
 # warning on the file separators.  This needs to be caught.
 unzip $ZIP_FILE 2>&1 || {
     EXIT_CODE=$?
-    echo "Exit Code:  '$EXIT_CODE'"
+    echo "Exit Code: '$EXIT_CODE'"
     if [ $EXIT_CODE -gt 1 ]; then
         echo "unzip failed with exit code $EXIT_CODE";
         exit $EXIT_CODE;

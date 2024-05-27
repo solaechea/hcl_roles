@@ -2,7 +2,7 @@
 -
   name: "Creating Installation Directories"
   ansible.builtin.file:
-    mode: 0755
+    mode: "0755"
     path: "{{ item }}"
     state: directory
     owner: "{{ service_user }}"
