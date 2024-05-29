@@ -30,6 +30,7 @@
   retries: 3
   ansible.builtin.get_url:
     mode: '0755'
+    validate_certs: false
     url: "{{ domino_installer_base_url }}/{{ installer_url_app_path }}/{{ appdevpack_archive }}"
     dest: "{{ installer_dir }}/appdevpack/archives/{{ appdevpack_archive }}"
     username: "{{ domino_installer_url_user }}"
