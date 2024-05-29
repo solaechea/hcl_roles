@@ -31,7 +31,7 @@
   retries: 3
   ansible.builtin.get_url:
     mode: '0755'
-    url: "{{ domino_installer_base_url }}/ND{{ domino_major_version }}/{{ traveler_archive }}"
+    url: "{{ domino_installer_base_url }}/{{ installer_url_app_path }}/{{ traveler_archive }}"
     dest: "{{ installer_dir }}/traveler/archives/{{ traveler_archive }}"
     username: "{{ domino_installer_url_user }}"
     password: "{{ secrets.domino_installer_url_pass }}"

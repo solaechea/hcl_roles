@@ -33,7 +33,7 @@
   ansible.builtin.get_url:
     mode: '0755'
     validate_certs: false
-    url: "{{ secrets.domino_installer_base_url }}/Super.Human.Installer/Domino/{{ domino_server_installer_tar }}"
+    url: "{{ secrets.domino_installer_base_url }}/{{ installer_url_app_path }}/{{ domino_server_installer_tar }}"
     dest: "{{ installer_dir }}/domino/archives/{{ domino_server_installer_tar }}"
     username: "{{ secrets.domino_installer_url_user }}"
     password: "{{ secrets.domino_installer_url_pass }}"
@@ -78,7 +78,7 @@
   ansible.builtin.get_url:
     validate_certs: false
     mode: '0755'
-    url: "{{ secrets.domino_installer_base_url }}/Super.Human.Installer/Domino/{{ domino_server_fixpack_tar }}"
+    url: "{{ secrets.domino_installer_base_url }}/{{ installer_url_app_path }}/{{ domino_server_fixpack_tar }}"
     dest: "{{ installer_dir }}/domino/archives/{{ domino_server_fixpack_tar }}"
     username: "{{ secrets.domino_installer_url_user }}"
     password: "{{ secrets.domino_installer_url_pass }}"
@@ -121,7 +121,7 @@
   ansible.builtin.get_url:
     validate_certs: false
     mode: '0755'
-    url: "{{ secrets.domino_installer_base_url }}/Super.Human.Installer/Domino/{{ domino_server_hotfix_tar }}"
+    url: "{{ secrets.domino_installer_base_url }}/{{ installer_url_app_path }}/{{ domino_server_hotfix_tar }}"
     dest: "{{ installer_dir }}/domino/archives/{{ domino_server_hotfix_tar }}"
     username: "{{ secrets.domino_installer_url_user }}"
     password: "{{ secrets.domino_installer_url_pass }}"

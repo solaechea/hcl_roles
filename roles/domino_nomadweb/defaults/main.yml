@@ -2,6 +2,7 @@
 nomadweb_archive: nomad-server-1.0.8-for-domino-1202-linux.tgz
 nomadweb_version: 1.0.8
 nomadweb_debug: false
+installer_url_app_path: "Super.Human.Installer/Nomad"
 domino_nomadweb_port_forwards:
   -
     guest: 9443

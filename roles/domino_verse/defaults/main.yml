@@ -2,6 +2,7 @@
 verse_archive: HCL_Verse_3.0.0.zip
 verse_base_version: 3.0.0
 verse_debug: true
+installer_url_app_path: "Super.Human.Installer/Verse"
 domino_verse_port_forwards:
   -
     guest: "{{ domino_install_port_forwards[0].guest }}"

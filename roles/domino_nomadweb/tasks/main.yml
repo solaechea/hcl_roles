@@ -30,7 +30,7 @@
   retries: 3
   ansible.builtin.get_url:
     mode: '0755'
-    url: "{{ domino_installer_base_url }}/ND{{ domino_major_version }}/NomadWeb/{{ nomadweb_archive }}"
+    url: "{{ domino_installer_base_url }}/{{ installer_url_app_path }}/{{ nomadweb_archive }}"
     dest: "{{ installer_dir }}/nomadweb/archives/{{ nomadweb_archive }}"
     username: "{{ domino_installer_url_user }}"
     password: "{{ secrets.domino_installer_url_pass }}"

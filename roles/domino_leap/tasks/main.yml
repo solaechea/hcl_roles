@@ -29,8 +29,8 @@
   until: "leapresult is not failed"
   retries: 3
   ansible.builtin.get_url:
-    mode: '0755'
-    url: "{{ domino_installer_base_url }}/Leap/{{ leap_archive }}"
+    mode: '0755' 
+    url: "{{ domino_installer_base_url }}/{{ installer_url_app_path }}/{{ leap_archive }}"
     dest: "{{ installer_dir }}/leap/archives/{{ leap_archive }}"
     username: "{{ domino_installer_url_user }}"
     password: "{{ secrets.domino_installer_url_pass }}"
