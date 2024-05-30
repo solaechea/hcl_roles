@@ -1,7 +1,8 @@
 ---
-nomadweb_archive: nomad-server-1.0.8-for-domino-1202-linux.tgz
-nomadweb_version: 1.0.8
+nomadweb_archive: nomad-server-1.0.10-for-domino-12.0.2-linux.tgz
+nomadweb_version: 1.0.10
 nomadweb_debug: false
+nomadweb_force: false
 installer_url_app_path: "Super.Human.Installer/Nomad"
 domino_nomadweb_port_forwards:
   -

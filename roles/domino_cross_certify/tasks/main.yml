@@ -7,10 +7,10 @@
     enabled: true
 
 -
-  name: "Checking if ID to Cross Certify is available at /safe-id-to-cross-certify/{{ safe_notes_id }}"
+  name: "Checking if ID to Cross Certify is available at /id-files/user-safe-ids/{{ safe_notes_id }}"
   register: cross_certify_check
   ansible.builtin.stat:
-    path: "/safe-id-to-cross-certify/{{ safe_notes_id }}"
+    path: "/id-files/user-safe-ids/{{ safe_notes_id }}"
     get_md5: false
 
 -
@@ -20,7 +20,7 @@
     seconds: 45
 
 -
-  name: "Cross Certifying /safe-id-to-cross-certify/{{ safe_notes_id }}"
+  name: "Cross Certifying /id-files/user-safe-ids/{{ safe_notes_id }}"
   become_user: "{{ service_user }}"
   become: true
   register: cross_certify_commands
@@ -31,7 +31,7 @@
     source {{ service_home_dir }}/.bash_profile &&
     $JAVA_HOME/bin/java
     -Dapp.properties.file={{ service_home_dir }}/CrossCertifyNotesID.properties
-    -jar CrossCertifyNotesID.jar /safe-id-to-cross-certify/{{ safe_notes_id }}
+    -jar CrossCertifyNotesID.jar /id-files/user-safe-ids/{{ safe_notes_id }}
   args:
     executable: /bin/bash
     chdir: "{{ service_home_dir }}"
@@ -87,3 +87,9 @@
   retries: 3
   delay: 5
   until: domino_cc_service_details_start.state == "started"
+
+-
+  name: Pause for 60 seconds to let Domino fully configure
+  when: cross_certify_check.stat.exists
+  ansible.builtin.pause:
+    seconds: 60
