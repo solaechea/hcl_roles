@@ -104,16 +104,16 @@
     owner: "{{ domino_user }}"
     group: "{{ domino_group }}"
 
-#-
-#  name: 'Copying Safe ID for One Touch Additional Server setup'
-#  become: true
-#  when: not domino_server_touched.stat.exists 
-#  ansible.builtin.copy:
-#    mode: '0755'
-#    src: "/id-files/user-safe-ids/{{ safe_notes_id }}"
-#    dest: "{{ domino_home_dir }}/ids/{{ safe_notes_id }}"
-#    owner: "{{ domino_user }}"
-#    group: "{{ domino_group }}"
+-
+  name: 'Copying Safe ID for One Touch Additional Server setup'
+  become: true
+  when: not domino_server_touched.stat.exists 
+  ansible.builtin.copy:
+    mode: '0755'
+    src: "/id-files/user-safe-ids/{{ safe_notes_id }}"
+    dest: "{{ domino_home_dir }}/ids/{{ safe_notes_id }}"
+    owner: "{{ domino_user }}"
+    group: "{{ domino_group }}"
 
 -
   name: "Running CreateNamesDatabase application, Cleanup names.nsf, and Generate a new names.nsf"
@@ -314,6 +314,28 @@
     mode: '0644'
     src: "{{ domino_home_dir }}/ids/{{ domino_admin_user_id }}"
     dest: "{{ service_home_dir }}/user.id"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+
+-
+  name: 'Copying Admin User ID to /id-files/user-ids/{{ domino_admin_user_id }}'
+  become: true
+  when: not domino_server_touched.stat.exists
+  ansible.builtin.copy:
+    mode: '0644'
+    src: "{{ domino_home_dir }}/ids/{{ domino_admin_user_id }}"
+    dest: "/id-files/user-ids/{{ domino_admin_user_id }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+
+-
+  name: 'Copying Dev User ID to /id-files/user-ids/{{ domino_dev_user_id }}'
+  become: true
+  when: not domino_server_touched.stat.exists
+  ansible.builtin.copy:
+    mode: '0644'
+    src: "{{ domino_home_dir }}/ids/{{ domino_dev_user_id }}"
+    dest: "/id-files/user-ids/{{ domino_dev_user_id }}"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
 
