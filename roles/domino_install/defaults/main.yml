@@ -17,6 +17,8 @@ domino_dev_user_last_name: User
 domino_dev_user_short_name: DevUser
 domino_dev_user_id: dev-user.id
 domino_dev_user_id_password: "password"
+user_safe_id: SAFE.ids
+is_additional_server: false
 domino_major_version: "12"
 domino_minor_version: "0"
 domino_patch_version: "2"

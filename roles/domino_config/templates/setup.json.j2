@@ -53,8 +53,10 @@
       "LOG_REPLICATION":"1",
       "LOG_SESSIONS":"1",
       "iNotes_WA_EnableActionsInArchive":"1",
+{% if genesis_jar is defined %}
       "JavaUserClassesExt":"GJA_Genesis",
       "GJA_Genesis":"JavaAddin/Genesis/{{ genesis_jar }}",
+{% endif %}
       "HTTPEnableMethods":"GET,POST,PUT,DELETE,HEAD,OPTIONS",
       "HTTPJVMMaxHeapSize":"2048M",
       "HTTPJVMMaxHeapSizeSet":"1"

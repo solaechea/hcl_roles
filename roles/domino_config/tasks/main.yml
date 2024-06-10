@@ -110,8 +110,8 @@
   when: not domino_server_touched.stat.exists 
   ansible.builtin.copy:
     mode: '0755'
-    src: "/id-files/user-safe-ids/{{ safe_notes_id }}"
-    dest: "{{ domino_home_dir }}/ids/{{ safe_notes_id }}"
+    src: "/id-files/user-safe-ids/{{ user_safe_id }}"
+    dest: "{{ domino_home_dir }}/ids/{{ user_safe_id }}"
     owner: "{{ domino_user }}"
     group: "{{ domino_group }}"
 
