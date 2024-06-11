@@ -126,10 +126,9 @@
     state: started
     enabled: true
 
-
 -
   name: "Checking Vagrant CRUD Rest API is listening on port {{ domino_vagrant_rest_api_port_forwards[0].guest }}"
-  when: not rest_interface_deployed.stat.exists
+  when: not rest_interface_deployed.stat.exists and not ansible_module_running_in_container
   ansible.builtin.wait_for:
     port: "{{ domino_vagrant_rest_api_port_forwards[0].guest }}"
     delay: 5
