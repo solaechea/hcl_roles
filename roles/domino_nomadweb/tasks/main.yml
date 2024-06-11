@@ -124,7 +124,7 @@
   name: "Configuring NomadWeb Helper for Super.Human.Portal"
   when: not nomadweb_installed_check.stat.exists
   ansible.builtin.template:
-    dest: "/opt/hcl/domino/notes/latest/linux/nomad-files/nomadhelper.html"
+    dest: "{{ domino_install_dir }}/nomad-files/nomadhelper.html"
     mode: '0755'
     owner: "root"
     src: "nomadhelper.html.j2"
