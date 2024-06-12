@@ -1,5 +1,9 @@
 ---
 -
+  name: "Gathering facts on current container"
+  community.docker.current_container_facts:
+
+-
   name: "Creating Installation Directories"
   ansible.builtin.file:
     mode: '0644'
