@@ -62,7 +62,7 @@
   ansible.builtin.template:
     mode: '0644'
     src: "{{ item }}"
-    dest: "{{ installer_dir }}/domino-java-helpers"
+    dest: "{{ installer_dir }}/domino-java-helpers/build.gradle"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
   with_items:
