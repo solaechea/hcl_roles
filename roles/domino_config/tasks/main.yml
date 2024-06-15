@@ -1,5 +1,9 @@
 ---
 -
+  name: "Gathering facts on current container"
+  community.docker.current_container_facts:
+
+-
   name: "Creating KYR for Domino"
   ansible.builtin.shell: "{{ item }}"
   become_user: "{{ domino_user }}"
@@ -215,7 +219,7 @@
 -
   name: "Starting Domino for Changes to take effect"
   become: true
-  when: not domino_server_touched.stat.exists and is_additional_server
+  when: not domino_server_touched.stat.exists and is_additional_server and not ansible_module_running_in_container
   ansible.builtin.service:
     name: domino
     state: started
@@ -341,6 +345,7 @@
 
 -
   name: "Stopping Domino and Enabling at boot"
+  when: not ansible_module_running_in_container
   become: true
   ansible.builtin.service:
     name: domino

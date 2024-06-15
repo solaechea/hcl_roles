@@ -1,5 +1,9 @@
 ---
 -
+  name: "Gathering facts on current container"
+  community.docker.current_container_facts:
+
+-
   name: "Creating Installation Directories"
   ansible.builtin.file:
     mode: '0644'
@@ -85,6 +89,7 @@
 
 -
   name: "Ensuring Domino is stopped but enabled at boot"
+  when: not ansible_module_running_in_container
   become: true
   ansible.builtin.service:
     name: domino

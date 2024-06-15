@@ -10,6 +10,7 @@
     - "{{ installer_dir }}/domino/core"
     - "{{ installer_dir }}/domino/fixpack"
     - "{{ installer_dir }}/domino/hotfix"
+    - "{{ installer_dir }}/domino/archives"
 
 -
   name: "Checking if the Domino Installer archive is at /domino/archives/{{ domino_server_installer_tar }}"
