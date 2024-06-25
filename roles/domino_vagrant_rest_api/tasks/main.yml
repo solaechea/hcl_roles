@@ -115,7 +115,7 @@
 
 -
   name: "Copying restapi supervisord configuration file"
-  when: not rest_interface_deployed.stat.exists and not ansible_module_running_in_container
+  when: not rest_interface_deployed.stat.exists and ansible_module_running_in_container
   ansible.builtin.template:
     src: supervisord.restapi.conf.j2
     dest: /etc/supervisor/conf.d/supervisord.restapi.conf
