@@ -4,6 +4,7 @@
 {% if existing_server_id is defined and is_additional_server %}
       "type": "additional",
       "IDFilePath": "{{ domino_home_dir }}/ids/{{ existing_server_id }}",
+      "useExistingServerID": {{ use_existing_server_id }},
 {% else %}
       "type": "first",
 {% endif %}
@@ -12,10 +13,6 @@
       "title": "{{ settings.hostname }}",
       "password": null,
       "minPasswordLength":5,
-{% if existing_server_id is defined and use_existing_server_id %}
-      "IDFilePath": "{{ domino_home_dir }}/ids/{{ existing_server_id }}",
-      "useExistingServerID": {{ use_existing_server_id }},
-{% endif %}
       "serverTasks": "HTTP"
     },
 {% if existing_server is defined and is_additional_server %}

@@ -3,6 +3,27 @@
   name: "Gathering facts on current container"
   community.docker.current_container_facts:
 
+#-
+#  name: "Grab the Domino Organization if this is an additional server"
+#  ansible.builtin.shell: "{{ item }}"
+#  become: true
+#  become_user: "{{ service_user }}"
+#  args:
+#    chdir: ~
+#    executable: /bin/bash
+#  environment:
+#    PASSWORD: "{{ domino_admin_notes_id_password }}"
+#  when: not domino_server_touched.stat.exists and is_additional_server
+#  with_items:
+#    - "java -jar CheckServerID.jar"
+#  register: domino_organization
+#
+#-
+#  name: "If additional server, set the domino organization"
+#  ansible.builtin.set_fact:
+#    domino_organization: "{{ domino_organization.stdout }}"
+#  when: not domino_server_touched.stat.exists and is_additional_server
+
 -
   name: "Creating KYR for Domino"
   ansible.builtin.shell: "{{ item }}"
@@ -98,7 +119,7 @@
     get_md5: false
 
 -
-  name: 'Copying Server ID for One Touch Additiona Server setup'
+  name: 'Copying Server ID for One Touch Additional Server setup'
   become: true
   when: not domino_server_touched.stat.exists and is_additional_server
   ansible.builtin.copy:
@@ -109,7 +130,7 @@
     group: "{{ domino_group }}"
 
 -
-  name: 'Copying Safe ID for One Touch Additional Server setup'
+  name: "Copying Safe ID for One Touch Additional Server setup"
   become: true
   when: not domino_server_touched.stat.exists 
   ansible.builtin.copy:
@@ -163,7 +184,7 @@
     - "(su - {{ domino_user }} -c '{{ domino_install_basedir }}/bin/server -autoconf setup.json && touch {{ completed_dir }}/domsetup  > /dev/null 2>&1 &')"
 
 -
-  name: Pause for 60 seconds to let Domino fully configure
+  name: "Pause for 60 seconds to let Domino fully configure"
   when: not domino_server_touched.stat.exists
   ansible.builtin.pause:
     seconds: 60
