@@ -132,7 +132,7 @@
 -
   name: "Copying Safe ID for One Touch Additional Server setup"
   become: true
-  when: not domino_server_touched.stat.exists 
+  when: not domino_server_touched.stat.exists and not is_additional_server
   ansible.builtin.copy:
     mode: '0755'
     src: "/id-files/user-safe-ids/{{ user_safe_id }}"
