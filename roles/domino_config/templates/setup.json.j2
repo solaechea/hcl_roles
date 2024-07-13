@@ -4,7 +4,7 @@
 {% if existing_server_id is defined and is_additional_server %}
       "type": "additional",
       "IDFilePath": "{{ domino_home_dir }}/ids/{{ existing_server_id }}",
-      "useExistingServerID": {{ use_existing_server_id }},
+      "useExistingServerID": {{ use_existing_server_id | lower }},
 {% else %}
       "type": "first",
 {% endif %}
