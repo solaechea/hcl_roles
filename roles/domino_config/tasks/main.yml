@@ -124,7 +124,7 @@
   when: not domino_server_touched.stat.exists and is_additional_server
   ansible.builtin.copy:
     mode: '0755'
-    src: "/additional-server-ids/{{ existing_server_id }}"
+    src: "/id-files/server-ids/{{ existing_server_id }}"
     dest: "{{ domino_home_dir }}/ids/{{ existing_server_id }}"
     owner: "{{ domino_user }}"
     group: "{{ domino_group }}"
