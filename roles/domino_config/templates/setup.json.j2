@@ -118,11 +118,13 @@
       "description": "{{ id_vault_name }} Master Policy Description"
     }
   },
+{% endif %}
   "appConfiguration": {
     "databases": [
       {
         "filePath": "names.nsf",
         "action": "update",
+{% if not is_additional_server %}
         "ACL": {
           "ACLEntries": [
             {
@@ -136,6 +138,7 @@
             }
           ]
         },
+{% endif %}
         "documents": [
         {
           "action": "update",
@@ -145,6 +148,7 @@
           },
           "computeWithForm": true,
           "items": {
+{% if not is_additional_server %}
             "FullAdmin": [
               "LocalDomainAdmins",
               "AutomaticallyCrossCertifiedUsers",
@@ -180,6 +184,7 @@
               "AutomaticallyCrossCertifiedUsers",
               "CN={{ domino_admin_user_first_name }} {{ domino_admin_user_last_name }}/O={{ domino_organization }}"
             ],
+{% endif %}
             "HTTP_HomeURL": "homepage.nsf",
             "HTTP_EnableSessionAuth": "1",
             "HTTP_Port": {{ domino_install_port_forwards[1].guest }},
@@ -200,18 +205,7 @@
             "Source": "CN={{ settings.hostname }}.{{ settings.domain }}/O={{ domino_organization }}"
           }
         },
-        {
-          "action": "create",
-          "computeWithForm": true,
-          "items": {
-            "Form": "WebSite",
-            "ISiteOrg": "{{ domino_organization }}",
-            "ISiteName": "Domino Web Site",
-            "WSIsDflt": "1",
-            "HTTP_EnableSessionAuth": "1",
-            "WSHTTPMthds_ed": [ "1", "2", "3", "4", "6", "7" ]
-          }
-        },
+{% if not is_additional_server %}
         {
           "action": "create",
           "computeWithForm": true,
@@ -238,6 +232,19 @@
             "ListCategory": "Administration",
             "Members": ["{{ domino_admin_user_first_name }} {{ domino_admin_user_last_name }}/{{ domino_organization }}", "{{ domino_dev_user_first_name }} {{ domino_dev_user_last_name }}/{{ domino_organization }}", "AutomaticallyCrossCertifiedUsers"],
             "ListDescription": "This group should contain all Domino administrators in your domain. Most system databases and templates give people in this group Manager access."
+          }
+        },
+{% endif %}
+        {
+          "action": "create",
+          "computeWithForm": true,
+          "items": {
+            "Form": "WebSite",
+            "ISiteOrg": "{{ domino_organization }}",
+            "ISiteName": "Domino Web Site",
+            "WSIsDflt": "1",
+            "HTTP_EnableSessionAuth": "1",
+            "WSHTTPMthds_ed": [ "1", "2", "3", "4", "6", "7" ]
           }
         }
         ]
@@ -303,7 +310,6 @@
       }
     ]
   },
-{% endif %}
   "autoConfigPreferences": {
     "startServerAfterConfiguration": true,
     "consoleLogOutput": {
