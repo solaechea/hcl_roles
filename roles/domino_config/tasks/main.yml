@@ -324,7 +324,7 @@
 -
   name: 'Setting file permissions Admin User ID, filename: {{ domino_admin_user_id }}'
   become: true
-  when: not domino_server_touched.stat.exists
+  when: not domino_server_touched.stat.exists and not is_additional_server
   ansible.builtin.file:
     path: "{{ domino_home_dir }}/ids/{{ domino_admin_user_id }}"
     owner: "{{ domino_user }}"
@@ -334,7 +334,7 @@
 -
   name: 'Copying Admin User ID per "convention" for cross-certification: {{ domino_admin_user_id }}'
   become: true
-  when: not domino_server_touched.stat.exists
+  when: not domino_server_touched.stat.exists and not is_additional_server
   ansible.builtin.copy:
     mode: '0644'
     src: "{{ domino_home_dir }}/ids/{{ domino_admin_user_id }}"
@@ -345,7 +345,7 @@
 -
   name: 'Copying Admin User ID to /id-files/user-ids/{{ domino_admin_user_id }}'
   become: true
-  when: not domino_server_touched.stat.exists
+  when: not domino_server_touched.stat.exists and not is_additional_server
   ansible.builtin.copy:
     mode: '0644'
     src: "{{ domino_home_dir }}/ids/{{ domino_admin_user_id }}"
@@ -356,7 +356,7 @@
 -
   name: 'Copying Dev User ID to /id-files/user-ids/{{ domino_dev_user_id }}'
   become: true
-  when: not domino_server_touched.stat.exists
+  when: not domino_server_touched.stat.exists and not is_additional_server
   ansible.builtin.copy:
     mode: '0644'
     src: "{{ domino_home_dir }}/ids/{{ domino_dev_user_id }}"
