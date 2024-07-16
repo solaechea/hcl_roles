@@ -77,7 +77,7 @@ domino_ld_isite: "1"
 domino_translogs_path: /local/translog
 
 # NotesINI settings
-domino_noteini_daos_encrypt_nlo: 0
+domino_notesini_daos_encrypt_nlo: 0
 domino_noteini_daos_max_files_per_subcontainer: 10000
 domino_create_r12_databases: "1"
 domino_create_r85_log: "1"
