@@ -17,6 +17,9 @@
     },
 {% if existing_server is defined and is_additional_server %}
     "existingServer": {
+{% if use_proxy %}
+      "httpTunnelProxy": "{{ existing_server_ip }}",
+{% endif %}
       "CN": "{{ existing_server }}",
       "hostNameOrIP": "{{ existing_server_ip }}"
     },

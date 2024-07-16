@@ -1,5 +1,13 @@
 ---
 -
+  name: "Disabling Exim to prevent it from interfering with Domino"
+  when: not ansible_module_running_in_container
+  ansible.builtin.service:
+    name: "exim4"
+    state: stopped
+    enabled: false
+
+-
   name: "Creating Domino installation directories"
   ansible.builtin.file:
     mode: '0644'
