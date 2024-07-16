@@ -119,7 +119,7 @@
       }
     }
   },
-{% if id_vault_setup %}
+{% if id_vault_setup and not is_additional_server %}
   "IDVault": {
     "name": "O={{ id_vault_name }}",
     "description": "{{ id_vault_name }}",
