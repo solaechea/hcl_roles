@@ -43,6 +43,7 @@ generate_server_id_count: 0
 domino_organization: STARTcloud
 domino_countrycode: null
 
+domino_enable_java_agent_cache: 2
 domino_daos_enable: 0
 domino_daos_base_path: /local/daos
 domino_daos_min_obj_size: 256000

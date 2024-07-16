@@ -239,18 +239,3 @@
   when: domino_installer_hotfix_install and not domino_server_hostfix_installed.stat.exists
   with_items:
     - "bash ./install -script ./script.dat  && touch {{ completed_dir }}/hfinstalled"
-
--
-  name: "Append ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION to notes.ini"
-  ansible.builtin.blockinfile:
-    path: "{{ domino_home_dir }}/notes.ini"
-    insertafter: EOF
-    content: "ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION=1"
-  when: domino_major_version == 12 and domino_patch_version == 1
-
--
-  name: "Append EnableJavaAgentCache=2 to notes.ini: https://github.com/STARTcloud/hcl_roles/issues/8"
-  ansible.builtin.blockinfile:
-    path: "{{ domino_home_dir }}/notes.ini"
-    insertafter: EOF
-    content: "EnableJavaAgentCache=2"
