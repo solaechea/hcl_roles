@@ -46,15 +46,24 @@
 {% endif %}
     },
     "notesINI": {
+      "Create_R12_databases": "1",
+      "Create_R85_log": "1",
       "ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION": "1",
-      "ServerTasks": "{{ domino_notesini_servertasks }}",
+      "SETUPLEAVESERVERTASKS": "1",
       "LOG_REPLICATION": "1",
       "LOG_SESSIONS": "1",
+      "COMPRESS_LZ1_CREATE": "1",
+      "ServerTasks": "{{ domino_notesini_servertasks }}",
       "iNotes_WA_EnableActionsInArchive": "1",
       "HTTPPublicURLs": "/iwaredir.nsf/*:/.well-known*",
       "ENABLE_SNI": "1",
       "SERVER_RESTART_DELAY": "1",
-      "FTG_USE_SYS_MEMORY": "1",
+      "NSF_BUFFER_POOL_SIZE_MB": "256",
+      "FT_FLY_INDEX_OFF": "1",
+      "UPDATE_FULLTEXT_THREAD": "1",
+      "FTG_USE_SYS_MEMORY": "1"
+      "Server_MinPossibleTransTime": "1500",
+      "Server_MaxPossibleTransTime": "20000000",
       "CertMgr_ACCEPT_TOU": "1",
 {% if genesis_jar is defined %}
       "JavaUserClassesExt": "GJA_Genesis",
@@ -100,7 +109,7 @@
       }
     }
   },
-{% if not is_additional_server %}
+{% if id_vault_setup %}
   "IDVault": {
     "name": "O={{ id_vault_name }}",
     "description": "{{ id_vault_name }}",
