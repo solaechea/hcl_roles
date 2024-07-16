@@ -97,6 +97,20 @@
     creates: "{{ completed_dir }}/kyr-cert-imported"
 
 -
+  name: "Creating Domino DAOS, Translogs, NIFNSF and FullText Thread Path directories"
+  ansible.builtin.file:
+    mode: '0755'
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ domino_user }}"
+    group: "{{ domino_group }}"
+  with_items:
+    - "{{ domino_daos_base_path }}"
+    - "{{ domino_update_fulltext_thread_path }}"
+    - "{{ domino_nifnsf_base_path }}"
+    - "{{ domino_translogs_path }}"
+
+-
   name: "Creating Installation Directories"
   ansible.builtin.file:
     mode: '0755'
