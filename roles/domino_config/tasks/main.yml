@@ -23,6 +23,45 @@
 #  ansible.builtin.set_fact:
 #    domino_organization: "{{ domino_organization.stdout }}"
 #  when: not domino_server_touched.stat.exists and is_additional_server
+-
+  name: "Setting Directories Permissions for SSLs"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ domino_user }}"
+    group: "{{ domino_group }}"
+    mode: '0755'
+    recurse: yes
+  with_items:
+    - "{{ cert_dir }}"
+    - "{{ cert_dir }}/key"
+    - "{{ cert_dir }}/crt"
+    - "{{ cert_dir }}/csr"
+    - "{{ cert_dir }}/pfx"
+    - "{{ cert_dir }}/kyr"
+    - "{{ cert_dir }}/jks"
+    - "{{ cert_dir }}/combined"
+    - "{{ cert_dir }}/ca"
+
+-
+  name: "Setting Directories Permissions for SSLs"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: files
+    owner: "{{ domino_user }}"
+    group: "{{ domino_group }}"
+    mode: '0755'
+    recurse: yes
+  with_items:
+    - "{{ cert_dir }}"
+    - "{{ cert_dir }}/key"
+    - "{{ cert_dir }}/crt"
+    - "{{ cert_dir }}/csr"
+    - "{{ cert_dir }}/pfx"
+    - "{{ cert_dir }}/kyr"
+    - "{{ cert_dir }}/jks"
+    - "{{ cert_dir }}/combined"
+    - "{{ cert_dir }}/ca"
 
 -
   name: "Creating KYR for Domino"
@@ -42,7 +81,7 @@
     {{ domino_install_basedir }}/bin/tools/startup
     {{ domino_install_dir }}/kyrtool import keys
     -k {{ cert_dir }}/kyr/{{ kyr_cert }}
-    -i {{ cert_dir }}/key/{{ settings.hostname }}.{{ settings.domain }}-self-signed.key &&
+    -i {{ cert_dir }}/key/{{ settings.hostname }}.{{ settings.domain }}.key &&
     touch {{ completed_dir }}/kyr-key-imported
   become_user: "{{ domino_user }}"
   when: domino_https_enabled and selfsigned_enabled
@@ -57,7 +96,7 @@
     {{ domino_install_basedir }}/bin/tools/startup
     {{ domino_install_dir }}/kyrtool import certs
     -k {{ cert_dir }}/kyr/{{ kyr_cert }}
-    -i {{ cert_dir }}/crt/{{ settings.hostname }}.{{ settings.domain }}-self-signed.crt &&
+    -i {{ cert_dir }}/crt/{{ settings.hostname }}.{{ settings.domain }}.crt &&
     touch {{ completed_dir }}/kyr-cert-imported
   become_user: "{{ domino_user }}"
   when: domino_https_enabled and selfsigned_enabled
@@ -72,7 +111,7 @@
     {{ domino_install_basedir }}/bin/tools/startup
     {{ domino_install_dir }}/kyrtool import keys
     -k {{ cert_dir }}/kyr/{{ kyr_cert }}
-    -i {{ cert_dir }}/key/default-signed.key &&
+    -i {{ cert_dir }}/key/{{ settings.hostname }}.{{ settings.domain }}.key &&
     touch {{ completed_dir }}/kyr-key-imported
   become_user: "{{ domino_user }}"
   when: domino_https_enabled and not selfsigned_enabled
@@ -87,7 +126,7 @@
     {{ domino_install_basedir }}/bin/tools/startup
     {{ domino_install_dir }}/kyrtool import certs
     -k {{ cert_dir }}/kyr/{{ kyr_cert }}
-    -i {{ cert_dir }}/crt/default-signed.crt  &&
+    -i {{ cert_dir }}/crt/{{ settings.hostname }}.{{ settings.domain }}.crt  &&
     touch {{ completed_dir }}/kyr-cert-imported
   become_user: "{{ domino_user }}"
   when: domino_https_enabled and not selfsigned_enabled
