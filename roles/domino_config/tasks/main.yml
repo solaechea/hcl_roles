@@ -44,26 +44,6 @@
     - "{{ cert_dir }}/ca"
 
 -
-  name: "Setting Directories Permissions for SSLs"
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: files
-    owner: "{{ domino_user }}"
-    group: "{{ domino_group }}"
-    mode: '0755'
-    recurse: yes
-  with_items:
-    - "{{ cert_dir }}"
-    - "{{ cert_dir }}/key"
-    - "{{ cert_dir }}/crt"
-    - "{{ cert_dir }}/csr"
-    - "{{ cert_dir }}/pfx"
-    - "{{ cert_dir }}/kyr"
-    - "{{ cert_dir }}/jks"
-    - "{{ cert_dir }}/combined"
-    - "{{ cert_dir }}/ca"
-
--
   name: "Creating KYR for Domino"
   ansible.builtin.shell: "{{ item }}"
   become_user: "{{ domino_user }}"
