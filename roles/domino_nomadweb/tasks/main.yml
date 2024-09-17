@@ -59,7 +59,7 @@
 
 -
   name: "Configuring NomadWeb"
-  when: not nomadweb_installed_check.stat.exists
+  when: not nomadweb_installed_check.stat.exists and domino_nomadweb_use_proxy_url
   ansible.builtin.shell: "{{ item }}"
   become: true
   args:
@@ -68,6 +68,18 @@
   changed_when: false
   with_items:
     - 'domino cmd "set config NOMAD_WEB_HOST={{ domino_nomadweb_proxy_url }}" 20'
+
+-
+  name: "Configuring NomadWeb"
+  when: not nomadweb_installed_check.stat.exists and not domino_nomadweb_use_proxy_url
+  ansible.builtin.shell: "{{ item }}"
+  become: true
+  args:
+    executable: "/bin/bash"
+  register: nomadweb_config_status
+  changed_when: false
+  with_items:
+    - 'domino cmd "set config NOMAD_WEB_HOST={{ settings.hostname }}.{{ settings.domain }}" 20'
 
 -
   name: "Configuring NomadWeb"
