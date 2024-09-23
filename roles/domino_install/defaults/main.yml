@@ -38,6 +38,7 @@ domino_installer_url_pass: "{{ secrets.domino_installer_url_pass }}"
 installer_url_app_path: "Super.Human.Installer/Domino"
 domino_install_dir: /opt/hcl/domino/notes/latest/linux
 domino_install_basedir: /opt/hcl/domino
+domino_install_chosen_feature_list: Domino,Nomad,OnTime,Verse,Help
 domino_https_enabled: 1
 generate_server_id_count: 0
 domino_organization: STARTcloud

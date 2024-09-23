@@ -162,8 +162,8 @@ USER_INPUT_RESULT_1=\"NO\"
 
 #------------------
 {% if domino_major_version == 14 %}
-CHOSEN_FEATURE_LIST=Domino,Nomad,OnTime,Verse,Help
-CHOSEN_INSTALL_FEATURE_LIST=Domino,Nomad,OnTime,Verse,Help
+CHOSEN_FEATURE_LIST={{ domino_install_chosen_feature_list }}
+CHOSEN_INSTALL_FEATURE_LIST={{ domino_install_chosen_feature_list }}
 CHOSEN_INSTALL_SET=
 {% elif domino_major_version in [11, 12] %}
 CHOSEN_FEATURE_LIST=Program Files,DataFiles,Domino Enterprise Connection Services,License,iNotes,Domino Directory Sync Services,Performance Monitoring,OS Integration,Resource Modeling Engine,Billing Support,Clustering Support,Optional Network Drivers,Symbols Files,Java Support,Required Templates,Administration Templates,Optional Templates,Certificate Management,Readme Files,Dojo,Xpages,Web Services Data Files,Enterprise Server Files,Help
