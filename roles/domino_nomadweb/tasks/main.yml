@@ -35,11 +35,11 @@
     dest: "{{ installer_dir }}/nomadweb/archives/{{ nomadweb_archive }}"
     username: "{{ domino_installer_url_user }}"
     password: "{{ secrets.domino_installer_url_pass }}"
-  when: not nomad_archive_check.stat.exists and not nomadweb_installed_check.stat.exists and (domino_major_version is version('14', '<') or nomadweb_force)
+  when: not nomad_archive_check.stat.exists and not nomadweb_installed_check.stat.exists and (domino_major_version is version('14', '<') or nomadweb_update)
 
 -
   name: "Extracting NomadWeb from {{ nomadweb_archive }}"
-  when: not nomadweb_installed_check.stat.exists and (domino_major_version is version('14', '<') or nomadweb_force)
+  when: not nomadweb_installed_check.stat.exists and (domino_major_version is version('14', '<') or nomadweb_update)
   ansible.builtin.unarchive:
     mode: "a+x"
     owner: "{{ domino_user }}"
@@ -51,7 +51,7 @@
 
 -
   name: "Copying Nomadweb installer files to {{ domino_install_dir }}"
-  when: not nomadweb_installed_check.stat.exists and (domino_major_version is version('14', '<') or nomadweb_force)
+  when: not nomadweb_installed_check.stat.exists and (domino_major_version is version('14', '<') or nomadweb_update)
   ansible.builtin.copy:
     mode: "a+x"
     src: "{{ installer_dir }}/nomadweb/NomadWeb/"
