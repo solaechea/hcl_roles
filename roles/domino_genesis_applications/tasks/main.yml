@@ -11,18 +11,11 @@
   when: not genesis_packages_installed_check.stat.exists
   ansible.builtin.pause:
     seconds: 15
-
 -
-  name: "Installing Genesis Applications"
-  ansible.builtin.shell: domino cmd "tell genesis install {{ item }}" 20
-  when: not genesis_packages_installed_check.stat.exists
-  become: true
-  args:
-    executable: "/bin/bash"
-  register: domino_genesis_applications
-  changed_when: false
-  with_items:
-    - "{{ genesis_packages }}"
+  name: Loop over Genesis packages
+  include_tasks: genesis_tasks.yml
+  loop: "{{ genesis_packages }}"
+  when: not selfsigned_enabled
 
 -
   name: "Debugging Genesis Application Installation"

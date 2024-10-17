@@ -1,0 +1,16 @@
+---
+- name: "Installing Genesis Application"
+  ansible.builtin.shell: domino cmd "tell genesis install {{ item }}"
+  when: not genesis_packages_installed_check.stat.exists
+  become: true
+  args:
+    executable: "/bin/bash"
+  register: domino_genesis_applications
+  changed_when: false
+
+- name: "Checking if Package has been installed"
+  ansible.builtin.wait_for:
+    path: "{{ domino_home_dir }}/IBM_TECHNICAL_SUPPORT/console.log"
+    search_regex: "installed {{ item }}"
+    timeout: 120
+    msg: "The expected string was not found in the log file within the timeout period."
