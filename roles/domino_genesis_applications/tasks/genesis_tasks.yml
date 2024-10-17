@@ -1,7 +1,6 @@
 ---
 - name: "Installing Genesis Application"
   ansible.builtin.shell: domino cmd "tell genesis install {{ item }}"
-  when: not genesis_packages_installed_check.stat.exists
   become: true
   args:
     executable: "/bin/bash"

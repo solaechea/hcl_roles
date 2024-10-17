@@ -12,10 +12,10 @@
   ansible.builtin.pause:
     seconds: 15
 -
-  name: Loop over Genesis packages
+  name: "Looping over Genesis packages"
   include_tasks: genesis_tasks.yml
   loop: "{{ genesis_packages }}"
-  when: not selfsigned_enabled
+  when: not genesis_packages_installed_check.stat.exists
 
 -
   name: "Debugging Genesis Application Installation"
