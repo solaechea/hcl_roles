@@ -266,7 +266,7 @@
 
 -
   name: Pause for 60 seconds to let Domino fully configure
-  when: not domino_server_touched.stat.exists and  is_additional_server
+  when: not domino_server_touched.stat.exists and is_additional_server
   ansible.builtin.pause:
     seconds: 60
 

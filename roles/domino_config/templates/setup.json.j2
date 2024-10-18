@@ -20,7 +20,7 @@
 {% if use_proxy %}
       "httpTunnelProxy": "{{ proxy_http_server }}:{{ proxy_http_port }}",
 {% endif %}
-      "CN": "{{ existing_server }}",
+      "CN": "{{ existing_server }}.{{ settings.domain }}/O={{ domino_organization }}",
       "hostNameOrIP": "{{ existing_server_ip }}"
     },
 {% endif %}
@@ -314,6 +314,40 @@
           }
         },
 {% endif %}
+{% if is_additional_server and domino_major_version >= 14%}
+        {
+          "action": "create",
+          "computeWithForm": true,
+          "items": {
+            "Form": "local",
+            "Type": "Connection",
+            "PortName": "TCPIP",
+            "Source": "CN={{ settings.hostname }}.{{ settings.domain }}/O={{ domino_organization }}",
+            "Destination": "{{ existing_server }}.{{ settings.domain }}/O={{ domino_organization }}",
+            "SourceDomain": "{{ domino_organization }}",
+            "DestinationDomain": "{{ domino_organization }}",
+            "ConnectionMode": "0",
+            "ConnectionType": "0",
+            "Cost": "1",
+            "Enabled": "1",
+            "Interval": 15,
+            "MailThreshold": 1,
+            "PullAllPrimary": "1",
+            "PullRoutingTimeout": 30,
+            "RepPriority": "0",
+            "RepTask": "1",
+            "RepType": "1",
+            "RouterType": "3",
+            "RoutingTask": "Mail Routing",
+            "Schedule": {
+                "type": "datetime",
+                "value": [ [ "T000000,00", "T235959,00" ] ]
+              },
+            "Tasks": ["Replication","Mail Routing"],
+            "WeekDays": ["1","2","3","4","5","6","7"]
+          }
+        },
+{% endif %}
         {
           "action": "create",
           "computeWithForm": true,
@@ -333,7 +367,7 @@
         "filePath": "domcfg.nsf",
         "title": "Domino Web Server Configuration",
         "templatePath": "domcfg5.ntf",
-        "signUsingAdminp": true,
+        "signUsingAdminp": false,
         "documents": [
           {
             "action": "create",
@@ -353,7 +387,7 @@
         "filePath": "iwaredir.nsf",
         "title": "Redirect",
         "templatePath": "iwaredir.ntf",
-        "signUsingAdminp": true,
+        "signUsingAdminp": false,
         "documents": [
           {
             "action": "create",
@@ -390,7 +424,7 @@
     ]
   },
   "autoConfigPreferences": {
-	  "deleteInputFileAfterProcessing": {{ domino_config.delete_input_file_after_processing }},
+          "deleteInputFileAfterProcessing": {{ domino_config.delete_input_file_after_processing }},
     "startServerAfterConfiguration": {{ domino_config.start_server_after_configuration }},
     "consoleLogOutput": {
         "show": "all",
