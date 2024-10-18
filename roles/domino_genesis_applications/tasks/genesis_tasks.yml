@@ -1,7 +1,7 @@
 ---
 -
   name: "Installing Genesis Application"
-  ansible.builtin.shell: domino cmd "tell genesis install {{ item }}"
+  ansible.builtin.shell: domino cmd "tell genesis install {{ item }}" 50
   become: true
   args:
     executable: "/bin/bash"
