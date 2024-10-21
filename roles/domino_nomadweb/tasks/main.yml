@@ -142,7 +142,7 @@
     src: "nomadhelper.html.j2"
 
 -
-  name: "Handing Nomad Helper templated JSON to Genesis"
+  name: "Handing Nomad Helper templated update_nomad_helper_url JSON to Genesis"
   when: not nomadweb_installed_check.stat.exists
   ansible.builtin.template:
     dest: "{{ domino_home_dir }}/JavaAddin/Genesis/json/update_nomad_helper_url.json"
@@ -152,16 +152,43 @@
     src: "update_nomad_helper_url.json.j2"
 
 -
-  name: Waiting until Genesis returns OK
+  name: "Waiting until Genesis returns OK after processing update_nomad_helper_url"
   when: not nomadweb_installed_check.stat.exists
   ansible.builtin.wait_for:
     path: "{{ domino_home_dir }}/JavaAddin/Genesis/jsonresponse/update_nomad_helper_url.json"
 
 -
-  name: "Checking if Nomad Helper applied succesfully"
+  name: "Checking if Nomad Helper update_nomad_helper_url JSON applied succesfully"
   when: not nomadweb_installed_check.stat.exists
   ansible.builtin.lineinfile:
     path: "{{ domino_home_dir }}/JavaAddin/Genesis/jsonresponse/update_nomad_helper_url.json"
+    line: "OK"
+    state: present
+  check_mode: true
+  register: presence
+  failed_when: presence is changed
+
+-
+  name: "Handing Nomad Helper templated update_nomad_helper_acl JSON to Genesis"
+  when: not nomadweb_installed_check.stat.exists
+  ansible.builtin.template:
+    dest: "{{ domino_home_dir }}/JavaAddin/Genesis/json/update_nomad_helper_acl.json"
+    mode: "a+x"
+    owner: "{{ domino_user }}"
+    group: "{{ domino_group }}"
+    src: "update_nomad_helper_acl.json.j2"
+
+-
+  name: "Waiting until Genesis returns OK after processing update_nomad_helper_acl"
+  when: not nomadweb_installed_check.stat.exists
+  ansible.builtin.wait_for:
+    path: "{{ domino_home_dir }}/JavaAddin/Genesis/jsonresponse/update_nomad_helper_acl.json"
+
+-
+  name: "Checking if Nomad Helper update_nomad_helper_acl JSON applied succesfully"
+  when: not nomadweb_installed_check.stat.exists
+  ansible.builtin.lineinfile:
+    path: "{{ domino_home_dir }}/JavaAddin/Genesis/jsonresponse/update_nomad_helper_acl.json"
     line: "OK"
     state: present
   check_mode: true
