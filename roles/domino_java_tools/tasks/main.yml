@@ -142,6 +142,7 @@
   become: true
   become_user: root
   when: build_utility_jars and not build_tools_deployed.stat.exists
+
 -
   name: "Building utility jars and deploying"
   ansible.builtin.command: "{{ item }}"
@@ -149,9 +150,24 @@
   become_user: "{{ service_user }}"
   args:
     chdir: "{{ installer_dir }}/domino-java-helpers"
-  when: build_utility_jars and not build_tools_deployed.stat.exists
+  when: build_utility_jars and not build_tools_deployed.stat.exists and not use_proxy
   with_items:
     - "bash -c 'source {{ service_home_dir }}/.sdkman/bin/sdkman-init.sh && gradle clean jarIndividual --stacktrace'"
+
+-
+  name: "Building utility jars and deploying"
+  ansible.builtin.command: "{{ item }}"
+  become: true
+  become_user: "{{ service_user }}"
+  args:
+    chdir: "{{ installer_dir }}/domino-java-helpers"
+  when: build_utility_jars and not build_tools_deployed.stat.exists and use_proxy
+  with_items:
+    - "bash -c 'source {{ service_home_dir }}/.sdkman/bin/sdkman-init.sh && gradle clean jarIndividual --stacktrace'"
+  environment:
+    http_proxy: "http://{{ proxy_server }}:3128"
+    https_proxy: "http://{{ proxy_server }}:3128"
+    GRADLE_OPTS: "-Dhttp.proxyHost={{ proxy_server }} -Dhttp.proxyPort=3128 -Dhttps.proxyHost={{ proxy_server }} -Dhttps.proxyPort=3128"
 
 -
   name: "Marking jars as installed"
