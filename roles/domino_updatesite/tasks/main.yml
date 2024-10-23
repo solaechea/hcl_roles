@@ -77,6 +77,24 @@
 
 -
   name: "Deploying updatesite with Maven {{ maven_version }}"
+  when: not updatesite_deployed.stat.exists and use_proxy
+  ansible.builtin.shell: |
+    source {{ service_home_dir }}/.sdkman/bin/sdkman-init.sh
+    mvn org.openntf.p2:generate-domino-update-site:generateUpdateSite -Ddest={{ nsfodp_updatesite_path }} -Dsrc={{ domino_install_dir }}
+    touch {{ completed_dir }}/updatesite_deployed
+  become: true
+  become_user: "{{ service_user }}"
+  args:
+    executable: "/bin/bash"
+    chdir: "/vagrant/installers/update-site/generate-domino-update-site"
+    creates: "{{ completed_dir }}/updatesite_deployed"
+  environment:
+    MAVEN_HOME: "{{ service_home_dir }}/.sdkman/candidates/maven/current"
+    http_proxy: "http://{{ proxy_server }}:3128"
+    https_proxy: "http://{{ proxy_server }}:3128"
+
+-
+  name: "Deploying updatesite with Maven {{ maven_version }}"
   when: not updatesite_deployed.stat.exists
   ansible.builtin.shell: |
     source {{ service_home_dir }}/.sdkman/bin/sdkman-init.sh
