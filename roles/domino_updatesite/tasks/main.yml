@@ -95,7 +95,7 @@
 
 -
   name: "Deploying updatesite with Maven {{ maven_version }}"
-  when: not updatesite_deployed.stat.exists
+  when: not updatesite_deployed.stat.exists and not use_proxy
   ansible.builtin.shell: |
     source {{ service_home_dir }}/.sdkman/bin/sdkman-init.sh
     mvn org.openntf.p2:generate-domino-update-site:generateUpdateSite -Ddest={{ nsfodp_updatesite_path }} -Dsrc={{ domino_install_dir }}
