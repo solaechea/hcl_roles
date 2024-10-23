@@ -17,9 +17,6 @@
     },
 {% if existing_server is defined and is_additional_server %}
     "existingServer": {
-{% if use_proxy %}
-      "httpTunnelProxy": "{{ proxy_http_server }}:{{ proxy_http_port }}",
-{% endif %}
       "CN": "{{ existing_server }}.{{ settings.domain }}/O={{ domino_organization }}",
       "hostNameOrIP": "{{ existing_server_ip }}"
     },
