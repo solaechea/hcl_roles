@@ -26,7 +26,7 @@
   when: not rest_interface_deployed.stat.exists
   ansible.builtin.get_url:
     mode: '0644'
-    url: "https://github.com/Moonshine-IDE/Vagrant-REST-Interface/releases/download/{{ rest_vagrant_crud_version }}/{{ rest_vagrant_crud_archive }}"
+    url: "{{ rest_vagrant_crud_git_repo }}{{ rest_vagrant_crud_version }}/{{ rest_vagrant_crud_archive }}"
     dest: "{{ installer_dir }}/restapi/archives/{{ rest_vagrant_crud_archive }}"
 
 -
