@@ -32,6 +32,7 @@
     - src/main/java/net/prominic/domino/vagrant/CheckNotesUser.java
     - src/main/java/net/prominic/domino/vagrant/CheckDatabase.java
     - src/main/java/net/prominic/domino/vagrant/CrossCertifyNotesID.java
+    - src/main/java/net/prominic/domino/vagrant/CreateAdditionalServerID.java
   when: build_utility_jars and not build_tools_deployed.stat.exists
 
 -
