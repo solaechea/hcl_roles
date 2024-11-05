@@ -8,55 +8,51 @@ plugins {
 }
 mainClassName = 'CheckNotesUser'
 
-String notesInstallation = '/Applications/HCL Notes.app/Contents/MacOS'
+String notesInstallation = project.findProperty('notesInstallation') ?: '/Applications/HCL Notes.app/Contents/MacOS/'
 if (!notesInstallation) {
-    throw new GradleException("Missing configured path for Notes installation.  Set notesInstallation in build.gradle.")
+	throw new GradleException("Missing configured path for Notes installation.  Set notesInstallation in gradle.properties.")
 }
-if (!(new File(notesInstallation).exists())) {
-    // try this as a Linux environment instead
-    notesInstallation = '{{ domino_install_dir }}'
-}
-if (!(new File(notesInstallation).exists())) {
-    throw new GradleException("Invalid configured path for Notes installation ($notesInstallation).  Check notesInstallation in build.gradle.")
+else if (!(new File(notesInstallation).exists())) {
+	throw new GradleException("Invalid configured path for Notes installation ($notesInstallation).  Check notesInstallation in gradle.properties.")
 }
 
-String notesJarPath = "$notesInstallation/jvm/lib/ext/Notes.jar"
-if (!(new File(notesJarPath).exists())) {
-    // Check for the new path
-    notesJarPath = "$notesInstallation/ndext/Notes.jar"
-    if (!(new File(notesJarPath).exists())) {
-        throw new GradleException("ERROR: Could not find Notes.jar in any known locations.")
-    }
-}
-
+String notesJarExtDir = "$notesInstallation/jvm/lib/ext"
+String notesJarPath = "$notesJarExtDir/Notes.jar"
 String envPath = System.getenv('PATH')
 if (!envPath) {
-    logger.warn "Missing PATH environment variable."
-    envPath = ''  // default to empty string to avoid null errors later
+	logger.warn "Missing PATH environment variable."
+	envPath = ''  // default to empty string to avoid null errors later
 }
 
 // change envPath as needed
 if (notesInstallation.toLowerCase().startsWith('/applications/')) { // treat as macOS
-    if (!(new File(notesJarPath).exists())) {
-        // alternative location for macOS: /Applications/HCL Notes.app/Contents/Resources/jvm/lib/ext/Notes.jar
-        logger.info "Notes.jar not found at $notesJarPath"
-        notesJarPath = "$notesInstallation/../Resources/jvm/lib/ext/Notes.jar"
-    }
-    if (!(new File(notesJarPath).exists())) {
-        logger.info "Notes.jar not found at $notesJarPath"
-        throw new GradleException("ERROR: Could not find Notes.jar")
-    }
-    println("Notes JAR path: $notesJarPath")
+	if (!(new File(notesJarPath).exists())) {
+		// alternative location for macOS:  /Applications/HCL Notes.app/Contents/Resources/jvm/lib/ext/Notes.jar 
+		logger.info "Notes.jar not found at $notesJarPath"
+		notesJarExtDir = "$notesInstallation/../Resources/jvm/lib/ext"
+		notesJarPath = "$notesJarExtDir/Notes.jar"
+	}
+	if (!(new File(notesJarPath).exists())) {
+		// alternative location for macOS and Notes 14:  /Applications/HCL Notes.app/Contents/Resources/ndext/Notes.jar 
+		logger.info "Notes.jar not found at $notesJarPath"
+		notesJarExtDir = "$notesInstallation/../Resources/ndext"
+		notesJarPath = "$notesJarExtDir/Notes.jar"
+	}
+	if (!(new File(notesJarPath).exists())) {
+		logger.info "Notes.jar not found at $notesJarPath"
+		throw new GradleException("ERROR: Could not find Notes.jar")
+	}
+	logger.info("Notes JAR path:  $notesJarPath")
 }
 else { // treat as Windows
-    // update PATH
-    envPath = "$envPath;$notesInstallation"
-    println "Updated PATH: $envPath"
+	// update PATH
+	envPath = "$envPath;$notesInstallation"
+	println "Updated PATH: $envPath"
 }
 
 // build a jar path to use for Notes.jar
-// Supports local and Linux server executions
-String jarClassPath = "./Notes.jar {{ domino_install_dir }}/jvm/lib/ext/Notes.jar ${notesJarPath.replaceAll(' ', '%20').replaceAll('^\\w+:', '/$0')}"
+// Based on the local Notes/Domino installation
+String jarClassPath = "./Notes.jar ${notesJarPath.replaceAll(' ', '%20').replaceAll('^\\w+:', '/$0')}"
 
 logger.debug "Environment"
 System.env.each {
