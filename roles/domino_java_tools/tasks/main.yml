@@ -158,9 +158,9 @@
   with_items:
     - "bash -c 'source {{ service_home_dir }}/.sdkman/bin/sdkman-init.sh && gradle clean jarIndividual --stacktrace'"
   environment:
-    http_proxy: "http://{{ proxy_server }}:3128"
-    https_proxy: "http://{{ proxy_server }}:3128"
-    GRADLE_OPTS: "-Dhttp.proxyHost={{ proxy_server }} -Dhttp.proxyPort=3128 -Dhttps.proxyHost={{ proxy_server }} -Dhttps.proxyPort=3128"
+    http_proxy: "http://{{ proxy_server }}:{{ proxy_port }}"
+    https_proxy: "http://{{ proxy_server }}:{{ proxy_port }}"
+    GRADLE_OPTS: "-Dhttp.proxyHost={{ proxy_server }} -Dhttp.proxyPort={{ proxy_port }} -Dhttps.proxyHost={{ proxy_server }} -Dhttps.proxyPort={{ proxy_port }}"
 
 -
   name: "Marking jars as installed"

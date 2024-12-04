@@ -57,8 +57,8 @@
     creates: "{{ completed_dir }}/updatesite_installed"
   environment:
     MAVEN_HOME: "{{ service_home_dir }}/.sdkman/candidates/maven/current"
-    http_proxy: "http://{{ proxy_server }}:3128"
-    https_proxy: "http://{{ proxy_server }}:3128"
+    http_proxy: "http://{{ proxy_server }}:{{ proxy_port }}"
+    https_proxy: "http://{{ proxy_server }}:{{ proxy_port }}"
 
 -
   name: "Installing updatesite with Maven {{ maven_version }}"
@@ -90,8 +90,8 @@
     creates: "{{ completed_dir }}/updatesite_deployed"
   environment:
     MAVEN_HOME: "{{ service_home_dir }}/.sdkman/candidates/maven/current"
-    http_proxy: "http://{{ proxy_server }}:3128"
-    https_proxy: "http://{{ proxy_server }}:3128"
+    http_proxy: "http://{{ proxy_server }}:{{ proxy_port }}"
+    https_proxy: "http://{{ proxy_server }}:{{ proxy_port }}"
 
 -
   name: "Deploying updatesite with Maven {{ maven_version }}"
