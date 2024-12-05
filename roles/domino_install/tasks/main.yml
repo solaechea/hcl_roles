@@ -245,6 +245,7 @@
   ansible.builtin.lineinfile:
     path: "{{ domino_home_dir }}/notes.ini"
     line: "ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION=1"
+    insertafter: EOF
     state: present
   when: domino_major_version == 12 and domino_patch_version == 1
 
@@ -253,4 +254,5 @@
   ansible.builtin.lineinfile:
     path: "{{ domino_home_dir }}/notes.ini"
     line: "EnableJavaAgentCache=2"
+    insertafter: EOF
     state: present
