@@ -242,15 +242,15 @@
 
 -
   name: "Append ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION to notes.ini"
-  ansible.builtin.blockinfile:
-    path: "/local/notesdata/notes.ini"
-    insertafter: EOF
-    content: "ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION=1"
+  ansible.builtin.lineinfile:
+    path: "{{ domino_home_dir }}/notes.ini"
+    line: "ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION=1"
+    state: present
   when: domino_major_version == 12 and domino_patch_version == 1
 
 -
   name: "Append EnableJavaAgentCache=2 to notes.ini: https://github.com/STARTcloud/hcl_roles/issues/8"
-  ansible.builtin.blockinfile:
+  ansible.builtin.lineinfile:
     path: "{{ domino_home_dir }}/notes.ini"
-    insertafter: EOF
-    content: "EnableJavaAgentCache=2"
+    line: "EnableJavaAgentCache=2"
+    state: present
