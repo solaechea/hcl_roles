@@ -56,7 +56,7 @@
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
   with_items:
-    - DominoVagrant_demo.javaproj
+    - domino_java_tools.javaproj
     - build.gradle
   when: build_utility_jars and not build_tools_deployed.stat.exists
 
