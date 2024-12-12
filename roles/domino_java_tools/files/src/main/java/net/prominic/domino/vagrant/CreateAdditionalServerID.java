@@ -81,7 +81,14 @@ public class CreateAdditionalServerID extends AgentBase {
 			
 			// TODO:  load properties and verify they are non-empty.  Allow defaults as appropriate
 			String additionalServerName = readRequiredProperty(additionalServerProperties, "server.name");
-			String additionalServerPassword = additionalServerProperties.getProperty("server.id.password", ""); // password is allowed to be empty
+			String additionalServerPassword = additionalServerProperties.getProperty("server.id.password", null);
+			if (null == additionalServerPassword || additionalServerPassword.isEmpty()) {
+				// An empty string triggers this error:  Notes error: No password specified (test-additional-2.shi.com)
+				// Use null instead to indicate no password
+				// NOTE:  Adding a password to the server ID means that it will be required on server startup
+				additionalServerPassword = null;
+				System.out.println("Creating the new server.id with no password.");
+			}
 			String additionalServerTitle = readRequiredProperty(additionalServerProperties, "server.id.title");
 			String outputIDFile = readRequiredProperty(additionalServerProperties, "server.id.output");
 			
@@ -114,7 +121,11 @@ public class CreateAdditionalServerID extends AgentBase {
 			reg.setExpiration(dt);
 			
 			reg.setIDType(Registration.ID_HIERARCHICAL);
-			reg.setMinPasswordLength(5); // password strength
+			// password strength.  0 means that the password is optional
+			// https://help.hcl-software.com/dom_designer/12.0.0/basic/H_MINPASSWORDLENGTH_PROPERTY_JAVA.html
+			//System.out.println("Original MinPasswordLength:  " + reg.getMinPasswordLength());
+			reg.setMinPasswordLength(0); 
+			System.out.println("Updated MinPasswordLength:  " + reg.getMinPasswordLength());
 			reg.setNorthAmerican(true);
 			//reg.setOrgUnit("AceHardwareNE");
 			reg.setRegistrationLog("log.nsf");
@@ -131,7 +142,7 @@ public class CreateAdditionalServerID extends AgentBase {
 				serverAdministrator, // server administrator
 				additionalServerTitle)) // Domino Directory title field
 			{ 
-				System.out.println("Registration succeeded"); 
+				System.out.println("Registration succeeded!  Server ID created at:  " + outputIDFile); 
 			}
 			else { 
 				System.out.println("Registration failed"); 
