@@ -61,6 +61,12 @@ System.env.each {
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://artifactory.openntf.org/openntf"
+    }
+    maven {
+        url "https://mvnrepository.com/artifact/com.mindoo.domino/domino-jna"
+    }
 }
 sourceSets {
     main {
@@ -81,6 +87,7 @@ dependencies {
     // Local JAR dependency
     implementation files(notesJarPath)
     implementation 'org.json:json:20160212'  // For parsing setup.json
+    implementation 'com.mindoo.domino:domino-jna:0.9.53'
 }
 
 /*
@@ -130,6 +137,10 @@ task jarCheckNotesUser(type: Jar) {
 
 task jarIndividual() {
     // placeholder for generated tasks
+}
+
+tasks.withType(Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 // generate tasks to create individual jars
