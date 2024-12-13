@@ -229,7 +229,8 @@ public class CreateAdditionalServerJNA {
                 reg.setExpiration(dt);
 
                 reg.setIDType(Registration.ID_HIERARCHICAL);
-                reg.setMinPasswordLength(5); // password strength
+                reg.setMinPasswordLength(0); // password strength
+                System.out.println("Updated MinPasswordLength: " + reg.getMinPasswordLength());
                 reg.setNorthAmerican(true);
                 //reg.setOrgUnit("AceHardwareNE");
                 reg.setRegistrationLog("certlog.nsf");
