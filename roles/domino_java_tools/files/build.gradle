@@ -88,6 +88,7 @@ dependencies {
     implementation files(notesJarPath)
     implementation 'org.json:json:20160212'  // For parsing setup.json
     implementation 'com.mindoo.domino:domino-jna:0.9.53'
+    implementation 'net.java.dev.jna:jna:5.13.0'
 }
 
 /*

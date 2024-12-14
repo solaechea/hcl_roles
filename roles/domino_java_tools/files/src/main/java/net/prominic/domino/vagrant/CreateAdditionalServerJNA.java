@@ -127,6 +127,12 @@ public class CreateAdditionalServerJNA {
         .getJSONObject("org")
         .getString("certifierPassword"); // not in original steps below
 
+      if (additionalServerPassword == null) {
+        additionalServerPassword = "";
+      }
+
+      log("additionalServerPassword len: " + additionalServerPassword.length());
+
       createAdditionalServer(
         hostServerIDFilePath,
         hostServerIDPassword,
@@ -217,50 +223,18 @@ public class CreateAdditionalServerJNA {
                 System.out.println(
                   "session username: " + session.getUserName()
                 );
-                reg = session.createRegistration();
-                reg.setRegistrationServer(hostServerName);
-                reg.setCreateMailDb(false);
-                reg.setCertifierIDFile(hostCertIDFilePath);
 
-                // expire in 1 year
-                dt = session.createDateTime("Today");
-                dt.setNow();
-                dt.adjustYear(1);
-                reg.setExpiration(dt);
-
-                reg.setIDType(Registration.ID_HIERARCHICAL);
-                reg.setMinPasswordLength(0); // password strength
-                System.out.println("Updated MinPasswordLength: " + reg.getMinPasswordLength());
-                reg.setNorthAmerican(true);
-                //reg.setOrgUnit("AceHardwareNE");
-                reg.setRegistrationLog("certlog.nsf");
-                reg.setUpdateAddressBook(true);
-                reg.setStoreIDInAddressBook(true);
-                reg.setCreateMailDb(false);
-                System.out.println(
-                  "addtionalServerIDStorePath: " + addtionalServerIDStorePath
-                );
-                System.out.println(
-                  "setRegistrationLog11:" + reg.getRegistrationLog()
-                );
-                System.out.println("hostCertIDFilePath: " + hostCertIDFilePath);
-                if (
-                  reg.registerNewServer(
-                    addtionalServerName, // server name
-                    addtionalServerIDStorePath, // file to be created
-                    addtionalServerDomainName, // domain name
-                    addtionalServerPassword, // password for server ID
-                    hostCertIDPassword, // certifier password
-                    "", // location field
-                    "", // comment field
-                    "", // Notes named network
-                    currentUser, // server administrator
+                if (addtionalServerName != null) {
+                  HybridServerRegistration.registerServer(
+                    session,
+                    hostCertIDFilePath,
+                    hostCertIDPassword,
+                    addtionalServerName,
+                    addtionalServerIDStorePath,
+                    addtionalServerDomainName,
+                    currentUser,
                     addtionalServerTitle
-                  )
-                ) { // Domino Directory title field
-                  System.out.println("Registration succeeded");
-                } else {
-                  System.out.println("Registration failed");
+                  );
                 }
               } else {
                 System.out.println("Could not get session.");
