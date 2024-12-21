@@ -1,4 +1,5 @@
 ---
+run_tasks: true
 voltmx_installation_type: Development
 voltmx_installation_dir: /local/voltmx-foundry
 voltmx_installer_archive: VoltMXFoundrySetup-9.5.1.1_GA.tar.gz
