@@ -224,7 +224,7 @@
     
     -
       name: "Configuring hotfix installer {{ domino_hotfix_version }}"
-      when: domino_installer_hotfix_install and not fixpack_installed.stat.exists
+      when: domino_installer_hotfix_install and not hotfix_installed.stat.exists
       ansible.builtin.lineinfile:
         path: "{{ installer_dir }}/domino/hotfix/linux64/script.dat"
         line: "installation_type = 2"
@@ -240,7 +240,7 @@
         chdir: "{{ installer_dir }}/domino/hotfix/linux64"
         creates: "{{ completed_dir }}/hfinstalled"
         executable: "/bin/bash"
-      when: domino_installer_hotfix_install and not fixpack_installed.stat.exists
+      when: domino_installer_hotfix_install and not hotfix_installed.stat.exists
       with_items:
         - "bash ./install -script ./script.dat  && touch {{ completed_dir }}/hfinstalled"
     
