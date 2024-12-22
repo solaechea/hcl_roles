@@ -242,7 +242,7 @@
         executable: "/bin/bash"
       when: domino_installer_hotfix_install and not hotfix_installed.stat.exists
       with_items:
-        - "bash ./install -script ./script.dat  && touch {{ completed_dir }}/hfinstalled"
+        - "bash ./install -script ./script.dat && touch {{ completed_dir }}/hfinstalled"
     
     -
       name: "Append ADMIN_IGNORE_NEW_SERVERNAMING_CONVENTION to notes.ini"
