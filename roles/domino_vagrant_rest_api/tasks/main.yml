@@ -140,7 +140,7 @@
       when: not rest_interface_deployed.stat.exists and not ansible_module_running_in_container
       ansible.builtin.wait_for:
         port: "{{ domino_vagrant_rest_api_port_forwards[0].guest }}"
-        delay: 5
-        timeout: 60
+        delay: 15
+        timeout: 240
         msg: "Timeout waiting for {{ domino_vagrant_rest_api_port_forwards[0].guest }} to respond"
       register: port_check
