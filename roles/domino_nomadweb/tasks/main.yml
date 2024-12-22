@@ -131,8 +131,8 @@
       name: "Checking NomadWeb is listening on port {{ domino_nomadweb_port_forwards[0].guest }}"
       ansible.builtin.wait_for:
         port: "{{ domino_nomadweb_port_forwards[0].guest }}"
-        delay: 5
-        timeout: 60
+        delay: 15
+        timeout: 360
         msg: "Timeout waiting for {{ domino_nomadweb_port_forwards[0].guest }} to respond"
       register: port_check
     
