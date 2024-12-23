@@ -87,7 +87,7 @@
       "HTTPJVMMaxHeapSize": "{{ domino_http_jvm_max_heap_size }}",
       "HTTPJVMMaxHeapSizeSet": "{{ domino_http_jvm_max_heap_size_set }}"
     },
-{% if not is_additional_server and domino_server_id_creation_tool == "ots" and ots_generate_server_id_count > 0 %}
+{% if not is_additional_server and domino_server_id_creation_tool is defined and domino_server_id_creation_tool == "ots" and ots_generate_server_id_count > 0 %}
     "autoRegister": {
       "count": {{ ots_generate_server_id_count }},
       "IDPath": "{{ domino_home_dir }}/ids",
