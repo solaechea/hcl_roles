@@ -87,12 +87,21 @@
       "HTTPJVMMaxHeapSize": "{{ domino_http_jvm_max_heap_size }}",
       "HTTPJVMMaxHeapSizeSet": "{{ domino_http_jvm_max_heap_size_set }}"
     },
+{% if domino_major_version >= 14%}
+{% if not is_additional_server and domino_server_id_creation_tool is defined and domino_server_id_creation_tool == "ots" and ots_generate_server_names is defined and ots_generate_server_names | length > 0 %}
+    "autoRegister": {
+      "IDPath": "{{ domino_home_dir }}/ids",
+      "serverNames": {{ ots_generate_server_names | tojson }}
+    },
+{% endif %}
+{% else %}
 {% if not is_additional_server and domino_server_id_creation_tool is defined and domino_server_id_creation_tool == "ots" and ots_generate_server_id_count > 0 %}
     "autoRegister": {
       "count": {{ ots_generate_server_id_count }},
       "IDPath": "{{ domino_home_dir }}/ids",
       "pattern": "{{ ots_generate_server_id_pattern }}#"
     },
+{% endif %}
 {% endif %}
 {% if not is_additional_server %}
     "registerUsers": {
