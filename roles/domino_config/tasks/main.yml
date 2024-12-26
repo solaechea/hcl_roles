@@ -427,7 +427,7 @@
             dest: "/id-files/server-ids/{{ item }}.id"
             owner: "{{ service_user }}"
             group: "{{ service_group }}"
-          loop: "{{ ots_generate_server_names }}"
+          loop: "{{ ots_generate_server_names | default([]) }}"
 
     -
       name: "When Domino OTS is set as the Additional Server Creation Tool"
