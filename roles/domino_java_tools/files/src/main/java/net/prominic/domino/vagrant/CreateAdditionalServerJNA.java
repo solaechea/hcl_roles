@@ -132,6 +132,20 @@ public class CreateAdditionalServerJNA {
       }
 
       log("additionalServerPassword len: " + additionalServerPassword.length());
+      
+      // validation
+      if (null == hostServerIDFilePath || hostServerIDFilePath.trim().isEmpty() || !new File(hostServerIDFilePath).exists()) {
+      	System.err.println("Invalid server.id path:  '" + hostServerIDFilePath + "'.");
+      	System.exit(1);
+      }
+      if (null == certID || certID.trim().isEmpty() || !new File(certID).exists()) {
+      	System.err.println("Invalid cert ID path:  '" + certID + "'.");
+      	System.exit(1);
+      }
+      if (null == outputIDFile || outputIDFile.trim().isEmpty() || !new File(outputIDFile).getParentFile().exists()) {
+      	System.err.println("Invalid output path:  '" + outputIDFile + "'.");
+      	System.exit(1);
+      }
 
       createAdditionalServer(
         hostServerIDFilePath,

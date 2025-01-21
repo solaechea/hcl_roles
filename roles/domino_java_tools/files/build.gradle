@@ -86,6 +86,9 @@ targetCompatibility = 1.8
 dependencies {
     // Local JAR dependency
     implementation files(notesJarPath)
+    implementation files("$notesInstallation/osgi/shared/eclipse/plugins/com.ibm.domino.napi_12.0.1.20211117-2131/lwpd.domino.napi.jar")
+    implementation files("$notesInstallation/osgi/shared/eclipse/plugins/com.ibm.commons_12.0.1.20211117-2131/lwpd.commons.jar)
+
     implementation 'org.json:json:20160212'  // For parsing setup.json
     implementation 'com.mindoo.domino:domino-jna:0.9.53'
     implementation 'net.java.dev.jna:jna:5.13.0'
