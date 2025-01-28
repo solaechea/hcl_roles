@@ -18,8 +18,6 @@ else if (!(new File(notesInstallation).exists())) {
 
 
 String notesJarBaseDir = "$notesInstallation"
-String notesJarExtDir = "$notesInstallation/jvm/lib/ext"
-String notesJarPath = "$notesJarExtDir/Notes.jar"
 String envPath = System.getenv('PATH')
 if (!envPath) {
 	logger.warn "Missing PATH environment variable."
@@ -31,33 +29,12 @@ if (!envPath) {
 if (notesInstallation.toLowerCase().startsWith('/applications/')) { // treat as macOS
         // directory for additional JARs is inconsistent across version, so just use `/Applications/HCL Notes.app/Contents`
         notesJarBaseDir = "$notesInstallation/.."
-	if (!(new File(notesJarPath).exists())) {
-		// alternative location for macOS:  /Applications/HCL Notes.app/Contents/Resources/jvm/lib/ext/Notes.jar
-		logger.info "Notes.jar not found at $notesJarPath"
-		notesJarExtDir = "$notesJarBaseDir/Resources/jvm/lib/ext"
-		notesJarPath = "$notesJarExtDir/Notes.jar"
-	}
-	if (!(new File(notesJarPath).exists())) {
-		// alternative location for macOS and Notes 14:  /Applications/HCL Notes.app/Contents/Resources/ndext/Notes.jar
-		logger.info "Notes.jar not found at $notesJarPath"
-		notesJarExtDir = "$notesJarBaseDir/Resources/ndext"
-		notesJarPath = "$notesJarExtDir/Notes.jar"
-	}
-	if (!(new File(notesJarPath).exists())) {
-		logger.info "Notes.jar not found at $notesJarPath"
-		throw new GradleException("ERROR: Could not find Notes.jar")
-	}
-	logger.info("Notes JAR path:  $notesJarPath")
 }
 else { // treat as Windows
 	// update PATH
 	envPath = "$envPath;$notesInstallation"
 	println "Updated PATH: $envPath"
 }
-
-// build a jar path to use for Notes.jar
-// Supports local and Linux server executions
-String jarClassPath = "./Notes.jar {{ domino_install_dir }}/jvm/lib/ext/Notes.jar ${notesJarPath.replaceAll(' ', '%20').replaceAll('^\\w+:', '/$0')}"
 
 /**
  * Method to find a file under the given path
@@ -81,6 +58,11 @@ String findFile(String baseDir, String findName) {
 
     return foundFile
 }
+
+// build a jar path to use for Notes.jar
+// Supports local and Linux server executions
+String notesJarPath = findFile(notesJarBaseDir, 'Notes.jar')
+String jarClassPath = "./Notes.jar {{ domino_install_dir }}/jvm/lib/ext/Notes.jar ${notesJarPath.replaceAll(' ', '%20').replaceAll('^\\w+:', '/$0')}"
 
 logger.debug "Environment"
 System.env.each {
