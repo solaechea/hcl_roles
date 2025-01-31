@@ -34,7 +34,7 @@ import org.json.JSONTokener;
  */
 public class CreateAdditionalServerJNA {
 
-  private static final String APP_NAME = "CreateAdditionalServer";
+  private static final String APP_NAME = "CreateAdditionalServerJNA";
 
   /** Reuse the generated properties file for CrossCertifyNotesID by default */
   protected static final String DEFAULT_PROPERTIES_FILE =

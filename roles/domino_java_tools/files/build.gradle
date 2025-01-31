@@ -136,6 +136,11 @@ jar {
         }
     }
     // classpath needs to be specified in individual tasks
+    
+    // exclude signature files
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
 }
 
 /**
