@@ -1,0 +1,32 @@
+---
+packages:
+jedi_service:  jedi
+prominic_install_dir: /opt/prominic
+jedi_install_dir: "{{ prominic_install_dir }}/jedi"
+jedi_install_lib_dir: "{{ jedi_install_dir }}/lib"
+jedi_install_jar: "{{ jedi_install_lib_dir }}/jedi.jar"
+# path to local jedi artifact.  TODO:  if not found, download instead
+jedi_artifact_jar: ./jedi.jar
+cfg_dir: "{{ prominic_install_dir }}/jedi/etc"
+# Clear text port
+jedi_server_text_port: 1910
+# Secure text port
+jedi_server_ssltext_port: 1911
+# Data port
+jedi_server_joes_port: 1710
+# Secure data port
+jedi_server_ssljoes_port: 1711
+# why this
+jedi_noteslog: /local/notesdata/noteslog
+# online zip 
+jedi_online_zip: https://domino-49.prominic.net/jedi-server-private/test/jedi-github-temp.zip
+jedi_local_zip: installers/jedi/archives/jedi.zip
+jedi_local_unpack_dir: "{{ role_path }}/files/jedi"
+
+# for jediweb
+jediweb_install_dir: "{{ prominic_install_dir }}/jediweb"
+jediweb_online_zip: https://domino-49.prominic.net/jedi-server-private/test/jediweb-github-temp.zip
+jediweb_local_zip: installers/jediweb/archives/jediweb.zip
+jediweb_local_unpack_dir: "{{ role_path }}/files/jediweb"
+
+

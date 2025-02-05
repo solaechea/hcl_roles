@@ -1,0 +1,356 @@
+---
+- name: "Setting up i386 Architecture Support"
+  when: "ansible_os_family == 'Debian'"
+  become: true
+  block:
+    - name: "Gathering DEB architecture"
+      ansible.builtin.shell: dpkg --print-architecture
+      register: deb_architecture
+
+    - name: "Printing DEB architecture"
+      ansible.builtin.debug:
+        msg: "deb_architecture.stdout: {{ deb_architecture.stdout }}"
+
+    - name: "Print i386 setup information"
+      ansible.builtin.debug:
+        msg: "Setting up i386 architecture support for 32-bit libraries"
+
+    - name: "Adding i386 architecture (if not already added)"
+      ansible.builtin.shell: |
+        dpkg --print-foreign-architectures | grep -w i386 || dpkg --add-architecture i386
+      register: add_arch_result
+      changed_when: add_arch_result.rc == 0
+
+    - name: "Getting foreign architectures after adding i386"
+      ansible.builtin.shell: dpkg --print-foreign-architectures
+      register: foreign_arch_post
+
+    - name: "Print foreign architectures after adding i386"
+      ansible.builtin.debug:
+        msg: "foreign_arch_post.stdout_lines: {{ foreign_arch_post.stdout_lines }}"
+
+    - name: "Installing i386 packages"
+      ansible.builtin.apt:
+        name:
+          - libc6:i386
+          - libstdc++6:i386
+        state: present
+        update_cache: true
+        
+    - name: Verify 32-bit libc by checking /lib/ld-linux.so.2
+      ansible.builtin.shell: |
+        if [ -x /lib/ld-linux.so.2 ]; then
+          echo "32-bit libc loader works correctly"
+        else
+          echo "32-bit libc loader is missing or not functional" && exit 1
+        fi
+      register: verify_libc32
+      failed_when: verify_libc32.rc != 0
+      changed_when: false
+  
+
+
+    - name: "Debug 32-bit libc verification result"
+      ansible.builtin.debug:
+        msg: "{{ verify_libc32.stdout }}"
+
+    - name: "Installing C development tools"
+      ansible.builtin.apt:
+        name:
+          - build-essential
+          - cmake
+          - pkg-config
+          - libssl-dev
+          - git
+        state: present
+        update_cache: false
+
+
+    - name: "Ensure {{ prominic_install_dir }} parent directories exist"
+      ansible.builtin.file:
+        path: "{{ prominic_install_dir }}"
+        state: directory
+
+
+    # Copy JediWeb to vm
+    # try installers/jedi/jediweb.zip at first, if not present, then {{ role_path }}/files/jediweb
+    # if still not present, then download from url  {{ jediweb_online_zip }} and extract to target
+
+    # - name: "Check if JediWeb.zip exists"
+    #   ansible.builtin.stat:
+    #     path: "{{ prominic_install_dir }}/jediweb.zip"
+    #     remote_src: no
+    #   register: jediweb_zip_stat
+    
+    # - name: "Echo source for JediWeb.zip"
+    #   ansible.builtin.debug:
+    #     msg: "Checking if JediWeb.zip exists in {{ prominic_install_dir }}"
+    #   when: jediweb_zip_stat.stat.exists == false
+    
+    # - name: "Check if JediWeb.zip exists"
+    #   ansible.builtin.stat:
+    #     path: "{{ jediweb_local_zip }}"
+    #   register: jediweb_zip_stat
+
+    # # TODO, finish it just like jedi
+
+    # - name: "Check if JediWeb.zip exists"
+    #   ansible.builtin.stat:
+    #     path: "{{ prominic_install_dir }}/jediweb.zip"
+    #     remote_src: no
+    #   register: jediweb_zip_stat
+
+    # - name: "Echo source for JediWeb.zip"
+    #   ansible.builtin.debug:
+    #     msg: "Checking if JediWeb.zip exists in {{ prominic_install_dir }}"
+    #   when: jediweb_zip_stat.stat.exists == false
+
+    # - name: "Check if JediWeb.zip exists in local source"
+    #   ansible.builtin.stat:
+    #     path: "{{ jediweb_local_zip }}"
+    #   register: jediweb_local_zip_stat
+
+    # - name: "Copy JediWeb.zip to {{ prominic_install_dir }}"
+    #   ansible.builtin.copy:
+    #     src: "{{ jediweb_local_zip }}"
+    #     dest: "{{ prominic_install_dir }}/jediweb.zip"
+    #     remote_src: no
+    #     mode: '0644'
+    #   when: jediweb_local_zip_stat.stat.exists == true
+
+    # - name: "Download JediWeb.zip from URL if not found locally"
+    #   ansible.builtin.get_url:
+    #     url: "{{ jediweb_online_zip }}"
+    #     dest: "{{ prominic_install_dir }}/jediweb.zip"
+    #     mode: '0644'
+    #   when: jediweb_zip_stat.stat.exists == false and jediweb_local_zip_stat.stat.exists == false
+
+    # - name: "Extract JediWeb.zip to {{ prominic_install_dir }}"
+    #   ansible.builtin.unarchive:
+    #     src: "{{ prominic_install_dir }}/jediweb.zip"
+    #     dest: "{{ prominic_install_dir }}"
+    #     remote_src: yes
+    #   when: jediweb_zip_stat.stat.exists == true
+    
+
+    # - name: "Copy local  JediWeb to {{ prominic_install_dir }}"
+    #   ansible.builtin.copy:
+    #     src: "{{ role_path }}/files/JediWeb/"
+    #     dest: "{{ prominic_install_dir }}/"
+    #     remote_src: no
+    #     mode: preserve
+    #     recursive: true
+    #   when: jediweb_local_zip_stat.stat.exists == true
+
+
+
+    # --- End of JediWeb TODO ---
+
+    # Copy jedi to vm
+    # try installers/jedi/jedi.zip at first, if not present, then {{ role_path }}/files/jedi
+    # if still not present, then download from url  {{ jedi_online_zip }}   and extract to target
+
+
+    # - name: "Check if jedi.zip exists"
+    #   ansible.builtin.stat:
+    #     path: "{{ prominic_install_dir }}/jedi.zip"
+    #   register: jedi_zip_stat
+
+    # - name: "Echo source for jedi.zip"
+    #   ansible.builtin.debug:
+    #     msg: "Checking if jedi.zip exists in {{ prominic_install_dir }}"
+    #   when: jedi_zip_stat.stat.exists == false
+
+    # - name: "Check if jedi.zip exists"
+    #   ansible.builtin.stat:
+    #     path: "{{ jedi_local_zip }}"
+    #   register: jedi_zip_stat
+
+    # - name: "Check if jedi directory exists"
+    #   ansible.builtin.stat:
+    #     path: "{{ jedi_local_unpack_dir }}"
+    #   register: jedi_dir_stat
+
+    # - name: "Echo if jedi.zip exists"
+    #   ansible.builtin.debug:
+    #     msg: "jedi.zip exists at {{ jedi_local_zip }}"
+    #   when: jedi_zip_stat.stat.exists == true
+
+    # - name: "Echo if jedi directory exists"
+    #   ansible.builtin.debug:
+    #     msg: "jedi directory exists at {{ jedi_local_unpack_dir }}"
+    #   when: jedi_dir_stat.stat.exists == true
+
+
+    # - name: "Copy jedi.zip from installers to {{ prominic_install_dir }}"
+    #   ansible.builtin.copy:
+    #     src: "{{ jedi_local_zip }}"
+    #     dest: "{{ prominic_install_dir }}/"
+    #     remote_src: no
+    #     mode: preserve
+    #   when: jedi_zip_stat.stat.exists == false
+    #   ignore_errors: yes
+    #   register: copy_jedi_zip
+
+
+    # - name: "Download jedi.zip from URL if not found"
+    #   ansible.builtin.get_url:
+    #     url: "{{ jedi_online_zip }}"
+    #     dest: "{{ prominic_install_dir }}/jedi.zip"
+    #     mode: '0644'
+    #   when: jedi_zip_stat.stat.exists == false and not copy_jedi_zip.changed
+    #   ignore_errors: yes
+    #   register: download_jedi_zip
+
+
+    # - name: "Copy jedi directory to {{ prominic_install_dir }}"
+    #   ansible.builtin.copy:
+    #     src: "{{ role_path }}/files/jedi/"
+    #     dest: "{{ prominic_install_dir }}/"
+    #     remote_src: no
+    #     mode: preserve
+    #   when: jedi_zip_stat.stat.exists == false and not download_jedi_zip.changed
+    #   ignore_errors: yes
+    #   register: copy_jedi_directory
+
+
+    # - name: "Extract jedi.zip to {{ prominic_install_dir }}"
+    #   ansible.builtin.unarchive:
+    #     src: "{{ prominic_install_dir }}/jedi.zip"
+    #     dest: "{{ prominic_install_dir }}/"
+    #     remote_src: yes
+    #     creates: "{{ prominic_install_dir }}/jedi"
+    #   when: jedi_zip_stat.stat.exists == false
+    #   ignore_errors: yes
+    #   register: extract_jedi_zip
+
+
+    # Handlers to display specific messages
+    # handlers:
+    #   - name: "Echo copied jedi.zip source"
+    #     ansible.builtin.debug:
+    #       msg: "Jedi.zip copied from the role path: {{ role_path }}/files/jedi.zip"
+
+    #   - name: "Echo downloaded jedi.zip source"
+    #     ansible.builtin.debug:
+    #       msg: "Jedi.zip downloaded from URL: {{ jedi_online_zip }}"
+
+    #   - name: "Echo copied jedi directory"
+    #     ansible.builtin.debug:
+    #       msg: "Jedi directory copied from role path: {{ role_path }}/files/jedi/"
+
+    #   - name: "Echo extracted jedi.zip content"
+    #     ansible.builtin.debug:
+    #       msg: "Jedi.zip extracted to {{ prominic_install_dir }}"
+
+
+
+
+
+    - name: Include the failover files logic to copy jedi to target
+      import_tasks: failoverfiles.yaml
+      vars:
+          failover_url: "{{ jedi_online_zip }}"
+          failover_localzip: "{{ jedi_local_zip }}"
+          failover_localdir: "{{ jedi_local_unpack_dir }}"
+          failover_app_name: "jedi"
+          failover_destdir: "{{ prominic_install_dir }}"
+      
+
+
+    - name: "Set ownership of {{ prominic_install_dir }}/jedi to domino"
+      ansible.builtin.file:
+        path: "{{ prominic_install_dir }}/jedi"
+        state: directory
+        owner: '{{ service_user }}'
+        recurse: true
+        
+    - name: "Copy jedic directory to {{ prominic_install_dir }}"
+      ansible.builtin.copy:
+        src: "{{ role_path }}/files/jedic"
+        dest: "{{ prominic_install_dir }}/"
+        remote_src: no  # Ensures files are copied from local role directory
+        mode: preserve
+
+    - name: "Set ownership of {{ prominic_install_dir }}/jedi to domino"
+      ansible.builtin.file:
+        path: "{{ prominic_install_dir }}/jedi"
+        state: directory
+        owner: '{{ service_user }}'
+        recurse: true
+        
+    - name: "Ensure {{ jedi_noteslog }} exists"
+      ansible.builtin.file:
+        path: '{{ jedi_noteslog }}'
+        state: directory
+        owner: '{{ service_user }}'
+
+    - name: Ensure domino_user and domino_group are defined
+      set_fact:
+        domino_user: "{{ domino_user | default('domino') }}"
+        domino_group: "{{ domino_group | default('domino') }}"
+
+    - name: "Set ownership of {{ jedi_noteslog }} to domino_user"
+      ansible.builtin.file:
+        path: '{{ jedi_noteslog }}'
+        state: directory
+        owner: '{{ domino_user }}'
+        group: '{{ domino_group }}'
+        recurse: true
+
+    - name: "Run make -f Makefile64 in jedic directory"
+      ansible.builtin.command:
+        cmd: make -f Makefile64
+        chdir: "{{ role_path }}/files/jedic"
+
+    - name: "Ensure {{ prominic_install_dir }}/jedi/lib/Linux64 exists"
+      ansible.builtin.file:
+        path: "{{ prominic_install_dir }}/jedi/lib/Linux64"
+        state: directory
+
+    - name: "Copy libunixruntime.so to {{ prominic_install_dir }}/jedi/lib/Linux64"
+      ansible.builtin.copy:
+        src: "{{ role_path }}/files/jedic/libunixruntime.so"
+        dest: "{{ prominic_install_dir }}/jedi/lib/Linux64/"
+        remote_src: no
+
+    - name: "Update partitions.xml using template"
+      ansible.builtin.template:
+       src: partitions.xml.j2
+       dest: "{{ cfg_dir }}/partitions.xml"
+       mode: '0744'
+
+    - name: "Update jdi.cfg using template"
+      ansible.builtin.template:
+       src: jdi.cfg.j2
+       dest: "{{ cfg_dir }}/jdi.cfg"
+       mode: '0744'
+
+    - name: "Update users.cfg using template - defines user credentials"
+      ansible.builtin.template:
+       src: users.cfg.j2
+       dest: "{{ cfg_dir }}/users.cfg"
+       mode: '0744'
+
+    - name: "Update acl.cfg using template - controls admin rights for users"
+      ansible.builtin.template:
+       src: acl.cfg.j2
+       dest: "{{ cfg_dir }}/acl.cfg"
+       mode: '0744'
+
+
+
+    - name: "Create systemd service for JeDI"
+      ansible.builtin.template:
+        src: jedi.service.j2
+        dest: "/etc/systemd/system/{{ jedi_service }}.service"
+        mode: '0744'
+
+    - name: Reload systemd to recognize new service
+      ansible.builtin.command: systemctl daemon-reload
+
+    - name: Enable and start JeDI service
+      ansible.builtin.systemd:
+        name: "{{ jedi_service }}"
+        enabled: true
+        state: started
