@@ -317,25 +317,37 @@
     - name: "Update partitions.xml using template"
       ansible.builtin.template:
        src: partitions.xml.j2
-       dest: "{{ cfg_dir }}/partitions.xml"
+       dest: "{{ jedi_cfg_dir }}/partitions.xml"
        mode: '0744'
 
     - name: "Update jdi.cfg using template"
       ansible.builtin.template:
        src: jdi.cfg.j2
-       dest: "{{ cfg_dir }}/jdi.cfg"
+       dest: "{{ jedi_cfg_dir }}/jdi.cfg"
        mode: '0744'
 
     - name: "Update users.cfg using template - defines user credentials"
       ansible.builtin.template:
        src: users.cfg.j2
-       dest: "{{ cfg_dir }}/users.cfg"
+       dest: "{{ jedi_cfg_dir }}/users.cfg"
        mode: '0744'
 
     - name: "Update acl.cfg using template - controls admin rights for users"
       ansible.builtin.template:
        src: acl.cfg.j2
-       dest: "{{ cfg_dir }}/acl.cfg"
+       dest: "{{ jedi_cfg_dir }}/acl.cfg"
+       mode: '0744'
+
+    - name: "Update start script"
+      ansible.builtin.template:
+       src: jedi.j2
+       dest: "{{ jedi_install_dir }}/bin/jedi"
+       mode: '0744'
+
+    - name: "Environment file for service"
+      ansible.builtin.template:
+       src: environment.j2
+       dest: "{{ jedi_cfg_dir }}/environment"
        mode: '0744'
 
 
@@ -348,6 +360,12 @@
 
     - name: Reload systemd to recognize new service
       ansible.builtin.command: systemctl daemon-reload
+
+    - name:  Disable the nashed service to prevent conflict with JeDI
+      ansible.builtin.service:
+        name: domino
+        enabled: false
+        state: stopped
 
     - name: Enable and start JeDI service
       ansible.builtin.systemd:

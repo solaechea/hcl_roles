@@ -12,7 +12,7 @@ Restart=always
 # Remove core limit to see core dumps from the Domino API
 LimitCORE=infinity
 
-#EnvironmentFile={{ jedi_install_dir }}/environment
+EnvironmentFile={{ jedi_install_dir }}/etc/environment
 WorkingDirectory={{ jedi_install_lib_dir }}
 #ExecStart={{ service_home_dir }}/.sdkman/candidates/java/current/bin/java -jar {{ jedi_install_jar }}
 ExecStart={{ jedi_install_dir }}/bin/jedi -d64 --jdk={{ service_home_dir }}/.sdkman/candidates/java/current/
