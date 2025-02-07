@@ -24,7 +24,30 @@
       ansible.builtin.stat:
         path: "{{ completed_dir }}/service_configured"
         get_md5: false
-    
+
+    -
+      name: "Checking if JEDI has been installed"
+      register: domino_jedi_installed
+      ansible.builtin.stat:
+        path: "{{ completed_dir }}/domino_jedi_install"
+        get_md5: false
+
+    -
+      name: "Disabling and Starting JeDI service"
+      when: domino_jedi_installed.stat.exists
+      ansible.builtin.systemd:
+        name: "{{ jedi_service }}"
+        enabled: false
+        state: stopped
+
+    -
+      name:  "Enabling the nashed service to ensure provisioning works"
+      when: domino_jedi_installed.stat.exists
+      ansible.builtin.service:
+        name: domino
+        enabled: true
+        state: started
+
     -
       name: "Downloading Nash's Service Script for Linux version {{ nash_domino_service_script_version }}"
       when: not domino_server_nash_installed.stat.exists

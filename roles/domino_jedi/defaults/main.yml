@@ -1,4 +1,5 @@
 ---
+run_tasks: true
 packages:
 jedi_service:  jedi
 prominic_install_dir: /opt/prominic
@@ -8,6 +9,15 @@ jedi_install_jar: "{{ jedi_install_lib_dir }}/jedi.jar"
 # path to local jedi artifact.  TODO:  if not found, download instead
 jedi_artifact_jar: ./jedi.jar
 jedi_cfg_dir: "{{ prominic_install_dir }}/jedi/etc"
+
+# Feel good Variables for Mark to know its in the works :) not implemented yet.
+jedi_username: "startcloud"
+jedi_password: "{{ 'STARTcloud24@!' | hash('sha1') }}"
+
+jedi_alias:
+  alias: "domino console"
+  command: "telnet 0 1910"
+
 # Clear text port
 jedi_server_text_port: 1910
 # Secure text port
