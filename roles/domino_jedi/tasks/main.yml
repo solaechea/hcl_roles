@@ -483,7 +483,7 @@
             state: started
 
         -
-          name: Add console alias for service user
+          name: "Add console alias for service user"
           when: jedi_alias.enabled
           ansible.builtin.lineinfile:
             path: "/home/{{ service_user }}/.bashrc"
