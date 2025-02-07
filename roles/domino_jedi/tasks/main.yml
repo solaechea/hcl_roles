@@ -7,7 +7,7 @@
       name: "Checking if JEDI has been installed"
       register: domino_jedi_installed
       ansible.builtin.stat:
-        path: "{{ completed_dir }}/domino_jedi_install"
+        path: "{{ completed_dir }}/domino_jedi_installed"
         get_md5: false
       
     -
@@ -481,6 +481,18 @@
             name: "{{ jedi_service }}"
             enabled: true
             state: started
+
+        -
+          name: Add console alias for service user
+          when: jedi_alias.enabled
+          ansible.builtin.lineinfile:
+            path: "/home/{{ service_user }}/.bashrc"
+            line: "alias '{{ jedi_alias.alias }}'='{{ jedi_alias.command }}'"
+            regexp: '^alias {{ jedi_alias.alias }}='
+            state: present
+            create: true
+            owner: "{{ service_user }}"
+            group: "{{ service_group }}"
 
         -
           name: "Setting JEDI as installed"

@@ -27,22 +27,37 @@
 
     -
       name: "Checking if JEDI has been installed"
-      register: domino_jedi_installed
+      register: nash_domino_jedi_installed
       ansible.builtin.stat:
-        path: "{{ completed_dir }}/domino_jedi_install"
+        path: "{{ completed_dir }}/domino_jedi_installed"
         get_md5: false
 
     -
-      name: "Disabling and Starting JeDI service"
-      when: domino_jedi_installed.stat.exists
+      name: "Disabling and Stopping JeDI service"
+      when: nash_domino_jedi_installed.stat.exists
       ansible.builtin.systemd:
         name: "{{ jedi_service }}"
         enabled: false
         state: stopped
 
     -
+      name: "Stopping Domino Manually"
+      become: true
+      when: nash_domino_jedi_installed.stat.exists
+      ansible.builtin.shell: 'echo "exit" >> /local/notesdata/noteslog/notes.input'
+
+    -
+      name: "Waiting for Domino server shutdown complete message"
+      when: nash_domino_jedi_installed.stat.exists
+      ansible.builtin.wait_for:
+        path: /local/notesdata/IBM_TECHNICAL_SUPPORT/console.log
+        search_regex: "Server shutdown complete"
+        state: present
+        timeout: 300
+
+    -
       name:  "Enabling the nashed service to ensure provisioning works"
-      when: domino_jedi_installed.stat.exists
+      when: nash_domino_jedi_installed.stat.exists
       ansible.builtin.service:
         name: domino
         enabled: true
