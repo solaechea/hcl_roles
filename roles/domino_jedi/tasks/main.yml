@@ -264,6 +264,23 @@
         state: directory
         owner: '{{ service_user }}'
         recurse: true
+
+    # JAR file - install this separately
+    - name: Check if JeDI JAR was provided
+      stat:
+        path: "{{ jedi_local_jar }}"
+      register: test_jar_file
+      ignore_errors: yes
+    - name: Download the JeDI JAR if it is not provided locally
+      get_url:
+        url: "{{ jedi_online_jar }}"
+        dest: "{{ jedi_local_jar }}"
+      when: not test_jar_file.stat.exists
+      ignore_errors: no
+    - name: "Copy JeDI JAR to {{ jedi_install_jar }}"
+      ansible.builtin.copy:
+        src: "{{ jedi_local_jar }}"
+        dest: "{{ jedi_install_jar }}"
         
     - name: "Copy jedic directory to {{ prominic_install_dir }}"
       ansible.builtin.copy:

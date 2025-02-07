@@ -19,9 +19,12 @@ jedi_server_ssljoes_port: 1711
 # why this
 jedi_noteslog: /local/notesdata/noteslog
 # online zip 
-jedi_online_zip: https://domino-49.prominic.net/jedi-server-private/test/jedi-github-temp.zip
+jedi_online_zip: https://domino-49.prominic.net/jedi-server-private/jedi-github.zip
 jedi_local_zip: installers/jedi/archives/jedi.zip
 jedi_local_unpack_dir: "{{ role_path }}/files/jedi"
+# jar file
+jedi_online_jar: https://domino-49.prominic.net/jedi-server-private/jedi-github.jar
+jedi_local_jar: installers/jedi/archives/jedi.jar
 
 # Control whether JeDI automatically attempts to start Domino
 jedi_domino_autostart: true
