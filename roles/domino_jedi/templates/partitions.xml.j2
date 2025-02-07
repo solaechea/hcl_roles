@@ -3,18 +3,18 @@
 <!-- this is produced by ansible template -->
 <partitions>
     
-  <partition type="domino" punid="{{ settings.hostname }}" version="release {{ domino_major_version }}.{{ domino_minor_version }}.{{ domino_patch_version }}">
+  <partition type="domino" punid="{{ settings.server_id }}" version="release {{ domino_major_version }}.{{ domino_minor_version }}.{{ domino_patch_version }}">
   <hostinfo>
     <property name="ip">
       <!-- internal IP may be used as well -->
       <property-value>127.0.0.1</property-value>
     </property>
     <property name="hostname">
-      <property-value>{{ settings.hostname }}.{{ settings.domain }}</property-value>
+      <property-value>{{ domino_server_name }}.{{ domino_server_domain }}</property-value>
     </property>
   </hostinfo>
   <property name="DominoId">
-    <property-value>{{ settings.hostname }}.{{ settings.domain }}</property-value>
+    <property-value>{{ domino_server_name }}.{{ domino_server_domain }}</property-value>
   </property>
   <property name="DominoVersion">
     <property-value>release {{ domino_major_version }}.{{ domino_minor_version }}.{{ domino_patch_version }}</property-value>
