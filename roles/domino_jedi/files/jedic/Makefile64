@@ -30,4 +30,4 @@ class:
 
 # Clean build artifacts
 clean:
-	-rm -f *.so *.class UnixProcess.h core
+	-rm -f *.so *.class ./com/Prominic/runtime/*.class UnixProcess.h core
