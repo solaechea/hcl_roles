@@ -71,7 +71,7 @@
       retries: 3
       ansible.builtin.get_url:
         mode: '0644'
-        url: "{{ nash_domino_service_script_git_repo }}/v{{ nash_domino_service_script_version }}/domino-startscript_v{{ nash_domino_service_script_version }}.taz"
+        url: "{{ nash_domino_service_script_git_repo }}/v{{ nash_domino_service_script_version }}/{{ nash_domino_service_script_archive }}"
         dest: "{{ installer_dir }}/domino/archives/domino-startscript_v{{ nash_domino_service_script_version }}.tar"
     
     -
