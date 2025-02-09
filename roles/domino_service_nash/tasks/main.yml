@@ -87,7 +87,7 @@
       name: "Changing Nash's service installer script's default Datadir"
       when: not domino_server_nash_installed.stat.exists
       ansible.builtin.replace:
-        path: "{{ installer_dir }}/domino/service-file/domino-startscript/sysconfig/rc_domino_config"
+        path: "{{ installer_dir }}/domino/service-file/{{ domino_start_script_source_folder }}/sysconfig/rc_domino_config"
         regexp: "(^DOMINO_DATA_PATH=)(.*)$"
         replace: "DOMINO_DATA_PATH={{ domino_home_dir }}"
     
@@ -95,7 +95,7 @@
       name: "Changing Nash's service installer script's default User"
       when: not domino_server_nash_installed.stat.exists
       ansible.builtin.replace:
-        path: "{{ installer_dir }}/domino/service-file/domino-startscript/install_script"
+        path: "{{ installer_dir }}/domino/service-file/{{ domino_start_script_source_folder }}/install_script"
         regexp: "(^  DOMINO_USER=notes)(.*)$"
         replace: "  DOMINO_USER={{ domino_user }}"
     
@@ -103,7 +103,7 @@
       name: "Changing Nash's service installer script's default Domino Group"
       when: not domino_server_nash_installed.stat.exists
       ansible.builtin.replace:
-        path: "{{ installer_dir }}/domino/service-file/domino-startscript/install_script"
+        path: "{{ installer_dir }}/domino/service-file/{{ domino_start_script_source_folder }}/install_script"
         regexp: "(^  DOMINO_GROUP=notes)(.*)$"
         replace: "  DOMINO_GROUP={{ domino_group }}"
     
@@ -113,7 +113,7 @@
       ansible.builtin.shell: "{{ item }}"
       become: true
       args:
-        chdir: "{{ installer_dir }}/domino/service-file/domino-startscript"
+        chdir: "{{ installer_dir }}/domino/service-file/{{ domino_start_script_source_folder }}"
         executable: "/bin/bash"
         creates: "{{ completed_dir }}/service_configured"
       with_items:
