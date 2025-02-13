@@ -239,6 +239,15 @@
         seconds: 60
     
     -
+      name: "Waiting for 'Application configuration completed successfully' in Autoconfigure"
+      when: not domino_server_touched.stat.exists
+      ansible.builtin.wait_for:
+        path: "{{ domino_home_dir }}/IBM_TECHNICAL_SUPPORT/autoconfigure.log"
+        search_regex: "Application configuration completed successfully"
+        state: present
+        timeout: 300
+
+    -
       name: "Capturing autoconfigure log output"
       ansible.builtin.command: "cat {{ domino_home_dir }}/IBM_TECHNICAL_SUPPORT/autoconfigure.log"
       register: autoconf_result
