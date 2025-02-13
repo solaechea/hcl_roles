@@ -15,7 +15,7 @@
     url: "{{ failover_url }}"
     dest: "{{ failover_localzip }}"
   when: not zip_file.stat.exists
-  ignore_errors: yes
+  ignore_errors: no
       
 
 - name: Ensure the destination directory exists
