@@ -439,6 +439,16 @@
             group: '{{ service_group }}'
 
         -
+          name: "Generating ssl.cfg using the local certificates"
+          when: jedi_ssl_update
+          ansible.builtin.template:
+            src: ssl.cfg.j2
+            dest: "{{ jedi_cfg_dir }}/ssl.cfg"
+            mode: '0644'
+            owner: '{{ service_user }}'
+            group: '{{ service_group }}'
+
+        -
           name: "Updating start script"
           ansible.builtin.template:
             src: jedi.j2

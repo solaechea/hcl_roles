@@ -40,6 +40,12 @@ jedi_local_jar: installers/jedi/archives/jedi.jar
 # Control whether JeDI automatically attempts to start Domino
 jedi_domino_autostart: true
 
+# true if the jedi SSL configuration should be updated based on the other jedi_ssl properties.  Otherwise, it will use the configuration provided by the JeDI template
+jedi_ssl_update: true
+# By default, use the JKS certificate generated for this instance
+jedi_ssl_cert:  "{{ cert_dir }}/jks/{{ settings.hostname }}.{{ settings.domain }}.jks"
+jedi_ssl_cert_password:  "{{ cert_pass }}"
+
 # for jediweb
 jediweb_install_dir: "{{ prominic_install_dir }}/jediweb"
 jediweb_online_zip: https://domino-49.prominic.net/jedi-server-private/test/jediweb-github-temp.zip
