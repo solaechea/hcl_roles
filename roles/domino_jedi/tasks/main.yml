@@ -107,190 +107,9 @@
             path: "{{ prominic_install_dir }}"
             state: directory
             mode: '0755'
-            owner: '{{ service_user }}'
-            group: '{{ service_group }}'
+            owner: 'root'
+            group: 'root'
 
-        # Copy JediWeb to vm
-        # try installers/jedi/jediweb.zip at first, if not present, then {{ role_path }}/files/jediweb
-        # if still not present, then download from url  {{ jediweb_online_zip }} and extract to target
-
-        # -
-        #   name: "Checking if JediWeb.zip exists"
-        #   ansible.builtin.stat:
-        #     path: "{{ prominic_install_dir }}/jediweb.zip"
-        #     remote_src: false
-        #   register: jediweb_zip_stat
-
-        # -
-        #   name: "Showing source for JediWeb.zip"
-        #   ansible.builtin.debug:
-        #     msg: "Checking if JediWeb.zip exists in {{ prominic_install_dir }}"
-        #   when: jediweb_zip_stat.stat.exists == false
-
-        # -
-        #   name: "Checking if JediWeb.zip exists"
-        #   ansible.builtin.stat:
-        #     path: "{{ jediweb_local_zip }}"
-        #   register: jediweb_zip_stat
-
-        # # TODO, finish it just like jedi
-
-        # -
-        #   name: "Checking if JediWeb.zip exists"
-        #   ansible.builtin.stat:
-        #     path: "{{ prominic_install_dir }}/jediweb.zip"
-        #     remote_src: false
-        #   register: jediweb_zip_stat
-
-        # -
-        #   name: "Showing source for JediWeb.zip"
-        #   ansible.builtin.debug:
-        #     msg: "Checking if JediWeb.zip exists in {{ prominic_install_dir }}"
-        #   when: jediweb_zip_stat.stat.exists == false
-
-        # -
-        #   name: "Checking if JediWeb.zip exists in local source"
-        #   ansible.builtin.stat:
-        #     path: "{{ jediweb_local_zip }}"
-        #   register: jediweb_local_zip_stat
-
-        # -
-        #   name: "Copying JediWeb.zip to {{ prominic_install_dir }}"
-        #   ansible.builtin.copy:
-        #     src: "{{ jediweb_local_zip }}"
-        #     dest: "{{ prominic_install_dir }}/jediweb.zip"
-        #     remote_src: false
-        #     mode: '0644'
-        #   when: jediweb_local_zip_stat.stat.exists == true
-
-        # -
-        #   name: "Downloading JediWeb.zip from URL if not found locally"
-        #   ansible.builtin.get_url:
-        #     url: "{{ jediweb_online_zip }}"
-        #     dest: "{{ prominic_install_dir }}/jediweb.zip"
-        #     mode: '0644'
-        #   when: jediweb_zip_stat.stat.exists == false and jediweb_local_zip_stat.stat.exists == false
-
-        # -
-        #   name: "Extracting JediWeb.zip to {{ prominic_install_dir }}"
-        #   ansible.builtin.unarchive:
-        #     src: "{{ prominic_install_dir }}/jediweb.zip"
-        #     dest: "{{ prominic_install_dir }}"
-        #     remote_src: true
-        #   when: jediweb_zip_stat.stat.exists == true
-
-        # -
-        #   name: "Copying local  JediWeb to {{ prominic_install_dir }}"
-        #   ansible.builtin.copy:
-        #     src: "{{ role_path }}/files/JediWeb/"
-        #     dest: "{{ prominic_install_dir }}/"
-        #     remote_src: false
-        #     mode: preserve
-        #     recursive: true
-        #   when: jediweb_local_zip_stat.stat.exists == true
-
-        # --- End of JediWeb TODO ---
-
-        # Copy jedi to vm
-        # try installers/jedi/jedi.zip at first, if not present, then {{ role_path }}/files/jedi
-        # if still not present, then download from url  {{ jedi_online_zip }}   and extract to target
-
-        # -
-        #   name: "Checking if jedi.zip exists"
-        #   ansible.builtin.stat:
-        #     path: "{{ prominic_install_dir }}/jedi.zip"
-        #   register: jedi_zip_stat
-
-        # -
-        #   name: "Showing source for jedi.zip"
-        #   ansible.builtin.debug:
-        #     msg: "Checking if jedi.zip exists in {{ prominic_install_dir }}"
-        #   when: jedi_zip_stat.stat.exists == false
-
-        # -
-        #   name: "Checking if jedi.zip exists"
-        #   ansible.builtin.stat:
-        #     path: "{{ jedi_local_zip }}"
-        #   register: jedi_zip_stat
-
-        # -
-        #   name: "Checking if jedi directory exists"
-        #   ansible.builtin.stat:
-        #     path: "{{ jedi_local_unpack_dir }}"
-        #   register: jedi_dir_stat
-
-        # -
-        #   name: "Showing if jedi.zip exists"
-        #   ansible.builtin.debug:
-        #     msg: "jedi.zip exists at {{ jedi_local_zip }}"
-        #   when: jedi_zip_stat.stat.exists == true
-
-        # -
-        #   name: "Showing if jedi directory exists"
-        #   ansible.builtin.debug:
-        #     msg: "jedi directory exists at {{ jedi_local_unpack_dir }}"
-        #   when: jedi_dir_stat.stat.exists == true
-
-        # -
-        #   name: "Copying jedi.zip from installers to {{ prominic_install_dir }}"
-        #   ansible.builtin.copy:
-        #     src: "{{ jedi_local_zip }}"
-        #     dest: "{{ prominic_install_dir }}/"
-        #     remote_src: false
-        #     mode: preserve
-        #   when: jedi_zip_stat.stat.exists == false
-        #   remote_src: true
-        #   register: copy_jedi_zip
-
-        # -
-        #   name: "Downloading jedi.zip from URL if not found"
-        #   ansible.builtin.get_url:
-        #     url: "{{ jedi_online_zip }}"
-        #     dest: "{{ prominic_install_dir }}/jedi.zip"
-        #     mode: '0644'
-        #   when: jedi_zip_stat.stat.exists == false and not copy_jedi_zip.changed
-        #   ignore_errors: true
-        #   register: download_jedi_zip
-
-        # -
-        #   name: "Copying jedi directory to {{ prominic_install_dir }}"
-        #   ansible.builtin.copy:
-        #     src: "{{ role_path }}/files/jedi/"
-        #     dest: "{{ prominic_install_dir }}/"
-        #     remote_src: false
-        #     mode: preserve
-        #   when: jedi_zip_stat.stat.exists == false and not download_jedi_zip.changed
-        #   ignore_errors: true
-        #   register: copy_jedi_directory
-
-        # -
-        #   name: "Extracting jedi.zip to {{ prominic_install_dir }}"
-        #   ansible.builtin.unarchive:
-        #     src: "{{ prominic_install_dir }}/jedi.zip"
-        #     dest: "{{ prominic_install_dir }}/"
-        #     remote_src: true
-        #     creates: "{{ prominic_install_dir }}/jedi"
-        #   when: jedi_zip_stat.stat.exists == false
-        #   ignore_errors: true
-        #   register: extract_jedi_zip
-
-        # Handlers to display specific messages
-        # handlers:
-        #   - name: "Showing copied jedi.zip source"
-        #     ansible.builtin.debug:
-        #       msg: "Jedi.zip copied from the role path: {{ role_path }}/files/jedi.zip"
-    
-        #   - name: "Showing downloaded jedi.zip source"
-        #     ansible.builtin.debug:
-        #       msg: "Jedi.zip downloaded from URL: {{ jedi_online_zip }}"
-    
-        #   - name: "Showing copied jedi directory"
-        #     ansible.builtin.debug:
-        #       msg: "Jedi directory copied from role path: {{ role_path }}/files/jedi/"
-    
-        #   - name: "Echo extracted jedi.zip content"
-        #     ansible.builtin.debug:
-        #       msg: "Jedi.zip extracted to {{ prominic_install_dir }}"
 
         -
           name: "Including the failover files logic to copy jedi to target"
@@ -308,8 +127,8 @@
             path: "{{ prominic_install_dir }}/jedi"
             state: directory
             mode: '0755'
-            owner: '{{ service_user }}'
-            group: '{{ service_group }}'
+            owner: '{{ jedi_user }}'
+            group: '{{ jedi_group }}'
             recurse: true
 
         # JAR file - install this separately
@@ -348,18 +167,9 @@
             path: "{{ prominic_install_dir }}/jedi"
             state: directory
             mode: '0755'
-            owner: '{{ service_user }}'
-            group: '{{ service_group }}'
+            owner: '{{ jedi_user }}'
+            group: '{{ jedi_group }}'
             recurse: true
-
-        -
-          name: "Ensuring {{ jedi_noteslog }} exists"
-          ansible.builtin.file:
-            path: '{{ jedi_noteslog }}'
-            state: directory
-            mode: '0755'
-            owner: '{{ service_user }}'
-            group: '{{ service_group }}'
 
         -
           name: Ensuring domino_user and domino_group are defined
@@ -389,8 +199,8 @@
             path: "{{ prominic_install_dir }}/jedi/lib/Linux64"
             state: directory
             mode: '0755'
-            owner: '{{ service_user }}'
-            group: '{{ service_group }}'
+            owner: '{{ jedi_user }}'
+            group: '{{ jedi_group }}'
 
         -
           name: "Copying libunixruntime.so to {{ prominic_install_dir }}/jedi/lib/Linux64"
@@ -399,44 +209,44 @@
             dest: "{{ prominic_install_dir }}/jedi/lib/Linux64/"
             remote_src: false
             mode: '0644'
-            owner: '{{ service_user }}'
-            group: '{{ service_group }}'
+            owner: '{{ jedi_user }}'
+            group: '{{ jedi_group }}'
 
         -
           name: "Updating partitions.xml using template"
           ansible.builtin.template:
             src: partitions.xml.j2
             dest: "{{ jedi_cfg_dir }}/partitions.xml"
-            mode: '0744'
-            owner: '{{ service_user }}'
-            group: '{{ service_group }}'
+            mode: '0644'
+            owner: '{{ jedi_user }}'
+            group: '{{ jedi_group }}'
 
         -
           name: "Updating jdi.cfg using template"
           ansible.builtin.template:
             src: jdi.cfg.j2
             dest: "{{ jedi_cfg_dir }}/jdi.cfg"
-            mode: '0744'
-            owner: '{{ service_user }}'
-            group: '{{ service_group }}'
+            mode: '0644'
+            owner: '{{ jedi_user }}'
+            group: '{{ jedi_group }}'
 
         -
           name: "Updating users.cfg using template - defines user credentials"
           ansible.builtin.template:
             src: users.cfg.j2
             dest: "{{ jedi_cfg_dir }}/users.cfg"
-            mode: '0744'
-            owner: '{{ service_user }}'
-            group: '{{ service_group }}'
+            mode: '0644'
+            owner: '{{ jedi_user }}'
+            group: '{{ jedi_group }}'
 
         -
           name: "Updating acl.cfg using template - controls admin rights for users"
           ansible.builtin.template:
             src: acl.cfg.j2
             dest: "{{ jedi_cfg_dir }}/acl.cfg"
-            mode: '0744'
-            owner: '{{ service_user }}'
-            group: '{{ service_group }}'
+            mode: '0644'
+            owner: '{{ jedi_user }}'
+            group: '{{ jedi_group }}'
 
         -
           name: "Generating ssl.cfg using the local certificates"
@@ -445,8 +255,8 @@
             src: ssl.cfg.j2
             dest: "{{ jedi_cfg_dir }}/ssl.cfg"
             mode: '0644'
-            owner: '{{ service_user }}'
-            group: '{{ service_group }}'
+            owner: '{{ jedi_user }}'
+            group: '{{ jedi_group }}'
 
         -
           name: "Updating start script"
@@ -454,16 +264,16 @@
             src: jedi.j2
             dest: "{{ jedi_install_dir }}/bin/jedi"
             mode: '0744'
-            owner: '{{ service_user }}'
-            group: '{{ service_group }}'
+            owner: '{{ jedi_user }}'
+            group: '{{ jedi_group }}'
         -
           name: "Adding Environment file for service"
           ansible.builtin.template:
             src: environment.j2
             dest: "{{ jedi_cfg_dir }}/environment"
-            mode: '0744'
-            owner: '{{ service_user }}'
-            group: '{{ service_group }}'
+            mode: '0644'
+            owner: '{{ jedi_user }}'
+            group: '{{ jedi_group }}'
 
         -
           name: "Creating systemd service for JeDI"
@@ -471,8 +281,8 @@
             src: jedi.service.j2
             dest: "/etc/systemd/system/{{ jedi_service }}.service"
             mode: '0744'
-            owner: '{{ service_user }}'
-            group: '{{ service_group }}'
+            owner: 'root'
+            group: 'root'
 
         -
           name: "Reloading systemd to recognize new service"

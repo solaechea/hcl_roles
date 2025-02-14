@@ -9,6 +9,10 @@ jedi_install_jar: "{{ jedi_install_lib_dir }}/jedi.jar"
 # path to local jedi artifact.  TODO:  if not found, download instead
 jedi_artifact_jar: ./jedi.jar
 jedi_cfg_dir: "{{ prominic_install_dir }}/jedi/etc"
+# JeDI needs to run as root for now, but this may be revisited later
+# Ownership is not important as a result, but these properties are intended to make it easy to change later
+jedi_user: root
+jedi_group: root
 
 # Feel good Variables for Mark to know its in the works :) not implemented yet.
 jedi_username: "startcloud"
