@@ -34,11 +34,11 @@ jedi_server_ssljoes_port: 1711
 # why this
 jedi_noteslog: /local/notesdata/noteslog
 # online zip 
-jedi_online_zip: https://domino-49.prominic.net/jedi-server-private/jedi-github.zip
+jedi_online_zip: https://public-artifacts.prominic.net/jedi/jedi.zip
 jedi_local_zip: installers/jedi/archives/jedi.zip
 jedi_local_unpack_dir: "{{ role_path }}/files/jedi"
 # jar file
-jedi_online_jar: https://domino-49.prominic.net/jedi-server-private/jedi-github.jar
+jedi_online_jar: https://public-artifacts.prominic.net/jedi/jedi.jar
 jedi_local_jar: installers/jedi/archives/jedi.jar
 
 # Control whether JeDI automatically attempts to start Domino
@@ -49,11 +49,5 @@ jedi_ssl_update: true
 # By default, use the JKS certificate generated for this instance
 jedi_ssl_cert:  "{{ cert_dir }}/jks/{{ settings.hostname }}.{{ settings.domain }}.jks"
 jedi_ssl_cert_password:  "{{ cert_pass }}"
-
-# for jediweb
-jediweb_install_dir: "{{ prominic_install_dir }}/jediweb"
-jediweb_online_zip: https://domino-49.prominic.net/jedi-server-private/test/jediweb-github-temp.zip
-jediweb_local_zip: installers/jediweb/archives/jediweb.zip
-jediweb_local_unpack_dir: "{{ role_path }}/files/jediweb"
 
 
