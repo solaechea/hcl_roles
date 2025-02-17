@@ -8,7 +8,7 @@
 {% else %}
       "type": "first",
 {% endif %}
-      "name": "{{ domino_server_name }}.{{ domino_server_domain }}",
+      "name": "{{ domino_server_name_common }}",
       "domainName": "{{ domino_organization }}",
       "title": "{{ domino_server_name }}",
       "password": null,
@@ -25,7 +25,7 @@
     },
 {% endif %}
     "network": {
-      "hostName": "{{ domino_server_name }}.{{ domino_server_domain }}",
+      "hostName": "{{ domino_server_name_common }}",
       "enablePortEncryption": true,
       "enablePortCompression": true
     },
@@ -176,7 +176,7 @@
           "action": "update",
           "findDocument": {
             "Type": "Server",
-            "ServerName": "CN={{ domino_server_name }}.{{ domino_server_domain }}/O={{ domino_organization }}"
+            "ServerName": "CN={{ domino_server_name_common }}/O={{ domino_organization }}"
           },
           "computeWithForm": true,
           "items": {
@@ -295,7 +295,7 @@
             "CmdLine": "Genesis",
             "Enabled": "2",
             "Program": "runjava",
-            "Source": "CN={{ domino_server_name }}.{{ domino_server_domain }}/O={{ domino_organization }}"
+            "Source": "CN={{ domino_server_name_common }}/O={{ domino_organization }}"
           }
         },
 {% if not is_additional_server %}
@@ -336,7 +336,7 @@
             "Form": "local",
             "Type": "Connection",
             "PortName": "TCPIP",
-            "Source": "CN={{ domino_server_name }}.{{ domino_server_domain }}/O={{ domino_organization }}",
+            "Source": "CN={{ domino_server_name_common }}/O={{ domino_organization }}",
             "Destination": "{{ origin_server }}.{{ domino_server_domain }}/O={{ domino_organization }}",
             "SourceDomain": "{{ domino_organization }}",
             "DestinationDomain": "{{ domino_organization }}",

@@ -10,11 +10,11 @@
       <property-value>127.0.0.1</property-value>
     </property>
     <property name="hostname">
-      <property-value>{{ domino_server_name }}.{{ domino_server_domain }}</property-value>
+      <property-value>{{ domino_server_name_common }}</property-value>
     </property>
   </hostinfo>
   <property name="DominoId">
-    <property-value>{{ domino_server_name }}.{{ domino_server_domain }}</property-value>
+    <property-value>{{ domino_server_name_common }}</property-value>
   </property>
   <property name="DominoVersion">
     <property-value>release {{ domino_major_version }}.{{ domino_minor_version }}.{{ domino_patch_version }}</property-value>

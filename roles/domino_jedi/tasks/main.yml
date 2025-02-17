@@ -11,7 +11,7 @@
         get_md5: false
       
     -
-      name:  "Disabling the nashed service to prevent conflict with JeDI"
+      name: "Disabling the nashed service to prevent conflict with JeDI"
       when: domino_jedi_installed.stat.exists
       ansible.builtin.service:
         name: domino
@@ -109,7 +109,6 @@
             mode: '0755'
             owner: 'root'
             group: 'root'
-
 
         -
           name: "Including the failover files logic to copy jedi to target"
@@ -289,7 +288,7 @@
           ansible.builtin.command: systemctl daemon-reload
 
         -
-          name:  "Disabling the nashed service to prevent conflict with JeDI"
+          name: "Disabling the nashed service to prevent conflict with JeDI"
           ansible.builtin.service:
             name: domino
             enabled: false
@@ -325,3 +324,52 @@
             group: '{{ service_group }}'
           with_items:
             - "{{ completed_dir }}/domino_jedi_installed"
+
+    -
+      name: "Jedi set to Disabled, Enabling Nashed Service"
+      when: not jedi_enabled
+      block:
+        -
+          name: "Checking if JEDI has been installed"
+          register: domino_jedi_installed
+          ansible.builtin.stat:
+            path: "{{ completed_dir }}/domino_jedi_installed"
+            get_md5: false
+
+        -
+          name: "Checking if Nash's Domino Service Scripts has been installed"
+          register: nash_service_installed
+          ansible.builtin.stat:
+            path: "{{ completed_dir }}/service_configured"
+            get_md5: false
+
+        -
+          name: "Disabling and Stopping JeDI service"
+          when: nash_service_installed.stat.exists and domino_jedi_installed.stat.exists
+          ansible.builtin.systemd:
+            name: "{{ jedi_service }}"
+            enabled: false
+            state: stopped
+
+        -
+          name: "Stopping Domino Manually"
+          become: true
+          when: nash_service_installed.stat.exists and domino_jedi_installed.stat.exists
+          ansible.builtin.shell: 'echo "exit" >> /local/notesdata/noteslog/notes.input'
+
+        -
+          name: "Waiting for Domino server shutdown complete message"
+          when: nash_service_installed.stat.exists and domino_jedi_installed.stat.exists
+          ansible.builtin.wait_for:
+            path: /local/notesdata/IBM_TECHNICAL_SUPPORT/console.log
+            search_regex: "Server shutdown complete"
+            state: present
+            timeout: 300
+
+        -
+          name: "Enabling the nashed service to ensure provisioning works"
+          when: nash_service_installed.stat.exists and domino_jedi_installed.stat.exists
+          ansible.builtin.service:
+            name: domino
+            enabled: true
+            state: started

@@ -1,6 +1,10 @@
 ---
 run_tasks: true
 packages:
+
+# If true, then Jedi will manage Domino, if false, Nashed script will manage domino, but during provisioning this switches to Ansible.
+jedi_enabled: true
+
 jedi_service:  jedi
 prominic_install_dir: /opt/prominic
 jedi_install_dir: "{{ prominic_install_dir }}/jedi"
@@ -16,7 +20,7 @@ jedi_group: root
 
 # Feel good Variables for Mark to know its in the works :) not implemented yet.
 jedi_username: "startcloud"
-jedi_password: "{{ 'STARTcloud24@!' | hash('sha1') }}"
+jedi_password: "STARTcloud24@!"
 
 jedi_alias:
   enabled: false
