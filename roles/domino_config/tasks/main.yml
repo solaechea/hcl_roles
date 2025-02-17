@@ -362,6 +362,23 @@
         path: "{{ completed_dir }}/domsetup"
     
     -
+      name: "Setting up Domino OIDC"
+      when: 
+        - domino_oidc_provider_enabled
+        - domino_major_version is version('14', '>=')
+#        - (domino_fixpack_version | replace('FP', '') | int) is version('2', '>=')
+      block:
+        -
+          name: "Setting up OIDC Configurations"
+          when: not domino_server_touched.stat.exists
+          ansible.builtin.template:
+            dest: "{{ domino_home_dir }}/oidcinfo.json"
+            mode: "0644"
+            owner: "{{ domino_user }}"
+            group: "{{ domino_group }}"
+            src: oidcinfo.json.j2
+
+    -
       name: 'Setting file permissions Admin User ID, filename: {{ domino_admin_user_id }}'
       become: true
       when: not domino_server_touched.stat.exists and not is_additional_server
@@ -392,6 +409,7 @@
         dest: "/id-files/user-ids/{{ domino_admin_user_id }}"
         owner: "{{ service_user }}"
         group: "{{ service_group }}"
+        force: true
     
     -
       name: 'Copying Dev User ID to /id-files/user-ids/{{ domino_dev_user_id }}'
@@ -403,9 +421,10 @@
         dest: "/id-files/user-ids/{{ domino_dev_user_id }}"
         owner: "{{ service_user }}"
         group: "{{ service_group }}"
+        force: true
 
     -
-      name: "When Domino OTS is set as the Additional Server Creation Tool"
+      name: "Using OTS to generate additional server IDs"
       when: domino_server_id_creation_tool == "ots"
       block:
         -
@@ -418,6 +437,7 @@
             dest: "/id-files/server-ids/{{ ots_generate_server_id_pattern }}{{ item }}.id"
             owner: "{{ service_user }}"
             group: "{{ service_group }}"
+            force: true
           loop: "{{ range(0, ots_generate_server_id_count | int) | list }}"
 
         -
@@ -430,10 +450,11 @@
             dest: "/id-files/server-ids/{{ item }}.id"
             owner: "{{ service_user }}"
             group: "{{ service_group }}"
+            force: true
           loop: "{{ ots_generate_server_names | default([]) }}"
 
     -
-      name: "When Domino OTS is set as the Additional Server Creation Tool"
+      name: "Using the Additional Server Creation Tool to generate Server IDs"
       when: domino_server_id_creation_tool == "asja"
       block:
         -
@@ -485,6 +506,7 @@
             dest: "/id-files/server-ids/{{ item.name }}.id"
             owner: "{{ domino_user }}"
             group: "{{ domino_group }}"
+            force: true
           loop: "{{ actual_asja_generate_server_ids }}"
           when: 
             - not domino_server_touched.stat.exists
