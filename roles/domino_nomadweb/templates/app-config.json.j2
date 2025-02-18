@@ -12,14 +12,14 @@
 {% if domino_leap_proxy_url is defined %}
       {
         "label": "Leap",
-        "icon": "Leap",
+        "icon": "https://{{ domino_nomadweb_proxy_url }}/icons/leap.ico",
         "URL": "https://{{ domino_leap_proxy_url }}"
       },
 {% endif %}
 {% if domino_traveler_proxy_url is defined %}
       {
         "label": "Traveler",
-        "icon": "Traveler",
+        "icon": "https://{{ domino_nomadweb_proxy_url }}/icons/traveler.ico",
         "URL": "https://{{ domino_traveler_proxy_url }}"
       },
 {% endif %}
