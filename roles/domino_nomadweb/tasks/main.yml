@@ -141,14 +141,43 @@
         src: "nomad-config.yml.j2"
 
     -
-      name: "Configuring NomadWeb App Switcher"
-      when: not nomadweb_installed_check.stat.exists and nomadweb_app_switcher_enabled
-      ansible.builtin.template:
-        dest: "{{ domino_install_dir }}/nomad-files/config/app-config.json"
-        mode: "a+x"
-        owner: "{{ domino_user }}"
-        group: "{{ domino_group }}"
-        src: "app-config.json.j2"
+      name: "Configuring NomadWeb App Switche"
+      when: nomadweb_app_switcher_enabled
+      block:
+        -
+          name: "Configuring NomadWeb App Switcher"
+          when: not nomadweb_installed_check.stat.exists
+          ansible.builtin.template:
+            dest: "{{ domino_install_dir }}/nomad-files/config/app-config.json"
+            mode: "a+x"
+            owner: "{{ domino_user }}"
+            group: "{{ domino_group }}"
+            src: "app-config.json.j2"
+
+        -
+          name: "Creating Installation Directories"
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: directory
+            mode: '0755'
+            owner: "{{ domino_user }}"
+            group: "{{ domino_group }}"
+          with_items:
+            - "{{ domino_install_dir }}/nomad-files/icons"
+
+        -
+          name: "Adding App Switcher Icons"
+          become: true
+          ansible.builtin.copy:
+            owner: "{{ item.owner }}"
+            src: "{{ item.src }}"
+            dest: "{{ item.dest }}"
+            mode: '0644'
+          loop:
+            - { src: 'api.ico', dest: '{{ domino_install_dir }}/nomad-files/icons/api.ico', owner: '{{ service_user }}' }
+            - { src: 'home.ico', dest: '{{ domino_install_dir }}/nomad-files/icons/home.ico', owner: '{{ service_user }}' }
+            - { src: 'guac.ico', dest: '{{ domino_install_dir }}/nomad-files/icons/guac.ico', owner: '{{ service_user }}' }
+            - { src: 'cockpit.ico', dest: '{{ domino_install_dir }}/nomad-files/icons/cockpit.ico', owner: '{{ service_user }}' }
     
     -
       name: "Outputting NomadWeb Configuration Status Logs"
@@ -186,32 +215,32 @@
             mode: '0644'
 
         ## Input the value bearer.vault-<Vault server hostname> into the Bearer token (JWT) approved OIDC provider configurations field
-        #-
-        #  name: "Handing IDVault JWT Bearer Token Modifications JSON to Genesis"
-        #  when: not nomadweb_installed_check.stat.exists
-        #  ansible.builtin.template:
-        #    dest: "{{ domino_home_dir }}/JavaAddin/Genesis/json/domino_oidc_federated_nomad_idvault_bearer_configuration.json"
-        #    mode: "a+x"
-        #    owner: "{{ domino_user }}"
-        #    group: "{{ domino_group }}"
-        #    src: "domino_oidc_federated_nomad_idvault_bearer_configuration.json.j2"
-        #
-        #-
-        #  name: "Waiting until Genesis returns OK after processing domino_oidc_federated_nomad_idvault_bearer_configuration"
-        #  when: not nomadweb_installed_check.stat.exists
-        #  ansible.builtin.wait_for:
-        #    path: "{{ domino_home_dir }}/JavaAddin/Genesis/jsonresponse/domino_oidc_federated_nomad_idvault_bearer_configuration.json"
-        #
-        #-
-        #  name: "Checking if Nomad Helper domino_oidc_federated_nomad_idvault_bearer_configuration JSON applied succesfully"
-        #  when: not nomadweb_installed_check.stat.exists
-        #  ansible.builtin.lineinfile:
-        #    path: "{{ domino_home_dir }}/JavaAddin/Genesis/jsonresponse/domino_oidc_federated_nomad_idvault_bearer_configuration.json"
-        #    line: "OK"
-        #    state: present
-        #  check_mode: true
-        #  register: presence
-        #  failed_when: presence is changed
+        -
+          name: "Handing IDVault JWT Bearer Token Modifications JSON to Genesis"
+          when: not nomadweb_installed_check.stat.exists
+          ansible.builtin.template:
+            dest: "{{ domino_home_dir }}/JavaAddin/Genesis/json/domino_oidc_federated_nomad_idvault_bearer_configuration.json"
+            mode: "a+x"
+            owner: "{{ domino_user }}"
+            group: "{{ domino_group }}"
+            src: "domino_oidc_federated_nomad_idvault_bearer_configuration.json.j2"
+        
+        -
+          name: "Waiting until Genesis returns OK after processing domino_oidc_federated_nomad_idvault_bearer_configuration"
+          when: not nomadweb_installed_check.stat.exists
+          ansible.builtin.wait_for:
+            path: "{{ domino_home_dir }}/JavaAddin/Genesis/jsonresponse/domino_oidc_federated_nomad_idvault_bearer_configuration.json"
+        
+        -
+          name: "Checking if Nomad Helper domino_oidc_federated_nomad_idvault_bearer_configuration JSON applied succesfully"
+          when: not nomadweb_installed_check.stat.exists
+          ansible.builtin.lineinfile:
+            path: "{{ domino_home_dir }}/JavaAddin/Genesis/jsonresponse/domino_oidc_federated_nomad_idvault_bearer_configuration.json"
+            line: "OK"
+            state: present
+          check_mode: true
+          register: presence
+          failed_when: presence is changed
 
         ## Set Bearer token (JWT) to Yes under the Additional ID Download authentication mechanisms section. 
         #-

@@ -1,5 +1,5 @@
 { 
-    "title": "Create configuration document required for nomadhelper.html", 
+    "title": "Create configuration document required for Domino as ODIC provider for Nomad using IDVault", 
     "versionjson": "1.0.0", 
     "steps": [ 
         { 
@@ -7,28 +7,17 @@
             "databases": [ 
                 { 
                     "action": "update", 
-                    "filePath": "SuperHumanPortal.nsf", 
+                    "filePath": "IBM_ID_VAULT\{{ id_vault_name }}.nsf", 
                     "documents":[
                         { 
                             "action": "update", 
                             "search": {
-                                        "formula":"Form=\"Config Value\" & Key=\"nomad_helper_url\"",
+                                        "formula":"Form=\"Control\" & VTName=\"O={{ id_vault_name }}\"",
                                         "number":0
                             },
                             "computeWithForm": true,
                             "items": {
-                                "Value":"https://{{ domino_nomadweb_proxy_url }}/nomad/nomadhelper.html"
-                            }
-                        },
-                        { 
-                            "action": "update", 
-                            "search": {
-                                        "formula":"Form=\"Config Value\" & Key=\"nomad_base_url\"",
-                                        "number":0
-                            },
-                            "computeWithForm": true,
-                            "items": {
-                                "Value":"https://{{ domino_nomadweb_proxy_url }}/nomad"
+                                "OIDCBearerConfigs":"bearer.vault-{{ domino_server_name_common }}"
                             }
                         }
                     ]

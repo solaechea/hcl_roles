@@ -259,3 +259,13 @@
         line: "EnableJavaAgentCache=2"
         insertafter: EOF
         state: present
+
+    -
+      name: "Append TEST_JWTIDVAULT to notes.ini"
+      ansible.builtin.blockinfile:
+        path: "{{ domino_home_dir }}/notes.ini"
+        insertafter: EOF
+        content: |
+          $$TEST_JWTIDVAULT=1
+
+      when: domino_major_version == 14

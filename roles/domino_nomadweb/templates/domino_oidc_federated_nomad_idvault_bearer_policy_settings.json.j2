@@ -1,5 +1,5 @@
 { 
-    "title": "Create configuration document required for nomadhelper.html", 
+    "title": "Update the Security Policy required for Domino as ODIC provider for Nomad using IDVault", 
     "versionjson": "1.0.0", 
     "steps": [ 
         { 
@@ -7,28 +7,17 @@
             "databases": [ 
                 { 
                     "action": "update", 
-                    "filePath": "SuperHumanPortal.nsf", 
+                    "filePath": "names.nsf", 
                     "documents":[
                         { 
                             "action": "update", 
                             "search": {
-                                        "formula":"Form=\"Config Value\" & Key=\"nomad_helper_url\"",
+                                        "formula":"Type=\"PolicySecurity\" & Fullname=\"{{ id_vault_name }} Security Settings Policy\"",
                                         "number":0
                             },
                             "computeWithForm": true,
                             "items": {
-                                "Value":"https://{{ domino_nomadweb_proxy_url }}/nomad/nomadhelper.html"
-                            }
-                        },
-                        { 
-                            "action": "update", 
-                            "search": {
-                                        "formula":"Form=\"Config Value\" & Key=\"nomad_base_url\"",
-                                        "number":0
-                            },
-                            "computeWithForm": true,
-                            "items": {
-                                "Value":"https://{{ domino_nomadweb_proxy_url }}/nomad"
+                                "VaultBearerOn":"1"
                             }
                         }
                     ]
