@@ -165,20 +165,6 @@
           with_items:
             - "{{ domino_install_dir }}/nomad-files/icons"
 
-        -
-          name: "Adding App Switcher Icons"
-          become: true
-          ansible.builtin.copy:
-            owner: "{{ item.owner }}"
-            src: "{{ item.src }}"
-            dest: "{{ item.dest }}"
-            mode: '0644'
-          loop:
-            - { src: 'api.ico', dest: '{{ domino_install_dir }}/nomad-files/icons/api.ico', owner: '{{ service_user }}' }
-            - { src: 'home.ico', dest: '{{ domino_install_dir }}/nomad-files/icons/home.ico', owner: '{{ service_user }}' }
-            - { src: 'guac.ico', dest: '{{ domino_install_dir }}/nomad-files/icons/guac.ico', owner: '{{ service_user }}' }
-            - { src: 'cockpit.ico', dest: '{{ domino_install_dir }}/nomad-files/icons/cockpit.ico', owner: '{{ service_user }}' }
-    
     -
       name: "Outputting NomadWeb Configuration Status Logs"
       when: ( nomadweb_debug or debug_all ) and not nomadweb_installed_check.stat.exists

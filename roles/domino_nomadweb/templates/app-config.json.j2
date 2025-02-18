@@ -12,14 +12,14 @@
 {% if domino_leap_proxy_url is defined %}
       {
         "label": "Leap",
-        "icon": "https://{{ domino_nomadweb_proxy_url }}/icons/leap.ico",
+        "icon": "https://raw.githubusercontent.com/STARTcloud/hcl_roles/refs/heads/main/roles/domino_nomadweb/files/leap.ico",
         "URL": "https://{{ domino_leap_proxy_url }}"
       },
 {% endif %}
 {% if domino_traveler_proxy_url is defined %}
       {
         "label": "Traveler",
-        "icon": "https://{{ domino_nomadweb_proxy_url }}/icons/traveler.ico",
+        "icon": "https://raw.githubusercontent.com/STARTcloud/hcl_roles/refs/heads/main/roles/domino_nomadweb/files/traveler.ico",
         "URL": "https://{{ domino_traveler_proxy_url }}"
       },
 {% endif %}
@@ -33,14 +33,14 @@
 {% if domino_vagrant_rest_api_proxy_url is defined %}
       {
         "label": "Rest API",
-        "icon": "https://{{ domino_nomadweb_proxy_url }}/icons/api.ico",
+        "icon": "https://raw.githubusercontent.com/STARTcloud/hcl_roles/refs/heads/main/roles/domino_nomadweb/files/api.ico",
         "URL": "https://{{ domino_vagrant_rest_api_proxy_url }}/"
       },
 {% endif %}
 {% if startcloud_guacamole_proxy_url is defined %}
       {
         "label": "Rest API",
-        "icon": "https://{{ domino_nomadweb_proxy_url }}/icons/guac.ico",
+        "icon": "https://raw.githubusercontent.com/STARTcloud/hcl_roles/refs/heads/main/roles/domino_nomadweb/files/guac.ico",
         "URL": "https://{{ startcloud_guacamole_proxy_url }}/"
       },
 {% endif %}
@@ -51,12 +51,12 @@
       },
       {
         "label": "Server Console",
-        "icon": "https://{{ domino_nomadweb_proxy_url }}/icons/cockpit.ico",
+        "icon": "https://raw.githubusercontent.com/STARTcloud/hcl_roles/refs/heads/main/roles/domino_nomadweb/files/cockpit.ico",
         "URL": "https://console.{{ settings.hostname }}.{{ settings.domain }}/"
       },
       {
         "label": "Welcome Page",
-        "icon": "https://{{ domino_nomadweb_proxy_url }}/icons/home.ico",
+        "icon": "https://raw.githubusercontent.com/STARTcloud/hcl_roles/refs/heads/main/roles/domino_nomadweb/files/home.ico",
         "URL": "https://{{ domino_nomadweb_proxy_url }}/welcome.html"
       }
     ]
