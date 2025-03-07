@@ -384,7 +384,7 @@
             "Form": "WebSite",
             "AutomationComment " : "Domino OIDC Provider",
             "WSIsDflt"           : "0",
-            "ISiteAdrs"          : [ "127.0.0.1", "{{ domino_oidc_install_proxy_url }}" ],
+            "ISiteAdrs"          : [ "{{ domino_oidc_install_proxy_url }}" ],
             "ISiteName"          : "DominoOIDCProvider",
             "ISiteOrg"           : "{{ domino_organization }}",
             "WSHostingSrvrs"     : "*",
@@ -431,12 +431,12 @@
               "Form": "OIDCProvider",
 {% if domino_oidc_provider_nomad_enabled  %}
 {% if not domino_oidc_provider_federation_enabled %}
-              "OIDCHostname": "127.0.0.1; {{ domino_nomadweb_proxy_url }}; {{ domino_install_proxy_url }}",
+              "OIDCHostname": "{{ domino_nomadweb_proxy_url }}",
 {% else %}
-              "OIDCHostname": "bearer.vault.{{ domino_server_name_common }}; 127.0.0.1; {{ domino_nomadweb_proxy_url }}; {{ domino_install_proxy_url }}",
+              "OIDCHostname": "bearer.vault.{{ domino_server_name_common }}; {{ domino_nomadweb_proxy_url }}",
 {% endif %}
 {% else %}
-              "OIDCHostname": "127.0.0.1; {{ domino_install_proxy_url }}",
+              "OIDCHostname": "{{ domino_install_proxy_url }}",
 {% endif %}
               "OIDCProviderName": "Domino",
               "OIDCBaseURL": "https://{{ domino_oidc_install_proxy_url }}/auth/protocol/oidc",
