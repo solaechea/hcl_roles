@@ -59,10 +59,16 @@ domino_nomadweb_use_proxy_url: true
 domino_nomadweb_proxy_url: "{{ domino_nomadweb_port_forwards[0].url }}.{{ settings.hostname }}.{{ settings.domain }}"
 
 domino_enable_java_agent_cache: 2
+domino_nifnsf_enable: "1"
+domino_nifnsf_base_path: /local/nif
+domino_ft_fly_index_off: "1"
+domino_update_fulltext_thread: "1"
+domino_update_fulltext_thread_path: /local/ft
 domino_daos_enable: 0
-domino_daos_base_path: /local/daos
 domino_daos_min_obj_size: 256000
 domino_daos_encrypt_nlo: 0
+domino_daos_base_path: /local/daos
+domino_translogs_path: /local/translog
 domino_translog_auto_fixup: ""
 domino_translog_max_size: 1024
 domino_translog_performance: "2"
@@ -95,7 +101,6 @@ domino_nsd_enbld: "1"
 domino_fr_enbld: "1"
 domino_flt_rcvry_not: "LocalDomainAdmins"
 domino_ld_isite: "1"
-domino_translogs_path: /local/translog
 
 # NotesINI settings
 domino_notesini_daos_encrypt_nlo: 0
@@ -107,8 +112,6 @@ domino_log_replication: "1"
 domino_log_sessions: "1"
 domino_compress_lz1_create: "1"
 domino_create_nifnsf_databases: "1"
-domino_nifnsf_enable: "1"
-domino_nifnsf_base_path: /local/nif
 domino_inotes_wa_enable_actions_in_archive: "1"
 domino_http_public_urls: "/iwaredir.nsf/*:/.well-known*"
 domino_enable_sni: "1"
@@ -116,9 +119,6 @@ domino_admin_client_skip_domino: "1"
 domino_event_pool_size: "41943040"
 domino_server_restart_delay: "1"
 domino_nsf_buffer_pool_size_mb: "256"
-domino_ft_fly_index_off: "1"
-domino_update_fulltext_thread: "1"
-domino_update_fulltext_thread_path: /local/ft
 domino_ftg_use_sys_memory: "1"
 domino_server_min_possible_trans_time: "1500"
 domino_server_max_possible_trans_time: "20000000"
