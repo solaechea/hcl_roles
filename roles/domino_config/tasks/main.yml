@@ -369,18 +369,22 @@
 #        - (domino_fixpack_version | replace('FP', '') | int) is version('2', '>=')
       block:
         -
-          name: "Setting up files for CA certificate concatenation"
-          ansible.builtin.set_fact:
-            files:
-              input-files:
-                - "{{ cert_dir }}/ca/ca-certificate.crt"
-                - "{{ domino_home_dir }}/cacert.pem"
-
+          name: "Ensure ca-cert.pem exists"
+          ansible.builtin.file:
+            path: "{{ domino_home_dir }}/ca-cert.pem"
+            state: touch
+            owner: "{{ domino_user }}"
+            group: "{{ domino_group }}"
+            mode: '0644'
+            modification_time: preserve
+            access_time: preserve
+          
         -
-          name: "Adding CA Cert to cacert.pem"
-          ansible.builtin.template:
-            src: concatenate.j2
-            dest: "{{ domino_home_dir }}/cacert.pem"
+          name: "Append CA certificate to ca-cert.pem"
+          ansible.builtin.blockinfile:
+            path: "{{ domino_home_dir }}/ca-cert.pem"
+            block: "{{ lookup('file', cert_dir + '/ca/ca-certificate.crt') }}"
+            marker: "# {mark} ANSIBLE MANAGED BLOCK - CA CERTIFICATE"
             owner: "{{ domino_user }}"
             group: "{{ domino_group }}"
             mode: '0644'
