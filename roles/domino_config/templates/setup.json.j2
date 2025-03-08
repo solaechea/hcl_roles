@@ -387,9 +387,17 @@
             "ISiteAdrs"          : [ "{{ domino_oidc_install_proxy_url }}" ],
             "ISiteName"          : "DominoOIDCProvider",
             "ISiteOrg"           : "{{ domino_organization }}",
-            "WSHostingSrvrs"     : "*",
+            "WSHostingSrvrs"     : "CN={{ domino_server_name_common }}/O={{ domino_organization }}",
+            "WSDominoOIDCProvider" : "{{ domino_oidc_install_proxy_url }}",
+            "HTTP_TCP_Redirect"  : "1",
+            "HTTP_SessionCookieSecure" : "1",
+            "HTTP_sessioncookieSamesite" : "2",
+            "HTTP_SessionCookieHTTPOnly" : "1",
+            "HTTP_GenerateSessionCookie" : "1",
+            "HTTP_ForceLoginOnSSL" : "1",
+            "HTTP_EnableRedirectCmd" : "1",
             "TCPAnonymous"       : "0",
-            "TCPNameAndPwd"      : "1",
+            "TCPNameAndPwd"      : "0",
             "SSLAnonymous"       : "0",
             "SSLNameAndPwd"      : "1",
             "SSLBearerToken"     : "1",
@@ -399,6 +407,39 @@
             "HTTP_MaxActiveSessions" : "1000"
           }
         },
+{% if domino_oidc_provider_verse_enabled and domino_oidc_provider_enabled and domino_major_version >= 14 %}
+        {
+          "action": "create",
+          "computeWithForm": true,
+          "items": {
+            "Form": "WebSite",
+            "AutomationComment " : "Verse",
+            "WSIsDflt"           : "0",
+            "WSHomeURL"          : "/verse",
+            "ISiteAdrs"          : [ "{{ domino_verse_proxy_url }}" ],
+            "ISiteName"          : "Verse",
+            "ISiteOrg"           : "{{ domino_organization }}",
+            "WSHostingSrvrs"     : "CN={{ domino_server_name_common }}/O={{ domino_organization }}",
+            "HTTP_TCP_Redirect"  : "1",
+            "HTTP_SessionCookieSecure" : "1",
+            "HTTP_sessioncookieSamesite" : "2",
+            "HTTP_SessionCookieHTTPOnly" : "1",
+            "HTTP_GenerateSessionCookie" : "1",
+            "HTTP_ForceLoginOnSSL" : "1",
+            "HTTP_EnableRedirectCmd" : "1",
+            "TCPAnonymous"       : "0",
+            "TCPNameAndPwd"      : "0",
+            "SSLAnonymous"       : "0",
+            "SSLNameAndPwd"      : "0",
+            "SSLBearerToken"     : "1",
+            "SSLPasskey"         : "1",
+            "SSLKeyFile"         : "{{ cert_dir }}/kyr/{{ kyr_cert }}",
+            "SSLCipherList"      : [ "C030", "9F", "C02F", "9E" ],
+            "HTTP_EnableSessionAuth" : "1",
+            "HTTP_MaxActiveSessions" : "1000"
+          }
+        },
+{% endif %}
 {% endif %}
         {
           "action": "create",
@@ -408,6 +449,22 @@
             "ISiteOrg": "{{ domino_organization }}",
             "ISiteName": "Domino Web Site",
             "WSIsDflt": "1",
+            "WSHostingSrvrs" : "CN={{ domino_server_name_common }}/O={{ domino_organization }}",
+            "TCPAnonymous"   : "0",
+            "TCPNameAndPwd"  : "0",
+            "SSLAnonymous"   : "0",
+            "SSLNameAndPwd"  : "0",
+            "SSLBearerToken" : "1",
+            "SSLKeyFile"     : "{{ cert_dir }}/kyr/{{ kyr_cert }}",
+            "SSLCipherList"  : [ "C030", "9F", "C02F", "9E" ],
+            "HTTP_MaxActiveSessions" : "1000",
+            "HTTP_TCP_Redirect"  : "1",
+            "HTTP_SessionCookieSecure" : "1",
+            "HTTP_sessioncookieSamesite" : "2",
+            "HTTP_SessionCookieHTTPOnly" : "1",
+            "HTTP_GenerateSessionCookie" : "1",
+            "HTTP_ForceLoginOnSSL" : "1",
+            "HTTP_EnableRedirectCmd" : "1",
 {% if super_human_portal_enabled %}
             "WSHomeURL": "Super.Human.Portal/js-release/index.html",
 {% endif %}
@@ -428,17 +485,27 @@
           {
             "action": "create",
             "items": {
+              "Form": "DominoOIDCProvider",
+              "OIDCP_DominoServers": "CN={{ domino_server_name_common }}/O={{ domino_organization }}"
+              "OIDCP_InternetSite": "{{ domino_oidc_install_proxy_url }}",
+              "OIDCP_PrimaryDominoServer": "CN={{ domino_server_name_common }}/O={{ domino_organization }}"
+            }
+          },
+          {
+            "action": "create",
+            "items": {
               "Form": "OIDCProvider",
 {% if domino_oidc_provider_nomad_enabled  %}
 {% if not domino_oidc_provider_federation_enabled %}
               "OIDCHostname": "{{ domino_nomadweb_proxy_url }}",
 {% else %}
               "OIDCHostname": "bearer.vault.{{ domino_server_name_common }}; {{ domino_nomadweb_proxy_url }}",
+              "OIDCIDVaultScope": "Domino.vault.{{ domino_organization }}-O={{ id_vault_name }}",
 {% endif %}
 {% else %}
               "OIDCHostname": "{{ domino_install_proxy_url }}",
 {% endif %}
-              "OIDCProviderName": "Domino",
+              "OIDCProviderName": "Domino OIDC Provider",
               "OIDCBaseURL": "https://{{ domino_oidc_install_proxy_url }}/auth/protocol/oidc",
               "OIDC_TrustedRoots": "{{ domino_oidc_trusted_roots }}",
               "OIDCClientID": "{{ domino_oidc_client_id }}",
@@ -451,9 +518,51 @@
               "BearerAllowedClientIDs": "{{ domino_oidc_bearer_allowed_client_ids }}",
               "OIDCLogLevel": "{{ domino_oidc_log_level }}"
             }
+{% if domino_oidc_provider_nomad_enabled and domino_oidc_provider_federation_enabled %}
+          },
+          {
+            "action": "create",
+            "items": {
+              "Form": "RegisteredOAuthClient",
+              "RC_AllowedWebOrigins": "https://{{ domino_nomadweb_proxy_url }}",
+              "RC_aud": "{{ domino_organization }}-O={{ id_vault_name }}",
+              "RC_auth_method": "2",
+              "RC_client_id": "{{ domino_oidc_client_id }}_nomad",
+              "RC_client_secret": "{{ domino_oidc_client_secret }}",
+              "RC_Name": "Nomad",
+              "RC_post_logout_redirect_uris": "https://{{ domino_nomadweb_proxy_url }}/logout/callback",
+              "RC_ProviderName": "{{ domino_oidc_install_proxy_url }}",
+              "RC_redirect_uris": "https://{{ domino_nomadweb_proxy_url }}/login/callback",
+              "RC_scope": "openid email Domino.vault.{{ domino_organization }}-O={{ id_vault_name }}",
+              "BearerAllowedClientIDs": "{{ domino_oidc_bearer_allowed_client_ids }}",
+              "OIDCLogLevel": "{{ domino_oidc_log_level }}"
+            }
           }
+{% elif domino_oidc_provider_verse_enabled and domino_oidc_provider_federation_enabled %}
+          },
+          {
+            "action": "create",
+            "items": {
+              "Form": "RegisteredOAuthClient",
+              "RC_aud": "{{ domino_organization }}-O={{ id_vault_name }}",
+              "RC_auth_method": "2",
+              "RC_client_id": "{{ domino_oidc_client_id }}_verse",
+              "RC_client_secret": "{{ domino_oidc_client_secret }}",
+              "RC_Name": "Verse",
+              "RC_ProviderName": "{{ domino_oidc_install_proxy_url }}",
+              "RC_redirect_uris": "https://{{ domino_verse_proxy_url }}/auth/protocol/oidc",
+              "RC_back_channel_logout_uri" : "https://{{ domino_verse_proxy_url }}/auth/protocol/oidc",
+              "RC_scope": "openid email Domino.vault.{{ domino_organization }}-O={{ id_vault_name }}",
+              "BearerAllowedClientIDs": "{{ domino_oidc_bearer_allowed_client_ids }}",
+              "OIDCLogLevel": "{{ domino_oidc_log_level }}"
+            }
+          }
+{% else %}
+          }
+{% endif %}
         ]
       },
+
 {% endif %}
       {
         "action": "create",

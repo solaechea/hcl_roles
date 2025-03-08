@@ -58,6 +58,14 @@ domino_nomadweb_port_forwards:
     url: "notes"
 domino_nomadweb_use_proxy_url: true
 domino_nomadweb_proxy_url: "{{ domino_nomadweb_port_forwards[0].url }}.{{ settings.hostname }}.{{ settings.domain }}"
+domino_verse_port_forwards:
+  -
+    guest: "{{ domino_install_port_forwards[0].guest }}"
+    url: "verse"
+  -
+    guest: "{{ domino_install_port_forwards[1].guest }}"
+    url: "verse"
+domino_verse_proxy_url: "{{ domino_verse_port_forwards[0].url }}.{{ settings.hostname }}.{{ settings.domain }}"
 
 domino_enable_java_agent_cache: 2
 domino_daos_enable: 0
@@ -170,6 +178,8 @@ domino_oidc_client_secret: "{{ lookup('ansible.builtin.password', '/dev/null', s
 domino_oidc_provider_federation_enabled: true
 domino_oidc_provider_login_form: "$$LoginUserForm"
 domino_oidc_provider_nomad_enabled: true
+domino_oidc_provider_verse_enabled: true
+domino_oidc_provider_web_enabled: true
 domino_oidc_trusted_roots: ""
 domino_oidc_auth_type: "B"
 #None|N
