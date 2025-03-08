@@ -369,14 +369,6 @@
 #        - (domino_fixpack_version | replace('FP', '') | int) is version('2', '>=')
       block:
         -
-          name: "
-          ansible.builtin.lineinfile:
-            path: 
-            line: "{{lookup('file', 'sourceFile'  )}}"
-            create: true
-            state: present
-
-        -
           name: "Copying root CA certificate to trusted certificates directory"
           set_fact:
             input-files:
