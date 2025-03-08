@@ -369,25 +369,20 @@
 #        - (domino_fixpack_version | replace('FP', '') | int) is version('2', '>=')
       block:
         -
-          name: "Copying root CA certificate to trusted certificates directory"
-          set_fact:
-            input-files:
-              - "{{ cert_dir }}/ca/ca-certificate.crt"
-              - "{{ domino_home_dir }}/ca-cert.pem"
+          name: "Setting up files for CA certificate concatenation"
+          ansible.builtin.set_fact:
+            files:
+              input-files:
+                - "{{ cert_dir }}/ca/ca-certificate.crt"
+                - "{{ domino_home_dir }}/cacert.pem"
 
         -
-          name: "Adding files to variable."
-          include_vars:
-            file: "{{ myinput }}"
-            name: files
-
-        -
-          name: "Adding CA Cert to ca-cert.pem"
+          name: "Adding CA Cert to cacert.pem"
           ansible.builtin.template:
-            src: templates/concatenate.j2
-            dest: "{{ domino_home_dir }}/ca-cert.pem"
-            owner: root
-            group: root
+            src: concatenate.j2
+            dest: "{{ domino_home_dir }}/cacert.pem"
+            owner: "{{ domino_user }}"
+            group: "{{ domino_group }}"
             mode: '0644'
             
         #-
