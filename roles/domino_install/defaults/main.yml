@@ -182,6 +182,7 @@ domino_oidc_provider_login_form: "$$LoginUserForm"
 domino_oidc_provider_nomad_enabled: true
 domino_oidc_provider_verse_enabled: true
 domino_oidc_provider_web_enabled: true
+domino_oidc_provider_web_home_url: "/names.nsf?open"
 domino_oidc_trusted_roots: ""
 domino_oidc_auth_type: "B"
 #None|N

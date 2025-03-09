@@ -7,16 +7,14 @@
     search_regex: "HTTP Server: Started"
     timeout: 300
     msg: "HTTP Server did not start within the timeout period."
-  notify: Wait to Restart Nomad
 
 -
   name: "Waiting for 60 seconds to let Domino fully configure"
-  listen: Wait to Restart Nomad
+  listen: Domino Started
   ansible.builtin.pause:
     seconds: 60
-  notify: Restart Nomad
 
 -
   name: "Restarting Nomad service"
-  listen: Restart Nomad
+  listen: Domino Started
   ansible.builtin.command: domino cmd "restart task nomad" 20

@@ -390,7 +390,7 @@
           }
         },
 {% endif %}
-{% if domino_oidc_provider_enabled and domino_major_version >= 14 %}
+{% if domino_oidc_provider_enabled and domino_major_version >= 14 and not is_additional_server %}
         {
           "action": "create",
           "computeWithForm": true,
@@ -399,7 +399,7 @@
             "AutomationComment " : "Domino OIDC Provider",
             "WSIsDflt"           : "0",
             "ISiteAdrs"          : [ "{{ domino_oidc_install_proxy_url }}" ],
-            "ISiteName"          : "DominoOIDCProvider",
+            "ISiteName"          : "Domino OIDC Provider",
             "ISiteOrg"           : "{{ domino_organization }}",
             "WSHostingSrvrs"     : "CN={{ domino_server_name_common }}/O={{ domino_organization }}",
             "WSDominoOIDCProvider" : "{{ domino_oidc_install_proxy_url }}",
@@ -421,7 +421,7 @@
             "HTTP_MaxActiveSessions" : "1000"
           }
         },
-{% if domino_oidc_provider_verse_enabled and domino_oidc_provider_enabled and domino_major_version >= 14 %}
+{% if domino_oidc_provider_verse_enabled %}
         {
           "action": "create",
           "computeWithForm": true,
@@ -432,6 +432,43 @@
             "WSHomeURL"          : "/verse",
             "ISiteAdrs"          : [ "{{ domino_verse_proxy_url }}" ],
             "ISiteName"          : "Verse",
+            "ISiteOrg"           : "{{ domino_organization }}",
+            "WSHostingSrvrs"     : "CN={{ domino_server_name_common }}/O={{ domino_organization }}",
+            "HTTP_TCP_Redirect"  : "1",
+            "HTTP_SessionCookieSecure" : "1",
+            "HTTP_sessioncookieSamesite" : "2",
+            "HTTP_SessionCookieHTTPOnly" : "1",
+            "HTTP_GenerateSessionCookie" : "1",
+            "HTTP_ForceLoginOnSSL" : "1",
+            "HTTP_EnableRedirectCmd" : "1",
+            "TCPAnonymous"       : "0",
+            "TCPNameAndPwd"      : "0",
+            "SSLAnonymous"       : "0",
+            "SSLNameAndPwd"      : "0",
+            "SSLBearerToken"     : "1",
+            "SSLPasskey"         : "1",
+            "SSLKeyFile"         : "{{ cert_dir }}/kyr/{{ kyr_cert }}",
+            "SSLCipherList"      : [ "C030", "9F", "C02F", "9E" ],
+            "HTTP_EnableSessionAuth" : "1",
+            "HTTP_MaxActiveSessions" : "1000"
+          }
+        },
+{% endif %}
+{% if domino_oidc_provider_web_enabled %}
+        {
+          "action": "create",
+          "computeWithForm": true,
+          "items": {
+            "Form": "WebSite",
+            "AutomationComment " : "Domino Federated Web Login",
+            "WSIsDflt"           : "0",
+{% if super_human_portal_enabled %}
+            "WSHomeURL"          : "/Super.Human.Portal/js-release/index.html",
+{% else %}
+            "WSHomeURL"          : "{{ domino_oidc_provider_web_home_url }}",
+{% endif %}
+            "ISiteAdrs"          : [ "{{ domino_install_proxy_url }}", "{{ settings.hostname }}.{{ settings.domain }}" ],
+            "ISiteName"          : "Domino Web Apps",
             "ISiteOrg"           : "{{ domino_organization }}",
             "WSHostingSrvrs"     : "CN={{ domino_server_name_common }}/O={{ domino_organization }}",
             "HTTP_TCP_Redirect"  : "1",
@@ -481,7 +518,6 @@
             "HTTP_EnableRedirectCmd" : "1",
 {% if super_human_portal_enabled %}
             "WSHomeURL": "Super.Human.Portal/js-release/index.html",
-            "login_url": "/names.nsf?open&RedirectTo=/Super.Human.Portal/js-release/index.html",
 {% endif %}
             "HTTP_EnableSessionAuth": "1",
             "WSHTTPMthds_ed": [ "1", "2", "3", "4", "6", "7" ]
@@ -489,7 +525,30 @@
         }
         ]
       },
-{% if domino_oidc_provider_enabled and domino_major_version >= 14 %}
+      {
+        "filePath": "certstore.nsf",
+        "action": "update",
+        "ACL": {
+          "ACLEntries": [
+            {
+              "name": "AutomaticallyCrossCertifiedUsers",
+              "level": "manager",
+              "type": "personGroup",
+              "isPublicReader": true,
+              "isPublicWriter": true,
+              "canCreateDocuments": true,
+              "canDeleteDocuments": true
+            },
+            {
+              "name": "{{ domino_admin_user_first_name }} {{ domino_admin_user_last_name }}/{{ domino_organization }}",
+              "level": "manager",
+              "canReplicateOrCopyDocuments": true,
+              "canDeleteDocuments": true
+            }
+          ]
+        }
+      },
+{% if domino_oidc_provider_enabled and domino_major_version >= 14 and not is_additional_server %}
       {
         "action": "create",
         "filePath": "idpcat.nsf",
@@ -506,13 +565,18 @@
               "isPublicWriter": true,
               "canCreateDocuments": true,
               "canDeleteDocuments": true
+            },
+            {
+              "name": "{{ domino_admin_user_first_name }} {{ domino_admin_user_last_name }}/{{ domino_organization }}",
+              "level": "manager",
+              "canReplicateOrCopyDocuments": true,
+              "canDeleteDocuments": true
             }
           ]
         },
         "documents": [
           {
             "action": "create",
-            "computeWithForm": true,
             "items": {
               "Form": "DominoOIDCProvider",
               "OIDCP_DominoServers": "CN={{ domino_server_name_common }}/O={{ domino_organization }}",
@@ -616,15 +680,20 @@
               "name": "AutomaticallyCrossCertifiedUsers",
               "level": "manager",
               "type": "personGroup",
-              "isPublicReader": true,
-              "isPublicWriter": true,
-              "canCreateDocuments": true,
+              "canReplicateOrCopyDocuments": true,
+              "canDeleteDocuments": true
+            },
+            {
+              "name": "{{ domino_admin_user_first_name }} {{ domino_admin_user_last_name }}/{{ domino_organization }}",
+              "level": "manager",
+              "type": "person",
+              "canReplicateOrCopyDocuments": true,
               "canDeleteDocuments": true
             }
           ]
         },
         "documents": [
-{% if domino_oidc_provider_enabled and domino_major_version >= 14 %}
+{% if domino_oidc_provider_enabled and domino_major_version >= 14 and not is_additional_server %}
           {
             "action": "create",
             "items": {
@@ -636,7 +705,7 @@
               "$PublicAccess": "1"
             }
           }
-{% else %}
+{% elif not is_additional_server %}
           {
             "action": "create",
             "items": {
