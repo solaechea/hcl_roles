@@ -511,21 +511,9 @@
               "Form": "OIDCProvider",
 {% if domino_oidc_provider_nomad_enabled or domino_oidc_provider_verse_enabled or domino_oidc_provider_web_enabled %}
 {% if not domino_oidc_provider_federation_enabled %}
-{% if domino_oidc_provider_nomad_enabled %}
-              "OIDCHostname": "{{ domino_nomadweb_proxy_url }}",
-{% elif domino_oidc_provider_verse_enabled %}
-              "OIDCHostname": "{{ domino_verse_proxy_url }}",
-{% elif domino_oidc_provider_web_enabled %}
-              "OIDCHostname": "{{ domino_install_proxy_url }}",
-{% endif %}
+              "OIDCHostname": "{% if domino_oidc_provider_nomad_enabled %}{{ domino_nomadweb_proxy_url }}{% endif %}{% if domino_oidc_provider_verse_enabled %}{% if domino_oidc_provider_nomad_enabled %} {% endif %}{{ domino_verse_proxy_url }}{% endif %}{% if domino_oidc_provider_web_enabled %}{% if domino_oidc_provider_nomad_enabled or domino_oidc_provider_verse_enabled %} {% endif %}{{ domino_install_proxy_url }}{% endif %}",
 {% else %}
-{% if domino_oidc_provider_nomad_enabled %}
-              "OIDCHostname": "bearer.vault.{{ domino_server_name_common }}; {{ domino_nomadweb_proxy_url }}",
-{% elif domino_oidc_provider_verse_enabled %}
-              "OIDCHostname": "bearer.vault.{{ domino_server_name_common }}; {{ domino_verse_proxy_url }}",
-{% elif domino_oidc_provider_web_enabled %}
-              "OIDCHostname": "bearer.vault.{{ domino_server_name_common }}; {{ domino_install_proxy_url }}",
-{% endif %}
+              "OIDCHostname": "bearer.vault.{{ domino_server_name_common }};{% if domino_oidc_provider_nomad_enabled %} {{ domino_nomadweb_proxy_url }}{% endif %}{% if domino_oidc_provider_verse_enabled %} {{ domino_verse_proxy_url }}{% endif %}{% if domino_oidc_provider_web_enabled %} {{ domino_install_proxy_url }}{% endif %}",
               "OIDCIDVaultScope": "Domino.vault.{{ domino_organization }}-O={{ id_vault_name }}",
 {% endif %}
 {% else %}
