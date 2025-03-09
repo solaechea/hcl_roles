@@ -512,6 +512,7 @@
         "documents": [
           {
             "action": "create",
+            "computeWithForm": true,
             "items": {
               "Form": "DominoOIDCProvider",
               "OIDCP_DominoServers": "CN={{ domino_server_name_common }}/O={{ domino_organization }}",
@@ -521,6 +522,7 @@
           },
           {
             "action": "create",
+            "computeWithForm": true,
             "items": {
               "Form": "OIDCProvider",
 {% if domino_oidc_provider_nomad_enabled or domino_oidc_provider_verse_enabled or domino_oidc_provider_web_enabled %}
@@ -531,7 +533,7 @@
               "OIDCIDVaultScope": "Domino.vault.{{ domino_organization }}-O={{ id_vault_name }}",
 {% endif %}
 {% else %}
-              "OIDCHostname": "{{ domino_install_proxy_url }}",
+              "OIDCHostname": "{{ domino_install_proxy_url }};",
 {% endif %}
               "OIDCProviderName": "Domino OIDC Provider",
               "OIDCBaseURL": "https://{{ domino_oidc_install_proxy_url }}/auth/protocol/oidc",
@@ -555,6 +557,7 @@
 {% if domino_oidc_provider_nomad_enabled %}
           {
             "action": "create",
+            "computeWithForm": true,
             "items": {
               "Form": "RegisteredOAuthClient",
               "RC_ProviderName": "{{ domino_oidc_install_proxy_url }}",
@@ -576,6 +579,7 @@
 {% if domino_oidc_provider_verse_enabled %}
           {
             "action": "create",
+            "computeWithForm": true,
             "items": {
               "Form": "RegisteredOAuthClient",
               "RC_ProviderName": "{{ domino_oidc_install_proxy_url }}",
