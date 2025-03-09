@@ -406,7 +406,7 @@
           "computeWithForm": true,
           "items": {
             "Form": "WebSite",
-            "AutomationComment " : "Domino OIDC Provider",
+            "AutomationComment" : "Domino OIDC Provider",
             "WSIsDflt"           : "0",
             "ISiteAdrs"          : [ "{{ domino_oidc_install_proxy_url }}" ],
             "ISiteName"          : "Domino OIDC Provider",
@@ -437,7 +437,7 @@
           "computeWithForm": true,
           "items": {
             "Form": "WebSite",
-            "AutomationComment " : "Verse",
+            "AutomationComment" : "Verse",
             "WSIsDflt"           : "0",
             "WSHomeURL"          : "/verse",
             "ISiteAdrs"          : [ "{{ domino_verse_proxy_url }}" ],
@@ -470,7 +470,7 @@
           "computeWithForm": true,
           "items": {
             "Form": "WebSite",
-            "AutomationComment " : "Domino Federated Web Login",
+            "AutomationComment" : "Domino Federated Web Login",
             "WSIsDflt"           : "0",
 {% if super_human_portal_enabled %}
             "WSHomeURL"          : "/Super.Human.Portal/js-release/index.html",
@@ -507,6 +507,7 @@
           "computeWithForm": true,
           "items": {
             "Form": "WebSite",
+            "AutomationComment" : "This default site document is what enabled SNI verification, Domino will try to route the request after initial TLS handshake, to the appropiate internet site doc, so long as you pass the host header via SNI",
             "ISiteOrg": "{{ domino_organization }}",
             "ISiteName": "Domino Web Site",
             "WSIsDflt": "1",
