@@ -481,6 +481,7 @@
             "HTTP_EnableRedirectCmd" : "1",
 {% if super_human_portal_enabled %}
             "WSHomeURL": "Super.Human.Portal/js-release/index.html",
+            "login_url": "/names.nsf?open&RedirectTo=/Super.Human.Portal/js-release/index.html",
 {% endif %}
             "HTTP_EnableSessionAuth": "1",
             "WSHTTPMthds_ed": [ "1", "2", "3", "4", "6", "7" ]
@@ -495,6 +496,19 @@
         "title": "Identity Catalogue Database",
         "templatePath": "idpcat.ntf",
         "signUsingAdminp": false,
+        "ACL": {
+          "ACLEntries": [
+            {
+              "name": "AutomaticallyCrossCertifiedUsers",
+              "level": "manager",
+              "type": "personGroup",
+              "isPublicReader": true,
+              "isPublicWriter": true,
+              "canCreateDocuments": true,
+              "canDeleteDocuments": true
+            }
+          ]
+        },
         "documents": [
           {
             "action": "create",
@@ -592,6 +606,19 @@
         "title": "Domino Web Server Configuration",
         "templatePath": "domcfg5.ntf",
         "signUsingAdminp": false,
+        "ACL": {
+          "ACLEntries": [
+            {
+              "name": "AutomaticallyCrossCertifiedUsers",
+              "level": "manager",
+              "type": "personGroup",
+              "isPublicReader": true,
+              "isPublicWriter": true,
+              "canCreateDocuments": true,
+              "canDeleteDocuments": true
+            }
+          ]
+        },
         "documents": [
 {% if domino_oidc_provider_enabled and domino_major_version >= 14 %}
           {
