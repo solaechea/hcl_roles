@@ -120,10 +120,26 @@
         creates: "{{ completed_dir }}/kyr-cert-imported"
 
     -
+      name: "Adding Root CA Certificate to KYR"
+      ansible.builtin.shell: >
+        {{ domino_install_basedir }}/bin/tools/startup
+        {{ domino_install_dir }}/kyrtool import roots
+        -k {{ cert_dir }}/kyr/{{ kyr_cert }}
+        -p {{ cert_pass }}
+        -i /usr/local/share/ca-certificates/self-signed/ca-certificate.crt &&
+        touch {{ completed_dir }}/kyr-root-ca-imported
+      become_user: "{{ domino_user }}"
+      when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
+      args:
+        executable: "/bin/bash"
+        chdir: "{{ domino_home_dir }}"
+        creates: "{{ completed_dir }}/kyr-root-ca-imported"
+
+    -
       name: "Getting SSL certificate info"
       when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
       ansible.builtin.openssl_certificate:
-        path: /usr/local/share/ca-certificates/ca-certificate.crt
+        path: /usr/local/share/ca-certificates/self-signed/ca-certificate.crt
       register: cert_info
 
     -
