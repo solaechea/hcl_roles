@@ -173,6 +173,7 @@ domino_install_proxy_url: "{{ domino_install_port_forwards[0].url }}.{{ settings
 
 domino_oidc_provider_enabled: true
 domino_oidc_hostname: auth
+domino_oidc_debug: true
 domino_oidc_install_proxy_url: "{{ domino_oidc_hostname }}.{{ settings.hostname }}.{{ settings.domain }}"
 domino_oidc_client_id: "{{ settings.hostname }}_{{ settings.domain }}_client_id"
 domino_oidc_client_secret: "{{ lookup('ansible.builtin.password', '/dev/null', seed=inventory_hostname) }}"
