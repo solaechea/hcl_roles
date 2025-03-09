@@ -138,7 +138,7 @@
     -
       name: "Getting SSL certificate info"
       when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
-      ansible.builtin.openssl_certificate:
+      ansible.builtin.openssl_certificate_info:
         path: "{{ cert_dir }}/ca/ca-certificate.crt"
       register: cert_info
 
