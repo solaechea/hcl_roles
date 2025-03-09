@@ -152,7 +152,7 @@
       name: "Extracting Subject Key Identifier of the Self Signed Certificate Authority"
       when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
       ansible.builtin.set_fact:
-        ca_subject_key_id_raw: "{{ ca_cert_info.ca_subject_key_identifier | regex_replace(':', '') }}"
+        ca_subject_key_id_raw: "{{ ca_cert_info.subject_key_identifier | regex_replace(':', '') }}"
 
     -
       name: "Formatting Subject Key Identifier of the Self Signed Certificate Authority"
