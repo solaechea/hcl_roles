@@ -521,7 +521,11 @@
 {% endif %}
               "OIDCProviderName": "Domino OIDC Provider",
               "OIDCBaseURL": "https://{{ domino_oidc_install_proxy_url }}/auth/protocol/oidc",
+{% if domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled %}
+              "OIDC_TrustedRoots": "{{ subject_key_id }}",
+{% else %}
               "OIDC_TrustedRoots": "{{ domino_oidc_trusted_roots }}",
+{% endif %}
               "OIDCClientID": "{{ domino_oidc_client_id }}",
               "OIDCSecret": "{{ domino_oidc_client_secret }}",
               "OIDCAuthType": "{{ domino_oidc_auth_type }}",
