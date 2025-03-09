@@ -158,7 +158,7 @@
       name: "Formatting Subject Key Identifier"
       when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
       ansible.builtin.set_fact:
-        subject_key_id: "{{ subject_key_id_raw | regex_replace('(.{4})(?!$)', '\\1 ') }}"
+        subject_key_id: "{{ subject_key_id_raw | upper | regex_replace('(.{4})(?!$)', '\\1 ') }}"
 
     -
       name: "Printing Subject Key Identifier"
