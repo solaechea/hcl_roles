@@ -54,7 +54,7 @@
       "GJA_Genesis": "JavaAddin/Genesis/{{ genesis_jar }}",
 {% endif %}
 {% if domino_oidc_provider_verse_enabled %}
-      "INOTES_WA_LOGOUTREDIRECT" : "https://{{ domino_oidc_install_proxy_url }}/auth/protocol/oidc/logout?client_id={{ domino_oidc_client_id }}_verse&post_logout_redirect_uri=https%3A%2F%2F{{ domino_verse_proxy_url }}%2Fverse",
+      "INOTES_WA_LOGOUTREDIRECT" : "https://{{ domino_oidc_install_proxy_url }}/auth/protocol/oidc/logout?client_id={{ domino_oidc_client_id }}&post_logout_redirect_uri=https%3A%2F%2F{{ domino_verse_proxy_url }}%2Fverse",
 {% endif %}
 {% if debug_oidc is defined %}
       "DEBUG_OIDC_PROVIDER" : "4",
@@ -544,51 +544,55 @@
               "BearerAllowedClientIDs": "{{ domino_oidc_bearer_allowed_client_ids }}",
               "OIDCLogLevel": "{{ domino_oidc_log_level }}"
             }
-{% if domino_oidc_provider_nomad_enabled and domino_oidc_provider_federation_enabled %}
+{% if domino_oidc_provider_federation_enabled %}
           },
+{% if domino_oidc_provider_nomad_enabled %}
           {
             "action": "create",
             "items": {
               "Form": "RegisteredOAuthClient",
-              "RC_AllowedWebOrigins": "https://{{ domino_nomadweb_proxy_url }}",
-              "RC_aud": "{{ domino_organization }}-O={{ id_vault_name }}",
-              "RC_auth_method": "2",
-              "RC_client_id": "{{ domino_oidc_client_id }}_nomad",
-              "RC_client_secret": "{{ domino_oidc_client_secret }}",
+              "RC_ProviderName": "{{ domino_oidc_install_proxy_url }}",
               "RC_Name": "Nomad",
-              "RC_post_logout_redirect_uris": "https://{{ domino_nomadweb_proxy_url }}/logout/callback",
-              "RC_ProviderName": "{{ domino_oidc_install_proxy_url }}",
+              "RC_client_id": "{{ domino_oidc_client_id }}_nomad",
+              "RC_auth_method": "2",
+              "RC_client_secret": "{{ domino_oidc_client_secret }}",
               "RC_redirect_uris": "https://{{ domino_nomadweb_proxy_url }}/login/callback",
+              "RC_aud": "{{ domino_organization }}-O={{ id_vault_name }}",
               "RC_scope": "openid email Domino.vault.{{ domino_organization }}-O={{ id_vault_name }}",
+              "RC_back_channel_logout_uri" : "",
+              "RC_AllowedWebOrigins": "https://{{ domino_nomadweb_proxy_url }}",
+              "RC_post_logout_redirect_uris": "https://{{ domino_nomadweb_proxy_url }}/logout/callback",
               "BearerAllowedClientIDs": "{{ domino_oidc_bearer_allowed_client_ids }}",
               "OIDCLogLevel": "{{ domino_oidc_log_level }}"
             }
-          }
-{% elif domino_oidc_provider_verse_enabled and domino_oidc_provider_federation_enabled %}
           },
+{% endif %}
+{% if domino_oidc_provider_verse_enabled %}
           {
             "action": "create",
             "items": {
               "Form": "RegisteredOAuthClient",
-              "RC_aud": "{{ domino_organization }}-O={{ id_vault_name }}",
-              "RC_auth_method": "2",
-              "RC_client_id": "{{ domino_oidc_client_id }}_verse",
-              "RC_client_secret": "{{ domino_oidc_client_secret }}",
-              "RC_Name": "Verse",
               "RC_ProviderName": "{{ domino_oidc_install_proxy_url }}",
+              "RC_Name": "Verse",
+              "RC_client_id": "{{ domino_oidc_client_id }}",
+              "RC_auth_method": "2",
+              "RC_client_secret": "{{ domino_oidc_client_secret }}",
               "RC_redirect_uris": "https://{{ domino_verse_proxy_url }}/auth/protocol/oidc",
-              "RC_back_channel_logout_uri" : "https://{{ domino_verse_proxy_url }}/auth/protocol/oidc",
+              "RC_aud": "{{ domino_organization }}-O={{ id_vault_name }}",
               "RC_scope": "openid email Domino.vault.{{ domino_organization }}-O={{ id_vault_name }}",
+              "RC_back_channel_logout_uri" : "https://{{ domino_verse_proxy_url }}/auth/protocol/oidc",
+              "RC_AllowedWebOrigins": "",
+              "RC_post_logout_redirect_uris": "",
               "BearerAllowedClientIDs": "{{ domino_oidc_bearer_allowed_client_ids }}",
               "OIDCLogLevel": "{{ domino_oidc_log_level }}"
             }
           }
+{% endif %}
 {% else %}
           }
 {% endif %}
         ]
       },
-
 {% endif %}
       {
         "action": "create",

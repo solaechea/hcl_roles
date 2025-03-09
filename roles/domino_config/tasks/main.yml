@@ -369,9 +369,9 @@
 #        - (domino_fixpack_version | replace('FP', '') | int) is version('2', '>=')
       block:
         -
-          name: "Ensure ca-cert.pem exists"
+          name: "Ensure cacert.pem exists"
           ansible.builtin.file:
-            path: "{{ domino_home_dir }}/ca-cert.pem"
+            path: "{{ domino_home_dir }}/cacert.pem"
             state: touch
             owner: "{{ domino_user }}"
             group: "{{ domino_group }}"
@@ -380,9 +380,9 @@
             access_time: preserve
           
         -
-          name: "Append CA certificate to ca-cert.pem"
+          name: "Append CA certificate to cacert.pem"
           ansible.builtin.blockinfile:
-            path: "{{ domino_home_dir }}/ca-cert.pem"
+            path: "{{ domino_home_dir }}/cacert.pem"
             block: "{{ lookup('file', cert_dir + '/ca/ca-certificate.crt') }}"
             marker: "# {mark} ANSIBLE MANAGED BLOCK - CA CERTIFICATE"
             owner: "{{ domino_user }}"
