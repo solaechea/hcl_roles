@@ -28,6 +28,7 @@ is_additional_server: false
 domino_major_version: "14"
 domino_minor_version: "0"
 domino_patch_version: "0"
+domino_version_string: "{{ domino_major_version|string + '.' + domino_minor_version|string + '.' + domino_patch_version|string }}"
 domino_ea_version: "EA2"
 domino_installer_ea_install: false
 domino_server_installer_tar: "{{ 'Domino_' + domino_major_version|string + '.' + domino_minor_version|string + '_Linux_English' + ('_' + domino_ea_version|string if domino_installer_ea_install else '') + '.tar' }}"
