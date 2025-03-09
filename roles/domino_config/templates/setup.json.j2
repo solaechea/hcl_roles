@@ -527,7 +527,7 @@
 {% if not domino_oidc_provider_federation_enabled %}
               "OIDCHostname": "{% if domino_oidc_provider_nomad_enabled %}{{ domino_nomadweb_proxy_url }}; {% endif %}{% if domino_oidc_provider_verse_enabled %}{{ domino_verse_proxy_url }}; {% endif %}{% if domino_oidc_provider_web_enabled %} {{ domino_install_proxy_url }}; {% endif %}",
 {% else %}
-              "OIDCHostname": "bearer.vault.{{ domino_server_name_common }};{% if domino_oidc_provider_nomad_enabled %} {{ domino_nomadweb_proxy_url }};{% endif %}{% if domino_oidc_provider_verse_enabled %} {{ domino_verse_proxy_url }};{% endif %}{% if domino_oidc_provider_web_enabled %} {{ domino_install_proxy_url }};{% endif %}",
+              "OIDCHostname": "bearer.vault.{{ domino_server_name_common }};{% if domino_oidc_provider_verse_enabled %} {{ domino_verse_proxy_url }};{% endif %}{% if domino_oidc_provider_web_enabled %} {{ domino_install_proxy_url }}; {{ settings.hostname }}.{{ settings.domain }}; {% endif %}",
               "OIDCIDVaultScope": "Domino.vault.{{ domino_organization }}-O={{ id_vault_name }}",
 {% endif %}
 {% else %}
