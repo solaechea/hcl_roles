@@ -143,10 +143,16 @@
       register: cert_info
 
     -
+      name: "Showing SSL Cert Info"
+      when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
+      ansible.builtin.debug:
+        var: cert_info
+
+    -
       name: "Extracting Subject Key Identifier"
       when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
       ansible.builtin.set_fact:
-        subject_key_id_raw: "{{ cert_info.subject_key_identifier }}"
+        subject_key_id_raw: "{{ cert_info.subject_key_identifier | regex_replace(':', '') }}"
 
     -
       name: "Formatting Subject Key Identifier"
