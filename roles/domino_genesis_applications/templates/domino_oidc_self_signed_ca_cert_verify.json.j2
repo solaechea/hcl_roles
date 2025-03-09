@@ -12,7 +12,7 @@
                         { 
                             "action": "update", 
                             "search": {
-                                        "formula":"Form=\"Certifier\" & KeyIdentifier=\"{{ subject_key_id }}\"",
+                                        "formula":"Form=\"Certifier\" & KeyIdentifier=\"{{ ca_subject_key_id }}\"",
                                         "number":0
                             },
                             "computeWithForm": true,
@@ -20,6 +20,17 @@
                                 "Category" : ["ICAP", "INETServer", "OIDC"],
                                 "Status" : "I",
                                 "RestictUseToCategory" : "0"
+                            }
+                        },
+                        { 
+                            "action": "update", 
+                            "search": {
+                                        "formula":"Form=\"KeyFile\" & KeyIdentifier=\"{{ subject_key_id }}\"",
+                                        "number":0
+                            },
+                            "computeWithForm": true,
+                            "items": {
+                                "TrustedRoots" : ["{{ ca_subject_key_id }}"]
                             }
                         }
                     ]

@@ -140,31 +140,63 @@
       when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
       ansible.builtin.openssl_certificate_info:
         path: "{{ cert_dir }}/ca/ca-certificate.crt"
+      register: ca_cert_info
+
+    -
+      name: "Showing Self Signed Certificate Authority Cert Info"
+      when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
+      ansible.builtin.debug:
+        var: ca_cert_info
+
+    -
+      name: "Extracting Subject Key Identifier of the Self Signed Certificate Authority"
+      when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
+      ansible.builtin.set_fact:
+        ca_subject_key_id_raw: "{{ ca_cert_info.ca_subject_key_identifier | regex_replace(':', '') }}"
+
+    -
+      name: "Formatting Subject Key Identifier of the Self Signed Certificate Authority"
+      when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
+      ansible.builtin.set_fact:
+        ca_subject_key_id: "{{ ca_subject_key_id_raw | upper | regex_replace('(.{4})(?!$)', '\\1 ') }}"
+
+    -
+      name: "Printing Subject Key Identifier of the Self Signed Certificate Authority"
+      when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
+      ansible.builtin.debug:
+        var: ca_subject_key_id
+
+    -
+      name: "Getting Self Signed SSL certificate info"
+      when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
+      ansible.builtin.openssl_certificate_info:
+        path: "{{ cert_dir }}/crt/{{ settings.hostname }}.{{ settings.domain }}.crt"
       register: cert_info
 
     -
-      name: "Showing SSL Cert Info"
+      name: "Showing Self Signed SSL certificate info"
       when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
       ansible.builtin.debug:
         var: cert_info
 
     -
-      name: "Extracting Subject Key Identifier"
+      name: "Extracting Subject Key Identifier from the Self Signed SSL certificate info"
       when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
       ansible.builtin.set_fact:
         subject_key_id_raw: "{{ cert_info.subject_key_identifier | regex_replace(':', '') }}"
 
     -
-      name: "Formatting Subject Key Identifier"
+      name: "Formatting Subject Key Identifier of the Self Signed SSL certificate info"
       when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
       ansible.builtin.set_fact:
         subject_key_id: "{{ subject_key_id_raw | upper | regex_replace('(.{4})(?!$)', '\\1 ') }}"
 
     -
-      name: "Printing Subject Key Identifier"
+      name: "Printing Subject Key Identifier of the of the Self Signed SSL certificate info"
       when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
       ansible.builtin.debug:
         var: subject_key_id
+##
     
     -
       name: "Creating Domino DAOS, Translogs, NIFNSF and FullText Thread Path directories"

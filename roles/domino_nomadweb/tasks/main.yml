@@ -273,6 +273,7 @@
       name: "Starting Domino for Changes to take effect"
       become: true
       when: not nomadweb_installed_check.stat.exists
+      notify: Domino Started
       ansible.builtin.service:
         name: domino
         state: started
