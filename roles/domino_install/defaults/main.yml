@@ -19,6 +19,10 @@ domino_admin_user_first_name: Prominic
 domino_admin_user_last_name: Admin
 domino_admin_user_id: admin-user.id
 domino_admin_notes_id_password: "password"
+auto_register_users_enable_full_text_index: true
+auto_register_users_cert_expiry_months: 48
+auto_register_users_save_id_to_person_doc: false
+auto_register_users_password: "password"
 domino_dev_user_first_name: Dev
 domino_dev_user_last_name: User
 domino_dev_user_short_name: DevUser

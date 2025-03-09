@@ -30,6 +30,17 @@
                             "items": {
                                 "Value":"https://{{ domino_nomadweb_proxy_url }}/nomad"
                             }
+                        },
+                        { 
+                            "action": "update", 
+                            "search": {
+                                        "formula":"Form=\"Config Value\" & Key=\"logout_url\"",
+                                        "number":0
+                            },
+                            "computeWithForm": true,
+                            "items": {
+                                "Value":"https://domino.oidc-demo.startcloud.com/auth/protocol/oidc"
+                            }
                         }
                     ]
                 }
