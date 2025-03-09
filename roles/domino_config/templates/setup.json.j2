@@ -105,7 +105,7 @@
 {% if not is_additional_server and domino_server_id_creation_tool is defined and domino_server_id_creation_tool == "ots" and ots_generate_server_names is defined and ots_generate_server_names | length > 0 %}
     "autoRegister": {
       "IDPath": "{{ domino_home_dir }}/ids",
-      "serverNames": {{ ots_generate_server_names | tojson }}
+      "serverNames": {{ ots_generate_server_names | to_json }}
     },
 {% endif %}
 {% else %}
@@ -196,7 +196,8 @@
           },
           "computeWithForm": true,
           "items": {
-             "VaultBearerOn": "1"
+             "VaultBearerOn": "{{ id_vault_enable_vault_bearer }}",
+             "IDVAppsOK":"{{ id_vault_name_allow_notes_based_apps }}"
           }
         },
 {% endif %}
@@ -593,7 +594,7 @@
 {% if not domino_oidc_provider_federation_enabled %}
               "OIDCHostname": "{% if domino_oidc_provider_nomad_enabled %}{{ domino_nomadweb_proxy_url }}; {% endif %}{% if domino_oidc_provider_verse_enabled %}{{ domino_verse_proxy_url }}; {% endif %}{% if domino_oidc_provider_web_enabled %} {{ domino_install_proxy_url }}; {% endif %}",
 {% else %}
-              "OIDCHostname": "bearer.vault.{{ domino_server_name_common }};{% if domino_oidc_provider_verse_enabled %} {{ domino_verse_proxy_url }};{% endif %}{% if domino_oidc_provider_web_enabled %} {{ domino_install_proxy_url }}; {{ settings.hostname }}.{{ settings.domain }}; {% endif %}",
+              "OIDCHostname": "bearer.vault.{{ domino_server_name_common }}; {% if domino_oidc_provider_verse_enabled %}{{ domino_verse_proxy_url }}; {% endif %}{% if domino_oidc_provider_web_enabled %}{{ domino_install_proxy_url }};{% endif %}",
               "OIDCIDVaultScope": "Domino.vault.{{ domino_organization }}-O={{ id_vault_name }}",
 {% endif %}
 {% else %}
