@@ -123,7 +123,7 @@
         "saveIDToPersonDocument": {{ auto_register_users_save_id_to_person_doc | lower }},
         "password": "{{ auto_register_users_password }}",
         "enableFullTextIndex": {{ auto_register_users_enable_full_text_index | lower }},
-        "certificateExpirationMonths": "{{ auto_register_users_cert_expiry_months }}"
+        "certificateExpirationMonths": {{ auto_register_users_cert_expiry_months | int }}
       },
       "users": [
       {
@@ -135,7 +135,7 @@
         "mailFilePath": "mail/{{ domino_dev_user_short_name }}.nsf",
         "enableFullTextIndex": {{ auto_register_users_enable_full_text_index | lower}},
         "IDFilePath": "{{ domino_home_dir }}/ids/{{ domino_dev_user_id }}",
-        "certificateExpirationMonths": "{{ auto_register_users_cert_expiry_months }}"
+        "certificateExpirationMonths": {{ auto_register_users_cert_expiry_months | int }}
       }
       ]
     },
