@@ -669,9 +669,9 @@
               "RC_auth_method": "2",
               "RC_client_secret": "{{ domino_oidc_client_secret }}",
 {% if domino_oidc_provider_verse_enabled and domino_oidc_provider_web_enabled %}
-              "RC_redirect_uris": ["https://{{ domino_verse_proxy_url }}/auth/protocol/oidc", "https://{{ domino_install_proxy_url }}/auth/protocol/oidc", "https://{{ settings.hostname }}{{ settings.domain }}/auth/protocol/oidc"],
+              "RC_redirect_uris": ["https://{{ domino_verse_proxy_url }}/auth/protocol/oidc", "https://{{ domino_install_proxy_url }}/auth/protocol/oidc", "https://{{ settings.hostname }}.{{ settings.domain }}/auth/protocol/oidc"],
 {% elif not domino_oidc_provider_verse_enabled and domino_oidc_provider_web_enabled %}
-              "RC_redirect_uris": ["https://{{ domino_install_proxy_url }}/auth/protocol/oidc", "https://{{ settings.hostname }}{{ settings.domain }}/auth/protocol/oidc"],
+              "RC_redirect_uris": ["https://{{ domino_install_proxy_url }}/auth/protocol/oidc", "https://{{ settings.hostname }}.{{ settings.domain }}/auth/protocol/oidc"],
 {% elif domino_oidc_provider_verse_enabled and not domino_oidc_provider_web_enabled %}
               "RC_redirect_uris": "https://{{ domino_verse_proxy_url }}/auth/protocol/oidc",
 {% endif %}
