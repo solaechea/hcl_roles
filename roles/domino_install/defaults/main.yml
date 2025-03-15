@@ -30,9 +30,9 @@ domino_dev_user_id: dev-user.id
 domino_dev_user_id_password: "password"
 user_safe_id: SAFE.ids
 is_additional_server: false
-domino_major_version: "14"
-domino_minor_version: "0"
-domino_patch_version: "0"
+domino_major_version: 14
+domino_minor_version: 0
+domino_patch_version: 0
 domino_version_string: "{{ domino_major_version|string + '.' + domino_minor_version|string + '.' + domino_patch_version|string }}"
 domino_ea_version: "EA2"
 domino_installer_ea_install: false
