@@ -231,9 +231,9 @@
                 oidc_hostnames_raw_for_verse: "{{ oidc_hostnames_file['content'] | b64decode | regex_replace('\n', '') | regex_replace('\r', '') }}"
 
             -
-              name: "Removing OIDCHostname= prefix and checking for domino_verse_proxy_url"
+              name: "Removing OIDCHostname= prefix, checking for domino_verse_proxy_url, and ensuring unique entries"
               ansible.builtin.set_fact:
-                oidc_hostnames_processed_for_verse: "{{ oidc_hostnames_raw_for_verse | regex_replace('^OIDCHostname=', '') }}"
+                oidc_hostnames_processed_for_verse: "{{ oidc_hostnames_raw_for_verse | regex_replace('^OIDCHostname=', '') | split(' ') | unique | join(' ') }}"
 
             -
               name: "Appending domino_verse_proxy_url if not present"
@@ -321,14 +321,14 @@
                 oidc_registered_clients_redirect_uris_raw: "{{ oidc_registered_clients_file_redirect_uris['content'] | b64decode | regex_replace('\n', '') | regex_replace('\r', '') }}"
 
             -
-              name: "Removing RC_Name= prefix and checking for Registered client name"
+              name: "Removing RC_Name= prefix, checking for Registered client name, and ensuring unique entries"
               ansible.builtin.set_fact:
-                oidc_registered_clients_processed_verse: "{{ oidc_registered_clients_raw_verse | regex_replace('^RC_Name=', '') }}"
+                oidc_registered_clients_processed_verse: "{{ oidc_registered_clients_raw_verse | regex_replace('^RC_Name=', '') | split(' ') | unique | join(' ') }}"
 
             -
-              name: "Removing RC_redirect_uris= prefix and checking for domino_verse_proxy_url"
+              name: "Removing RC_redirect_uris= prefix, checking for domino_verse_proxy_url, and ensuring unique entries"
               ansible.builtin.set_fact:
-                oidc_registered_clients_redirect_uri_processed_verse: "{{ oidc_registered_clients_redirect_uris_raw | regex_replace('^RC_redirect_uris=', '') }}"
+                oidc_registered_clients_redirect_uri_processed_verse: "{{ oidc_registered_clients_redirect_uris_raw | regex_replace('^RC_redirect_uris=', '') | split(' ') | unique | join(' ') }}"
 
             -
               name: "Appending Verse Name if not present"

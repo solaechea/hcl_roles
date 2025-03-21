@@ -54,6 +54,29 @@
               register: presence_oidc_idpcat
               failed_when: presence_oidc_idpcat is changed
 
+            -
+              name: "Creating Templated JSON file to add Domcfg from NTF"
+              ansible.builtin.template:
+                dest: "{{ domino_home_dir }}/JavaAddin/Genesis/json/domino_oidc_additional_create_domcfg.json"
+                mode: "a+x"
+                owner: "{{ domino_user }}"
+                group: "{{ domino_group }}"
+                src: "domino_oidc_additional_create_domcfg.json.j2"
+
+            -
+              name: "Waiting until Genesis returns OK after processing domino_oidc_additional_create_domcfg"
+              ansible.builtin.wait_for:
+                path: "{{ domino_home_dir }}/JavaAddin/Genesis/jsonresponse/domino_oidc_additional_create_domcfg.json"
+
+            -
+              name: "Checking if Genesis returns that the json file processed succesfully: domino_oidc_additional_create_domcfg JSON applied succesfully"
+              ansible.builtin.lineinfile:
+                path: "{{ domino_home_dir }}/JavaAddin/Genesis/jsonresponse/domino_oidc_additional_create_domcfg.json"
+                line: "OK"
+                state: present
+              check_mode: true
+              register: presence_oidc_domcfg
+              failed_when: presence_oidc_domcfg is changed
 
         -
           name: "Setting up Domino OIDC for use with Self Signed Cert"
@@ -271,15 +294,6 @@
               name: "Using Genesis to create a Registered Auth Client for WebApps via JSON"
               ansible.builtin.template:
                 dest: "{{ domino_home_dir }}/JavaAddin/Genesis/json/domino_oidc_registered_client_web_apps.json"
-                mode: "a+x"
-                owner: "{{ domino_user }}"
-                group: "{{ domino_group }}"
-                src: "domino_oidc_registered_client_web_apps.json.j2"
-
-            -
-              name: "Using Genesis to create a Registered Auth Client for WebApps via JSON"
-              ansible.builtin.template:
-                dest: "{{ domino_home_dir }}/JavaAddin/Genesis/domino_oidc_registered_client_web_apps.json"
                 mode: "a+x"
                 owner: "{{ domino_user }}"
                 group: "{{ domino_group }}"

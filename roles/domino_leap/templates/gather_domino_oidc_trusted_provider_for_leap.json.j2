@@ -13,7 +13,7 @@
 							"action": "export",
 							"filePath": "JavaAddin/Genesis/jsonresponse/oidc_hostnames.txt",
 							"search": {
-							   "formula":"Form=\"OIDCProvider\" & OIDCProviderName=\"Domino OIDC Provider\"",
+							   "formula":"Form=\"OIDCProvider\" & OIDCProviderName=\"{{ settings.hostname }} Domino OIDC Provider\"",
 							},
 							"evaluate": "\"OIDCHostname=\"+@Implode(OIDCHostname)"
 						}

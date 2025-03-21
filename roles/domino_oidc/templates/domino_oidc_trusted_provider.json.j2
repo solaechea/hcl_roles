@@ -23,7 +23,7 @@
                                     {% else %}
                                         "OIDCHostname": ["{{ domino_install_proxy_url }}","{{ settings.hostname }}.{{ settings.domain }}"],
                                     {% endif %}
-                                "OIDCProviderName": "Domino OIDC Provider",
+                                "OIDCProviderName": "{{ settings.hostname }} Domino OIDC Provider",
                                 "OIDCBaseURL": "https://{{ domino_oidc_install_proxy_url }}/auth/protocol/oidc",
 {% if domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled %}
                                 "OIDC_TrustedRoots": "{{ ca_subject_key_id }}",

@@ -232,7 +232,7 @@
           failed_when: presence is changed
 
         -
-          name: "Setting up OIDC for Leap by Adding Leap to Registered Clients List for Unified Client Configs"
+          name: "Setting up OIDC for Leap by Adding Leap to OIDC Trusted Providers List for Unified Client Configs"
           when: 
             - domino_oidc_web_apps_use_unified_registered_client
             - domino_oidc_provider_enabled
@@ -276,9 +276,9 @@
                 oidc_hostnames_raw_for_leap: "{{ oidc_hostnames_file_for_leap['content'] | b64decode | regex_replace('\n', '') | regex_replace('\r', '') }}"
 
             -
-              name: "Removing OIDCHostname= prefix and checking for domino_leap_proxy_url"
+              name: "Removing OIDCHostname= prefix, checking for domino_leap_proxy_url, and ensuring unique entries"
               ansible.builtin.set_fact:
-                oidc_hostnames_processed_for_leap: "{{ oidc_hostnames_raw_for_leap | regex_replace('^OIDCHostname=', '') }}"
+                oidc_hostnames_processed_for_leap: "{{ oidc_hostnames_raw_for_leap | regex_replace('^OIDCHostname=', '') | split(' ') | unique | join(' ') }}"
 
             -
               name: "Appending domino_leap_proxy_url if not present"
@@ -366,14 +366,14 @@
                 oidc_registered_clients_redirect_uris_raw: "{{ oidc_registered_clients_file_redirect_uris['content'] | b64decode | regex_replace('\n', '') | regex_replace('\r', '') }}"
 
             -
-              name: "Removing RC_Name= prefix and checking for Registered client name"
+              name: "Removing RC_Name= prefix, checking for Registered client name, and ensuring unique entries"
               ansible.builtin.set_fact:
-                oidc_registered_clients_processed: "{{ oidc_registered_clients_raw | regex_replace('^RC_Name=', '') }}"
+                oidc_registered_clients_processed: "{{ oidc_registered_clients_raw | regex_replace('^RC_Name=', '') | split(' ') | unique | join(' ') }}"
 
             -
-              name: "Removing RC_redirect_uris= prefix and checking for domino_leap_proxy_url"
+              name: "Removing RC_redirect_uris= prefix, checking for domino_leap_proxy_url, and ensuring unique entries"
               ansible.builtin.set_fact:
-                oidc_registered_clients_redirect_uri_processed: "{{ oidc_registered_clients_redirect_uris_raw | regex_replace('^RC_redirect_uris=', '') }}"
+                oidc_registered_clients_redirect_uri_processed: "{{ oidc_registered_clients_redirect_uris_raw | regex_replace('^RC_redirect_uris=', '') | split(' ') | unique | join(' ') }}"
 
             -
               name: "Appending Leap Name if not present"

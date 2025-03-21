@@ -9,6 +9,7 @@ leap_build_map:
   "1.1.1": "18"
   "1.1.5": "4"
   "1.1.6": "25"
+  "1.1.7": "29"
 
 leap_archive: "hcl.dleap-{{ leap_version }}.{{ leap_build_map[leap_version] }}.zip"
 
