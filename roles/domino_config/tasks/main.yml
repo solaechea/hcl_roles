@@ -529,29 +529,19 @@
       name: "Using the Additional Server Creation Tool to generate Server IDs"
       when: 
         - domino_server_id_creation_tool == "asja"
-        - actual_asja_generate_server_ids is defined
-        - actual_asja_generate_server_ids | length > 0
+        - asja_generate_server_ids is defined
+        - asja_generate_server_ids | length > 0
+        - not domino_server_touched.stat.exists
       block:
         -
-          name: 'Setting asja_generate_server_ids for loop'
-          set_fact:
-            actual_asja_generate_server_ids: "{{ asja_generate_server_ids }}"
-          when: 
-            - not domino_server_touched.stat.exists
-            - not is_additional_server
-            - asja_generate_server_ids is defined
-            - asja_generate_server_ids | length > 0
-
-        -
           name: "Creating the Properties file to Generate Additional Server IDs"
-          when: not domino_server_touched.stat.exists
           ansible.builtin.template:
             dest: "/tmp/{{ item.name }}-additional.properties"
             mode: "0644"
             owner: "{{ domino_user }}"
             group: "{{ domino_group }}"
             src: additional.properties.j2
-          loop: "{{ actual_asja_generate_server_ids }}"
+          loop: "{{ asja_generate_server_ids }}"
 
         -
           name: "Creating Additional Server IDs using Custom Generate Additional Server ID Tool"
@@ -565,12 +555,7 @@
           environment:
             PASSWORD: "{{ domino_admin_notes_id_password }}"
             LD_LIBRARY_PATH: "{{ domino_install_dir }}"
-          when: 
-            - not domino_server_touched.stat.exists
-            - not is_additional_server
-            - asja_generate_server_ids is defined
-            - asja_generate_server_ids | length > 0
-          loop: "{{ actual_asja_generate_server_ids }}"
+          loop: "{{ asja_generate_server_ids }}"
 
         -
           name: "Copying Server IDs to /id-files/server-ids/"
@@ -582,12 +567,7 @@
             owner: "{{ domino_user }}"
             group: "{{ domino_group }}"
             force: true
-          loop: "{{ actual_asja_generate_server_ids }}"
-          when: 
-            - not domino_server_touched.stat.exists
-            - not is_additional_server
-            - actual_asja_generate_server_ids is defined
-            - actual_asja_generate_server_ids | length > 0
+          loop: "{{ asja_generate_server_ids }}"
 
     -
       name: "Stopping Domino and Enabling at boot"
