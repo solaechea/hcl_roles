@@ -5,6 +5,14 @@
       "type": "additional",
       "IDFilePath": "{{ domino_home_dir }}/ids/{{ domino_server_id }}",
       "useExistingServerID": {{ use_domino_server_id | lower }},
+{% if domino_major_version >= 14 %}
+      "additionalReplicas": [
+        {
+          "databaseName": "idpcat.nsf",
+          "failOnError": false
+        }
+      ],
+{% endif %}
 {% else %}
       "type": "first",
 {% endif %}
@@ -348,7 +356,7 @@
               "Type": "Connection",
               "PortName": "TCPIP",
               "Source": "CN={{ domino_server_name_common }}/O={{ domino_organization }}",
-              "Destination": "{{ origin_server }}.{{ domino_server_domain }}/O={{ domino_organization }}",
+              "Destination": "CN={{ origin_server }}.{{ domino_server_domain }}/O={{ domino_organization }}",
               "SourceDomain": "{{ domino_organization }}",
               "DestinationDomain": "{{ domino_organization }}",
               "ConnectionMode": "0",

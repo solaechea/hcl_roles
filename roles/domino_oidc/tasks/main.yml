@@ -17,31 +17,72 @@
         - domino_major_version is version('14', '>=')
         - not oidc_configured_check.stat.exists
       block:
-        -
-          name: "Ensure cacert.pem exists"
-          ansible.builtin.file:
-            path: "{{ domino_home_dir }}/cacert.pem"
-            state: touch
-            owner: "{{ domino_user }}"
-            group: "{{ domino_group }}"
-            mode: '0644'
-            modification_time: preserve
-            access_time: preserve
 
         -
-          name: "Append CA certificate to cacert.pem"
-          ansible.builtin.blockinfile:
-            path: "{{ domino_home_dir }}/cacert.pem"
-            block: "{{ lookup('file', cert_dir + '/ca/ca-certificate.crt') }}"
-            marker: "# {mark} ANSIBLE MANAGED BLOCK - CA CERTIFICATE"
-            owner: "{{ domino_user }}"
-            group: "{{ domino_group }}"
-            mode: '0644'
+          name: "Checking if IDPcat.nsf exists"
+          ansible.builtin.stat:
+            path: "{{ domino_home_dir }}/idpcat.nsf"
+          register: idpcat_file_check
+
+        -
+          name: "Setting up IDPcat for Domino OIDC"
+          when: 
+            - is_additional_server
+            - not idpcat_file_check.stat.exists
+          block:
+            -
+              name: "Creating Templated JSON file to add IDPcat from NTF"
+              ansible.builtin.template:
+                dest: "{{ domino_home_dir }}/JavaAddin/Genesis/json/domino_oidc_additional_create_idpcat.json"
+                mode: "a+x"
+                owner: "{{ domino_user }}"
+                group: "{{ domino_group }}"
+                src: "domino_oidc_additional_create_idpcat.json.j2"
+
+            -
+              name: "Waiting until Genesis returns OK after processing domino_oidc_additional_create_idpcat"
+              ansible.builtin.wait_for:
+                path: "{{ domino_home_dir }}/JavaAddin/Genesis/jsonresponse/domino_oidc_additional_create_idpcat.json"
+
+            -
+              name: "Checking if Genesis returns that the json file processed succesfully: domino_oidc_additional_create_idpcat JSON applied succesfully"
+              ansible.builtin.lineinfile:
+                path: "{{ domino_home_dir }}/JavaAddin/Genesis/jsonresponse/domino_oidc_additional_create_idpcat.json"
+                line: "OK"
+                state: present
+              check_mode: true
+              register: presence_oidc_idpcat
+              failed_when: presence_oidc_idpcat is changed
+
 
         -
           name: "Setting up Domino OIDC for use with Self Signed Cert"
-          when: domino_https_enabled and selfsigned_enabled and not letsencrypt_enabled
+          when:
+            - domino_https_enabled
+            - selfsigned_enabled
+            - not letsencrypt_enabled
           block:
+            -
+              name: "Ensure cacert.pem exists"
+              ansible.builtin.file:
+                path: "{{ domino_home_dir }}/cacert.pem"
+                state: touch
+                owner: "{{ domino_user }}"
+                group: "{{ domino_group }}"
+                mode: '0644'
+                modification_time: preserve
+                access_time: preserve
+
+            -
+              name: "Append CA certificate to cacert.pem"
+              ansible.builtin.blockinfile:
+                path: "{{ domino_home_dir }}/cacert.pem"
+                block: "{{ lookup('file', cert_dir + '/ca/ca-certificate.crt') }}"
+                marker: "# {mark} ANSIBLE MANAGED BLOCK - CA CERTIFICATE"
+                owner: "{{ domino_user }}"
+                group: "{{ domino_group }}"
+                mode: '0644'
+
             -
               name: "Setting Imported Self Signed CA as trusted via Genesis task"
               ansible.builtin.template:
