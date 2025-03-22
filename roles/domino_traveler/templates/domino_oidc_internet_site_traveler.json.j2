@@ -14,10 +14,10 @@
                             "computeWithForm": true,
                             "items": {
                                 "Form"                          : "WebSite",
-                                "AutomationComment"             : "Traveler",
+                                "AutomationComment"             : "{{ settings.hostname }} Traveler",
                                 "WSIsDflt"                      : "0",
                                 "ISiteAdrs"                     : [ "{{ domino_install_traveler_url }}" ],
-                                "ISiteName"                     : "Traveler",
+                                "ISiteName"                     : "{{ settings.hostname }} Traveler",
                                 "ISiteOrg"                      : "{{ domino_organization }}",
                                 "WSHostingSrvrs"                : "CN={{ domino_server_name_common }}/O={{ domino_organization }}",
                                 "HTTP_TCP_Redirect"             : "1",

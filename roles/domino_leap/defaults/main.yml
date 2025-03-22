@@ -24,3 +24,4 @@ domino_leap_port_forwards:
     url: "leap"
 domino_leap_proxy_url: "{{ domino_leap_port_forwards[0].url }}.{{ settings.hostname }}.{{ settings.domain }}"
 domino_oidc_provider_leap_home_url: "/volt-apps/secure/org/ide/manager.html"
+domino_leap_inet_site_create: true

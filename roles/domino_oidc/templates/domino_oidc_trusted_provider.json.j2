@@ -15,10 +15,10 @@
                             "items": {
                                 "Form": "OIDCProvider",
                                     {% if domino_oidc_provider_federation_enabled and domino_oidc_provider_web_enabled %}
-                                        "OIDCHostname": ["bearer.vault.{{ domino_server_name_common }}","{{ domino_install_proxy_url }}","{{ settings.hostname }}.{{ settings.domain }}"],
+                                        "OIDCHostname": ["bearer.vault.{{ domino_origin_server_name_common }}","{{ domino_install_proxy_url }}","{{ settings.hostname }}.{{ settings.domain }}"],
                                         "OIDCIDVaultScope": "Domino.vault.{{ domino_organization }}-O={{ id_vault_name }}",
                                     {% elif domino_oidc_provider_federation_enabled %}
-                                        "OIDCHostname": ["bearer.vault.{{ domino_server_name_common }}"],
+                                        "OIDCHostname": ["bearer.vault.{{ domino_origin_server_name_common }}"],
                                         "OIDCIDVaultScope": "Domino.vault.{{ domino_organization }}-O={{ id_vault_name }}",
                                     {% else %}
                                         "OIDCHostname": ["{{ domino_install_proxy_url }}","{{ settings.hostname }}.{{ settings.domain }}"],

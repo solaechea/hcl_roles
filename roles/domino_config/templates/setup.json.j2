@@ -427,10 +427,10 @@
               "WSIsDflt"           : "0",
 {% if super_human_portal_enabled %}
               "WSHomeURL"          : "Super.Human.Portal/js-release/index.html",
-              "ISiteName"          : "Super.Human.Portal",
+              "ISiteName"          : "{{ settings.hostname }} Super.Human.Portal",
 {% else %}
               "WSHomeURL"          : "{{ domino_oidc_provider_web_home_url }}",
-              "ISiteName"          : "Domino Web Apps",
+              "ISiteName"          : "{{ settings.hostname }} Domino Web Apps",
 {% endif %}
               "ISiteAdrs"          : [ "{{ domino_install_proxy_url }}", "{{ settings.hostname }}.{{ settings.domain }}" ],
               "WSHostingSrvrs"     : "CN={{ domino_server_name_common }}/O={{ domino_organization }}",
