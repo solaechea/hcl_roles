@@ -166,25 +166,25 @@
                 when: verse_internet_site_doc_check.stat.exists
                 ansible.builtin.slurp:
                   src: "{{ domino_home_dir }}/JavaAddin/Genesis/jsonresponse/oidc_domino_verse_internet_site_doc.txt"
-                register: oidc_provider_file_internet_site_doc
+                register: oidc_provider_file_internet_site_doc_for_verse
 
               -
                 name: "Processing Domino OIDC Provider Inetsite doc entry"
                 when: verse_internet_site_doc_check.stat.exists
                 ansible.builtin.set_fact:
-                  oidc_provider_file_internet_site_doc_for_additional_raw: "{{ oidc_provider_file_internet_site_doc['content'] | b64decode | regex_replace('\n', '') | regex_replace('\r', '') }}"
+                  oidc_provider_file_internet_site_doc_for_verse_additional_raw: "{{ oidc_provider_file_internet_site_doc_for_verse['content'] | b64decode | regex_replace('\n', '') | regex_replace('\r', '') }}"
 
               -
                 name: "Removing OIDCHostname= prefix, checking for Auth URL for server, and ensuring unique entries"
                 when: verse_internet_site_doc_check.stat.exists
                 ansible.builtin.set_fact:
-                  oidc_provider_file_internet_site_doc_for_additional: "{{ oidc_provider_file_internet_site_doc_for_additional_raw | regex_replace('ISiteName=', ' ') | split(' ') | unique | join(' ') }}"
+                  oidc_provider_file_internet_site_doc_for_verse_additional: "{{ oidc_provider_file_internet_site_doc_for_verse_additional_raw | regex_replace('ISiteName=', ' ') | split(' ') | unique | join(' ') }}"
 
               -
-                name: "Setting Update/Create on document creation to prevent duplicates by checking oidc_provider_file_internet_site_doc_for_additional for matching hostname"
+                name: "Setting Update/Create on document creation to prevent duplicates by checking oidc_provider_file_internet_site_doc_for_verse_additional for matching hostname"
                 when: verse_internet_site_doc_check.stat.exists
                 ansible.builtin.set_fact:
-                  domino_verse_inet_site_create: "{{ false if settings.hostname + ' Verse' in oidc_provider_file_internet_site_doc_for_additional else domino_verse_inet_site_create | default(true) }}"
+                  domino_verse_inet_site_create: "{{ false if settings.hostname + ' Verse' in oidc_provider_file_internet_site_doc_for_verse_additional else domino_verse_inet_site_create | default(true) }}"
 
         -
           name: "Handing Verse templated JSON to Genesis to create Verse Internet Site Document"

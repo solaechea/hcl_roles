@@ -392,7 +392,7 @@
               "Form": "WebSite",
               "AutomationComment" : "This default site document is what enabled SNI verification, Domino will try to route the request after initial TLS handshake, to the appropiate internet site doc, so long as you pass the host header via SNI",
               "ISiteOrg": "{{ domino_organization }}",
-              "ISiteName": "Domino Default Web Site",
+              "ISiteName": "{{ settings.hostname }} Default Site",
               "WSIsDflt": "1",
               "WSHostingSrvrs" : "CN={{ domino_server_name_common }}/O={{ domino_organization }}",
               "TCPAnonymous"   : "0",
