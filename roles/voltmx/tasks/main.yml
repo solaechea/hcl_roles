@@ -326,7 +326,7 @@
           become_user: "{{ service_user }}"
           changed_when: false
           ansible.builtin.shell: |
-              jar -xvf {{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war"
+              "jar -xvf {{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war"
           args:
             executable: "/bin/bash"
             chdir: "{{ voltmx_war_builder_dir }}"
