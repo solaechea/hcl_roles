@@ -23,6 +23,15 @@
   when: run_tasks
   block:
     -
+      name: "Ensure VoltMX base directory exists"
+      ansible.builtin.file:
+        path: "{{ service_home_dir }}/voltmx-foundry"
+        state: directory
+        mode: "0755"
+        owner: "{{ service_user }}"
+        group: "{{ service_group }}"
+      
+    -
       name: "Find existing VoltMX installation directories"
       ansible.builtin.find:
         paths: "{{ service_home_dir }}/voltmx-foundry"
@@ -31,7 +40,12 @@
       register: voltmx_dirs_found
       
     -
-      name: "Calculate installation iteration"
+      name: "Check if any directories were found"
+      ansible.builtin.set_fact:
+        voltmx_has_dirs: "{{ voltmx_dirs_found.files | length > 0 }}"
+      
+    -
+      name: "Calculate installation iteration (when existing directories found)"
       ansible.builtin.set_fact:
         voltmx_highest_num: >-
           {{ voltmx_dirs_found.files 
@@ -42,6 +56,13 @@
              | list 
              | default([-1]) 
              | sort | last }}
+      when: voltmx_has_dirs
+      
+    -
+      name: "Calculate installation iteration (first installation)"
+      ansible.builtin.set_fact:
+        voltmx_highest_num: -1
+      when: not voltmx_has_dirs
       
     -
       name: "Set installation iteration to highest + 1"
@@ -325,8 +346,7 @@
           name: "Expanding war files for editing"
           become_user: "{{ service_user }}"
           changed_when: false
-          ansible.builtin.shell: |
-              "jar -xvf {{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war"
+          ansible.builtin.shell: "jar -xvf {{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war"
           args:
             executable: "/bin/bash"
             chdir: "{{ voltmx_war_builder_dir }}"
