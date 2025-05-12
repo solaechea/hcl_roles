@@ -125,28 +125,8 @@
       name: "Checking if the VoltMX extracted installer is already in voltmx/core at {{ installer_dir }}"
       register: voltmx_extracted
       ansible.builtin.stat:
-        path: "{{ installer_dir }}/voltmx/core"
+        path: "{{ installer_dir }}/voltmx/core/VoltFoundry_Installer_Linux"
         get_md5: false
-    
-    -
-      name: "Increase maximum SQL connections"
-      ansible.builtin.lineinfile:
-        path: /etc/mysql/mariadb.conf.d/50-server.cnf
-        regexp: '^#max_connections '
-        line: max_connections = 300
-      notify: Restart mariadb
-
-    #- 
-    #  name: "Configuring MariaDB to accept Remote Connections"
-    #  become: true
-    #  mysql_user:
-    #    name: "{{ mariadb_admin_user }}"
-    #    password: "{{ mariadb_admin_pass }}"
-    #    login_password: "{{ mariadb_admin_user }}"
-    #    login_password: "{{ mariadb_admin_pass }}"
-    #    priv: "*.*:ALL"
-    #    host: "%"
-    #    login_unix_socket: /var/run/mysqld/mysqld.sock
 
     -
       name: "Downloading VoltMX from {{ domino_installer_base_url }}"
@@ -219,6 +199,26 @@
       ansible.builtin.file:
         path: "{{ installer_dir }}/voltmx/core/VoltFoundry_Installer_Linux/installer.properties"
         state: absent
+
+    -
+      name: "Increase maximum SQL connections"
+      ansible.builtin.lineinfile:
+        path: /etc/mysql/mariadb.conf.d/50-server.cnf
+        regexp: '^#max_connections '
+        line: max_connections = 300
+      notify: Restart mariadb
+
+    #- 
+    #  name: "Configuring MariaDB to accept Remote Connections"
+    #  become: true
+    #  mysql_user:
+    #    name: "{{ mariadb_admin_user }}"
+    #    password: "{{ mariadb_admin_pass }}"
+    #    login_password: "{{ mariadb_admin_user }}"
+    #    login_password: "{{ mariadb_admin_pass }}"
+    #    priv: "*.*:ALL"
+    #    host: "%"
+    #    login_unix_socket: /var/run/mysqld/mysqld.sock
 
     -
       name: "STOP PLAYBOOK - Manual installer step required"
