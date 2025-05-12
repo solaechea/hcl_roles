@@ -129,7 +129,7 @@
         get_md5: false
 
     -
-      name: "Downloading VoltMX from {{ domino_installer_base_url }}"
+      name: "Downloading VoltMX from {{ installer_base_url }}"
       register: voltlsresult
       until: "voltlsresult is not failed"
       retries: 3
@@ -137,10 +137,10 @@
       ansible.builtin.get_url:
         validate_certs: false
         mode: "0755"
-        url: "{{ domino_installer_base_url }}/{{ installer_url_app_path }}/{{ voltmx_installer_archive }}"
+        url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ voltmx_installer_archive }}"
         dest: "{{ installer_dir }}/voltmx/archives/{{ voltmx_installer_archive }}"
-        username: "{{ domino_installer_url_user }}"
-        password: "{{ domino_installer_url_pass }}"
+        username: "{{ installer_url_user }}"
+        password: "{{ installer_url_pass }}"
 
     -
       name: "Extracting voltmx from {{ voltmx_installer_archive }}"
