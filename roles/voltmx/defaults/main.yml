@@ -1,17 +1,51 @@
 ---
 run_tasks: true
+count_progress: true
+progress_units: 1
+progress_role_description: "Installing VoltMX Go"
+
 voltmx_installation_type: Development
-voltmx_installation_dir: /local/voltmx-foundry
-voltmx_installer_archive: VoltMXFoundrySetup-9.5.1.1_GA.tar.gz
-voltmx_installer_base_url: https://mydomain.com
+voltmx_local_iteration: 0 #0 for local, add one for each update
+voltmx_installation_dir: "{{ service_home_dir }}/voltmx-foundry/{{ voltmx_local_iteration }}"
+voltmx_intaller_version: 9.5.18.1 # Name changed from VoltMXFoundrySetup to VoltFoundrySetup before: 9.5.15.2, 9.5.1.1
+#voltmx_installer_archive: "VoltMXFoundrySetup-{{ voltmx_intaller_version }}_GA.tar.gz"
+voltmx_installer_archive: "VoltFoundrySetup-{{ voltmx_intaller_version }}_GA.tar.gz"
+voltmx_intaller_bin: "VoltMXFoundryInstaller-{{ voltmx_intaller_version }}_GA.bin"
+installer_url_app_path: "Super.Human.Installer/VoltMX"
+voltmx_war_builder_dir: "/tmp/war-builder/"
 voltmx_admin_first_name: VoltMX
 voltmx_admin_last_name: Admin
 voltmx_admin_email: support@prominic.net
 voltmx_admin_pass: "SomeRandomPasswordSecureMe@!"
 voltmx_port_forwards:
   -
-    guest: 8181
+    guest: 8080
     url: "voltmx"
   -
-    guest: 8444
+    guest: 8443
     url: "voltmx"
+
+# Database configuration
+voltmx_db_prefix: "voltmx"
+voltmx_db_suffix: "1"
+
+# Auto-registration configuration
+voltmx_auto_register: false
+voltmx_auto_reg_url: "https://{{ settings.hostname }}.{{ settings.domain }}"
+voltmx_auto_reg_firstname: "{{ voltmx_admin_first_name }}"
+voltmx_auto_reg_lastname: "{{ voltmx_admin_last_name }}"
+voltmx_auto_reg_email: "{{ voltmx_admin_email }}"
+voltmx_auto_reg_password: "{{ voltmx_admin_pass }}"
+
+# Update and encryption configuration
+# voltmx_db_exist_choice: Set to 1 to use existing databases during installation/upgrade (recommended),
+# or 0 to create new databases (will lose existing data)
+voltmx_db_exist_choice: 1
+
+# Set to 1 to automatically update encryption keys during upgrade,
+# or 0 to manually update encryption keys after installation
+voltmx_auto_update_encryption_keys: 1
+
+# Path to previous VoltMX installation - used for upgrading encryption keys
+# This is auto-populated when using the directory auto-detection
+voltmx_previous_install_dir: ""
