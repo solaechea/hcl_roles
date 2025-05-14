@@ -120,7 +120,7 @@ USER_INPUT_PROTOCOL_1=HTTP
 # and if you are using then CONSOLE_HOST_DETAILS_3 should be uncommented.
 #---------------------------------------------------------------------------------------------------------------------------
 {% if voltmx_port_forwards[1].guest is defined %}
-CONSOLE_HOST_DETAILS_1={{ voltmx_port_forwards[1].url }}.{{ settings.hostname }}.{{ settings.domain }}
+CONSOLE_HOST_DETAILS_1={{ settings.hostname }}.{{ settings.domain }}
 CONSOLE_HOST_DETAILS_2={{ voltmx_port_forwards[0].guest }}
 CONSOLE_HOST_DETAILS_3={{ voltmx_port_forwards[1].guest }}
 {% else %}
