@@ -249,7 +249,7 @@
 
     -
       name: "Setting up VoltMX for Reverse Proxy"
-      when: not voltmx_server_installed.stat.exists and not voltmx_port_forwards[1].guest is defined
+      when: not voltmx_server_installed.stat.exists and voltmx_port_forwards[1].guest is defined
       become: true
       become_user: "{{ service_user }}"
       block:
