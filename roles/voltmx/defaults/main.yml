@@ -10,7 +10,7 @@ voltmx_installation_dir: "{{ service_home_dir }}/voltmx-foundry/{{ voltmx_local_
 voltmx_intaller_version: 9.5.18.1 # Name changed from VoltMXFoundrySetup to VoltFoundrySetup before: 9.5.15.2, 9.5.1.1
 #voltmx_installer_archive: "VoltMXFoundrySetup-{{ voltmx_intaller_version }}_GA.tar.gz"
 voltmx_installer_archive: "VoltFoundrySetup-{{ voltmx_intaller_version }}_GA.tar.gz"
-voltmx_intaller_bin: "VoltFoundryInstaller-{{ voltmx_intaller_version }}_GA.bin"
+voltmx_installer_bin: "VoltFoundryInstaller-{{ voltmx_intaller_version }}_GA.bin"
 installer_url_app_path: "Super.Human.Installer/VoltMX"
 voltmx_war_builder_dir: "/tmp/war-builder/"
 voltmx_admin_first_name: VoltMX
