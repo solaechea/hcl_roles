@@ -73,14 +73,7 @@
       name: "Set previous installation directory"
       ansible.builtin.set_fact:
         voltmx_previous_install_dir: "{{ (voltmx_highest_num >= 0) | ternary(service_home_dir + '/voltmx-foundry/' + (voltmx_highest_num | string), '') }}"
-    
-    -
-      name: "Adjust database parameters for first installation"
-      ansible.builtin.set_fact:
-        # Since we pre-create databases with proper character set,
-        # we will always set this to 1 (use existing databases)
-        voltmx_db_exist_choice: 1
-      
+
     -
       name: "Display VoltMX installation directories and settings"
       ansible.builtin.debug:
@@ -184,35 +177,6 @@
         - "{{ voltmx_installation_dir }}"
         - "{{ voltmx_war_builder_dir }}"
         
-    -
-      name: "Configure MariaDB for UTF-8"
-      ansible.builtin.blockinfile:
-        path: /etc/mysql/mariadb.conf.d/50-server.cnf
-        backup: true
-        insertafter: "\\[mysqld\\]"
-        block: |
-          # Default character set
-          character-set-server = utf8
-          collation-server = utf8_unicode_ci
-      notify: Restart mariadb
-      
-    -
-      name: "Pre-create VoltMX databases with UTF-8 charset"
-      community.mysql.mysql_db:
-        name: "{{ item }}"
-        state: present
-        login_user: "{{ mariadb_admin_user }}"
-        login_password: "{{ mariadb_admin_pass }}"
-        encoding: utf8
-        collation: utf8_unicode_ci
-      with_items:
-        - "{{ voltmx_db_prefix }}idconfigdb{{ voltmx_db_suffix }}"
-        - "{{ voltmx_db_prefix }}mfconsoledb{{ voltmx_db_suffix }}"
-        - "{{ voltmx_db_prefix }}mfaccountsdb{{ voltmx_db_suffix }}"
-        - "{{ voltmx_db_prefix }}mfreportsdb{{ voltmx_db_suffix }}"
-        - "{{ voltmx_db_prefix }}admindb{{ voltmx_db_suffix }}"
-        - "{{ voltmx_db_prefix }}kpnsdb{{ voltmx_db_suffix }}"
-      when: not voltmx_server_installed.stat.exists
 
     -
       name: "Copying Original installer.properties to /tmp/installer.properties.orig"
@@ -229,26 +193,6 @@
       ansible.builtin.file:
         path: "{{ installer_dir }}/voltmx/core/VoltFoundry_Installer_Linux/installer.properties"
         state: absent
-
-    -
-      name: "Increase maximum SQL connections"
-      ansible.builtin.lineinfile:
-        path: /etc/mysql/mariadb.conf.d/50-server.cnf
-        regexp: '^#max_connections '
-        line: max_connections = 300
-      notify: Restart mariadb
-
-    #- 
-    #  name: "Configuring MariaDB to accept Remote Connections"
-    #  become: true
-    #  mysql_user:
-    #    name: "{{ mariadb_admin_user }}"
-    #    password: "{{ mariadb_admin_pass }}"
-    #    login_password: "{{ mariadb_admin_user }}"
-    #    login_password: "{{ mariadb_admin_pass }}"
-    #    priv: "*.*:ALL"
-    #    host: "%"
-    #    login_unix_socket: /var/run/mysqld/mysqld.sock
 
     -
       name: "Installing VoltMX Via Silent Installer"

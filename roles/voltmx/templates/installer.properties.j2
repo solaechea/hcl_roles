@@ -353,11 +353,11 @@ MEMCACHE_SERVERS_1=
 # If you have selected Tomcat or Jboss and wants to use MariaDB then set CONSOLE_DB_CHOICE_5=MariaDB 10.11.4
 # If you have selected Weblogic or Websphere and wants to use DB2 then set CONSOLE_DB_CHOICE_5=DB2 11.1
 #----------------------------------------------------------------------------------------
-CONSOLE_DB_CHOICE_1=
+CONSOLE_DB_CHOICE_1=MySQL 8.0
 CONSOLE_DB_CHOICE_2=
 CONSOLE_DB_CHOICE_3=
 CONSOLE_DB_CHOICE_4=
-CONSOLE_DB_CHOICE_5=MariaDB 10.11.4
+CONSOLE_DB_CHOICE_5=
 
 #MySQL Database Details
 #----------------------
@@ -366,9 +366,9 @@ CONSOLE_DB_CHOICE_5=MariaDB 10.11.4
 # CONSOLE_DB_DETAILS_2 is Database Server Port.
 # CONSOLE_DB_DETAILS_3 is Database Server User Name.
 #------------------------------------------------------------------------------------------
-#CONSOLE_DB_DETAILS_1=
-#CONSOLE_DB_DETAILS_2=
-#CONSOLE_DB_DETAILS_3=
+CONSOLE_DB_DETAILS_1=127.0.0.1
+CONSOLE_DB_DETAILS_2={{ mysql_port }}
+CONSOLE_DB_DETAILS_3={{ mysql_root_username }}
 
 #MySQL 8.0 - Group Replication - Database Details
 #----------------------
@@ -434,9 +434,9 @@ CONSOLE_DB_CHOICE_5=MariaDB 10.11.4
 # CONSOLE_DB_DETAILS_2 is Database Server Port.
 # CONSOLE_DB_DETAILS_3 is Database Server User Name.
 #------------------------------------------------------------------------------------------
-CONSOLE_DB_DETAILS_1=127.0.0.1
-CONSOLE_DB_DETAILS_2={{ startcloud_mariadb_port_forwards[0].guest }}
-CONSOLE_DB_DETAILS_3={{ mariadb_admin_user }}
+#CONSOLE_DB_DETAILS_1=
+#CONSOLE_DB_DETAILS_2=
+#CONSOLE_DB_DETAILS_3=
 
 # Tablespace Details
 #----------------------
@@ -473,7 +473,7 @@ CONSOLE_DB_PREFIX_SUFFIX_2={{ voltmx_db_suffix }}
 # CONSOLE_DB_PASS is password for database user.
 # Leave INDEX_OF_MATCHING_PASSWORD as is.
 #-----------------------------------------------
-CONSOLE_DB_PASS={{ mariadb_admin_pass }}
+CONSOLE_DB_PASS={{ mysql_root_password }}
 INDEX_OF_MATCHING_PASSWORD=0
 
 #Upgrade Existing Database

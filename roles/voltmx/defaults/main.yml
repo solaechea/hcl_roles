@@ -37,11 +37,7 @@ voltmx_auto_reg_lastname: "{{ voltmx_admin_last_name }}"
 voltmx_auto_reg_email: "{{ voltmx_admin_email }}"
 voltmx_auto_reg_password: "{{ voltmx_admin_pass }}"
 
-# Update and encryption configuration
-# voltmx_db_exist_choice: Set to 1 to use existing databases during installation/upgrade (recommended),
-# or 0 to create new databases (will lose existing data)
-# When we pre-create databases with the right character set, set this to 1
-voltmx_db_exist_choice: 1
+voltmx_db_exist_choice: 0
 
 # Set to 1 to automatically update encryption keys during upgrade,
 # or 0 to manually update encryption keys after installation
