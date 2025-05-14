@@ -238,14 +238,6 @@
         mode: "a+x"
       loop:
         - { src: 'voltmx.service.j2', dest: '/etc/systemd/system/voltmx.service', owner: '{{ service_user }}' }
-    
-    -
-      name: "Stopping VoltMX via systemd Service"
-      when: not voltmx_server_installed.stat.exists
-      ansible.builtin.service:
-        name: voltmx
-        state: stopped
-        enabled: true
 
     -
       name: "Setting up VoltMX for Reverse Proxy"
@@ -348,19 +340,6 @@
             - "mfconsole"
     
     -
-      name: "Getting process IDs of the process in case of any lingering services"
-      when: not voltmx_server_installed.stat.exists
-      community.general.pids:
-        name: java
-      register: pids_of_java
-    
-    -
-      name: "Printing the process IDs obtained"
-      when: not voltmx_server_installed.stat.exists
-      ansible.builtin.debug:
-        msg: "PIDS of java:{{ pids_of_java.pids | join(',') }}"
-    
-    -
       name: "Starting VoltMX via systemd Service"
       when: not voltmx_server_installed.stat.exists
       ansible.builtin.service:
@@ -377,10 +356,10 @@
         state: touch
     
     -
-      name: "Checking VoltMX is listening on port {{ voltmx_port_forwards[0].guest }}"
+      name: "Checking VoltMX is listening on port {{ voltmx_port_forwards[1].guest }}"
       ansible.builtin.wait_for:
-        port: "{{ voltmx_port_forwards[0].guest }}"
+        port: "{{ voltmx_port_forwards[1].guest }}"
         delay: 5
-        timeout: 60
-        msg: "Timeout waiting for {{ voltmx_port_forwards[0].guest }} to respond"
+        timeout: 300
+        msg: "Timeout waiting for {{ voltmx_port_forwards[1].guest }} to respond"
       register: port_check
