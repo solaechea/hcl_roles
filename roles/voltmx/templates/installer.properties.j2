@@ -181,7 +181,7 @@ CONSOLE_CERTS_DETAILS_6=
 # CONSOLE_APPSERVER_SSL_1 is absolute path of keystore file.
 #---------------------------------------------------------------------------------------
 {% if voltmx_port_forwards[1].guest is defined %}
-CONSOLE_APPSERVER_SSL_1={{ cert_dir }}/jks/default-signed.jks
+CONSOLE_APPSERVER_SSL_1={{ cert_dir }}/jks/{{ settings.hostname }}.{{ settings.domain }}.jks
 {% endif %}
 
 #Password for keystore file
