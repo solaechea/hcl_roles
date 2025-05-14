@@ -162,7 +162,7 @@
         owner: "{{ service_user }}"
         group: "{{ service_group }}"
       with_items:
-        - "{{ installer_dir }}/voltmx/core/VoltFoundry_Installer_Linux/{{ voltmx_intaller_bin }}"
+        - "{{ installer_dir }}/voltmx/core/VoltFoundry_Installer_Linux/{{ voltmx_installer_bin }}"
     
     -
       name: "Creating VoltMX App Directory"
