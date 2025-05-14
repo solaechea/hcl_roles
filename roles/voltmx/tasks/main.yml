@@ -308,8 +308,8 @@
           environment:
             PATH: "{{ ansible_env.PATH }}:{{ service_home_dir }}/.sdkman/candidates/java/current/bin"
           loop:
-            - "accounts.war"
-            - "mfconsole.war"
+            - "accounts"
+            - "mfconsole"
     
         -
           name: "Replacing URLs"
