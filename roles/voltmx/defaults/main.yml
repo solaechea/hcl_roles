@@ -6,6 +6,7 @@ progress_role_description: "Installing VoltMX Go"
 
 voltmx_dependencies:
   - xmlstarlet
+  - python3-lxml
 
 voltmx_installation_type: Development
 voltmx_local_iteration: 0 #0 for local, add one for each update
