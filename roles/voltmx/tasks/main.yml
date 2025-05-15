@@ -82,14 +82,7 @@
     -
       name: "Set installation iteration based on upgrade flag"
       ansible.builtin.set_fact:
-        voltmx_local_iteration: >-
-          {% if voltmx_upgrade | default(false) and voltmx_highest_num >= 0 %}
-          {{ voltmx_highest_num + 1 }}
-          {% elif voltmx_highest_num >= 0 %}
-          {{ voltmx_highest_num }}
-          {% else %}
-          0
-          {% endif %}
+        voltmx_local_iteration: "{% if voltmx_upgrade | default(false) and voltmx_highest_num >= 0 %}{{ voltmx_highest_num + 1 }}{% elif voltmx_highest_num >= 0 %}{{ voltmx_highest_num }}{% else %}0{% endif %}"
     
     -
       name: "Set database reuse option for upgrades"
@@ -233,19 +226,10 @@
         creates: "{{ completed_dir }}/voltmx_installer_completed"
 
     -
-      name: "Wait for VoltMX installation to complete"
-      when: not voltmx_server_installed.stat.exists
-      ansible.builtin.wait_for:
-        path: "{{ completed_dir }}/voltmx_installer_completed"
-        state: present
-        timeout: 600
-        msg: "Timeout waiting for VoltMX installation to complete"
-
-    -
-      name: "Waiting for 300 seconds to allow any temporary processes to complete"
+      name: "Waiting for 120 seconds to allow any temporary processes to complete"
       when: not voltmx_server_installed.stat.exists
       ansible.builtin.pause:
-        seconds: 300
+        seconds: 120
 
     -
       name: "Getting updated process IDs of java"
