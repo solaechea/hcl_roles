@@ -505,7 +505,7 @@
           community.mysql.mysql_query:
             login_user: "{{ mysql_root_username }}"
             login_password: "{{ mysql_root_password }}"
-            db: "{{ voltmx_db_prefix }}mfaccountsdb{{ voltmx_db_suffix }}"
+            login_db: "{{ voltmx_db_prefix }}mfaccountsdb{{ voltmx_db_suffix }}"
             query: >
               UPDATE accounts_configurations 
               SET value='https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/workspace' 
