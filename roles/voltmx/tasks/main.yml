@@ -449,6 +449,9 @@
             - path: "{{ voltmx_war_builder_dir }}/mfconsole/WEB-INF/classes/config.properties"
               regexp: '^KONY_ACCOUNT_API_BASE_URL=.*'
               line: "KONY_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/accounts/api/v1_0/"
+            - path: "{{ voltmx_war_builder_dir }}/mfconsole/WEB-INF/classes/config.properties"
+              regexp: '^VOLTMX_ACCOUNT_API_BASE_URL=.*'
+              line: "VOLTMX_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/accounts/api/v1_0/"
 
         -
           name: "Creating new war files"
