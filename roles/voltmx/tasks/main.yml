@@ -464,6 +464,18 @@
             - "accounts"
             - "mfconsole"
 
+        -
+          name: "Copying updated war files back to tomcat directory"
+          ansible.builtin.copy:
+            remote_src: true
+            mode: "0644"
+            src: "{{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war"
+            dest: "{{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war"
+            force: yes
+          loop:
+            - "accounts"
+            - "mfconsole"
+
     -
       name: "Starting VoltMX via systemd Service"
       when: not voltmx_server_installed.stat.exists
