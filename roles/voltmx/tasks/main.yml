@@ -226,7 +226,7 @@
       become_user: "{{ service_user }}"
       community.general.java_cert:
         executable: "{{ voltmx_installation_dir}}/jre/bin/keytool"
-        cert_path: "{{ cert_dir }}/crt/default-signed.crt"
+        cert_path: "{{ cert_dir }}/crt/{{ settings.hostname }}.{{ settings.domain }}.crt"
         keystore_path: "{{ voltmx_installation_dir}}/jre/lib/security/cacerts"
         keystore_pass: changeit ## Do not change this is the default password for the keystore
         state: present
