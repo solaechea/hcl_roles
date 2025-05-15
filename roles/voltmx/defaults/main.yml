@@ -37,6 +37,9 @@ voltmx_db_suffix: "1"
 voltmx_auto_register: false
 voltmx_auto_reg_url: "https://{{ settings.hostname }}.{{ settings.domain }}"
 
+# Set to true when upgrading to a new version
+voltmx_upgrade: false
+
 voltmx_db_exist_choice: 0
 
 # Set to 1 to automatically update encryption keys during upgrade,

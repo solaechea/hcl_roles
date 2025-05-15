@@ -51,29 +51,51 @@
         voltmx_has_dirs: "{{ voltmx_dirs_found.files | length > 0 }}"
 
     -
-      name: "Calculate installation iteration (when existing directories found)"
+      name: "Extract numeric directory names"
       ansible.builtin.set_fact:
-        voltmx_highest_num: >-
+        numeric_dirs: >-
           {{ voltmx_dirs_found.files 
              | map(attribute='path') 
              | map('basename') 
              | select('match', '^\\d+$') 
-             | map('int') 
-             | list 
-             | default([-1]) 
-             | sort | last }}
+             | list }}
       when: voltmx_has_dirs
-
+    
     -
-      name: "Calculate installation iteration (first installation)"
+      name: "Check if any numeric directories were found"
+      ansible.builtin.set_fact:
+        has_numeric_dirs: "{{ numeric_dirs is defined and numeric_dirs | length > 0 }}"
+      when: voltmx_has_dirs
+    
+    -
+      name: "Calculate highest numeric directory (when found)"
+      ansible.builtin.set_fact:
+        voltmx_highest_num: "{{ numeric_dirs | map('int') | sort | last }}"
+      when: voltmx_has_dirs and has_numeric_dirs
+      
+    -
+      name: "Set fallback highest number"
       ansible.builtin.set_fact:
         voltmx_highest_num: -1
-      when: not voltmx_has_dirs
-
+      when: not voltmx_has_dirs or not has_numeric_dirs | default(false)
+      
     -
-      name: "Set installation iteration to highest + 1"
+      name: "Set installation iteration based on upgrade flag"
       ansible.builtin.set_fact:
-        voltmx_local_iteration: "{{ voltmx_highest_num + 1 }}"
+        voltmx_local_iteration: >-
+          {% if voltmx_upgrade | default(false) and voltmx_highest_num >= 0 %}
+          {{ voltmx_highest_num + 1 }}
+          {% elif voltmx_highest_num >= 0 %}
+          {{ voltmx_highest_num }}
+          {% else %}
+          0
+          {% endif %}
+    
+    -
+      name: "Set database reuse option for upgrades"
+      ansible.builtin.set_fact:
+        voltmx_db_exist_choice: 1
+      when: voltmx_upgrade | default(false) and voltmx_highest_num >= 0
 
     -
       name: "Set previous installation directory"
