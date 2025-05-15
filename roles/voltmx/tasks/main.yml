@@ -32,6 +32,12 @@
         group: "{{ service_group }}"
       
     -
+      name: "Adding Additional packages"
+      ansible.builtin.apt:
+        name: "{{ voltmx_dependencies }}"
+        state: present
+
+    -
       name: "Find existing VoltMX installation directories"
       ansible.builtin.find:
         paths: "{{ service_home_dir }}/voltmx-foundry"

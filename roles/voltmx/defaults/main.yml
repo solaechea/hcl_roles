@@ -4,6 +4,9 @@ count_progress: true
 progress_units: 1
 progress_role_description: "Installing VoltMX Go"
 
+voltmx_dependencies:
+  - xmlstarlet
+
 voltmx_installation_type: Development
 voltmx_local_iteration: 0 #0 for local, add one for each update
 voltmx_installation_dir: "{{ service_home_dir }}/voltmx-foundry/{{ voltmx_local_iteration }}"
