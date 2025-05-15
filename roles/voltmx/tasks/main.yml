@@ -373,6 +373,7 @@
           loop:
             - "accounts"
             - "mfconsole"
+            - "apiportal"
 
         -
           name: "Copying orignal war files"
@@ -384,6 +385,7 @@
           loop:
             - "accounts.war"
             - "mfconsole.war"
+            - "apiportal.war"
 
         -
           name: "Clear existing war builder directories"
@@ -452,6 +454,15 @@
             - path: "{{ voltmx_war_builder_dir }}/mfconsole/WEB-INF/classes/config.properties"
               regexp: '^VOLTMX_ACCOUNT_API_BASE_URL=.*'
               line: "VOLTMX_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/accounts/api/v1_0/"
+            - path: "{{ voltmx_war_builder_dir }}/apiportal/WEB-INF/classes/config.properties"
+              regexp: '^KONY_DEVELOPER_PORTAL_BASE_URL=.*'
+              line: "KONY_DEVELOPER_PORTAL_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/apiportal"
+            - path: "{{ voltmx_war_builder_dir }}/apiportal/WEB-INF/classes/config.properties"
+              regexp: '^VOLTMX_ACCOUNT_API_BASE_URL=.*'
+              line: "VOLTMX_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/accounts/api/v1_0/"
+            - path: "{{ voltmx_war_builder_dir }}/apiportal/WEB-INF/classes/config.properties"
+              regexp: '^KONY_ACCOUNT_API_BASE_URL=.*'
+              line: "KONY_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/accounts/api/v1_0/"
 
         -
           name: "Creating new war files"
@@ -466,6 +477,7 @@
           loop:
             - "accounts"
             - "mfconsole"
+            - "apiportal"
 
         -
           name: "Copying updated war files back to tomcat directory"
@@ -478,6 +490,7 @@
           loop:
             - "accounts"
             - "mfconsole"
+            - "apiportal"
 
     -
       name: "Starting VoltMX via systemd Service"
