@@ -410,7 +410,7 @@
           name: "Expanding war files for editing"
           become_user: "{{ service_user }}"
           changed_when: false
-          ansible.builtin.shell: "jar -xvf {{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war -C {{ voltmx_war_builder_dir }}/{{ item }}"
+          ansible.builtin.shell: "cd {{ voltmx_war_builder_dir }}/{{ item }} && jar xvf {{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war"
           args:
             executable: "/bin/bash"
           environment:
