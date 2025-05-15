@@ -499,6 +499,25 @@
             - "mfconsole"
       #      - "apiportal"
 
+        -
+          name: "Updating VoltMX database configuration for WAAS_BASE_URL"
+          when: not voltmx_server_installed.stat.exists
+          community.mysql.mysql_query:
+            login_user: "{{ mysql_root_username }}"
+            login_password: "{{ mysql_root_password }}"
+            query: >
+              USE {{ voltmx_db_prefix }}mfaccountsdb{{ voltmx_db_suffix }};
+              UPDATE accounts_configurations 
+              SET value='https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/workspace' 
+              WHERE name='WAAS_BASE_URL';
+          register: db_update_result
+
+        -
+          name: "Displaying database update result"
+          when: not voltmx_server_installed.stat.exists
+          ansible.builtin.debug:
+            var: db_update_result
+
     -
       name: "Starting VoltMX via systemd Service"
       when: not voltmx_server_installed.stat.exists
