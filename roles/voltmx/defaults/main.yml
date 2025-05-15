@@ -2,7 +2,11 @@
 run_tasks: true
 count_progress: true
 progress_units: 1
-progress_role_description: "Installing VoltMX Go"
+progress_role_description: "Installing VoltMX Foundry"
+
+voltmx_dependencies:
+  - xmlstarlet
+  - python3-lxml
 
 voltmx_installation_type: Development
 voltmx_local_iteration: 0 #0 for local, add one for each update
@@ -12,7 +16,7 @@ voltmx_intaller_version: 9.5.18.1 # Name changed from VoltMXFoundrySetup to Volt
 voltmx_installer_archive: "VoltFoundrySetup-{{ voltmx_intaller_version }}_GA.tar.gz"
 voltmx_installer_bin: "VoltFoundryInstaller-{{ voltmx_intaller_version }}_GA.bin"
 installer_url_app_path: "Super.Human.Installer/VoltMX"
-voltmx_war_builder_dir: "/tmp/war-builder/"
+voltmx_war_builder_dir: "/tmp/war-builder"
 voltmx_admin_first_name: VoltMX
 voltmx_admin_last_name: Admin
 voltmx_admin_email: support@prominic.net
@@ -32,10 +36,9 @@ voltmx_db_suffix: "1"
 # Auto-registration configuration
 voltmx_auto_register: false
 voltmx_auto_reg_url: "https://{{ settings.hostname }}.{{ settings.domain }}"
-voltmx_auto_reg_firstname: "{{ voltmx_admin_first_name }}"
-voltmx_auto_reg_lastname: "{{ voltmx_admin_last_name }}"
-voltmx_auto_reg_email: "{{ voltmx_admin_email }}"
-voltmx_auto_reg_password: "{{ voltmx_admin_pass }}"
+
+# Set to true when upgrading to a new version
+voltmx_upgrade: false
 
 voltmx_db_exist_choice: 0
 

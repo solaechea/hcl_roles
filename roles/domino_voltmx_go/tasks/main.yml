@@ -4,19 +4,6 @@
   when: run_tasks
   block:
     -
-      name: "Set up facts for long lines"
-      ansible.builtin.set_fact:
-        war_builder_path: "/war-builder/"
-        voltmx_webapps_path: "{{ voltmx_installation_dir }}/tomcat/webapps/"
-        voltmx_jar_command: "jar -xvf {{ voltmx_installation_dir }}/tomcat/webapps/"
-        voltmx_replace_regexp: >
-          (\s+){{ voltmx_port_forwards[0].url }}\.{{ settings.hostname }}\.{{ settings.domain.split(".")[0] }}\.
-          {{ settings.domain.split(".")[1] }}:{{ voltmx_port_forwards[0].guest }}(\s+.*)?$     (\s+){{ voltmx_port_forwards[0].url }}\.
-          {{ settings.hostname }}\.{{ settings.domain.split(".")[0] }}\.{{ settings.domain.split(".")[1] }}:{{ voltmx_port_forwards[0].guest }}(\s+.*)?$
-        voltmx_replace_with: '\1{{ voltmx_port_forwards[0].url }}.{{ settings.hostname }}.{{ settings.domain }}:443\2'
-        voltmx_replace_with_proxy: '\1{{ voltmx_port_forwards[1].url }}.{{ settings.hostname }}.{{ settings.domain }}:443\2'
-    
-    -
       name: "Checking if the VoltMX Installer archive is at /voltmx/archives/{{ voltmx_installer_archive }}"
       register: voltmx_server_installer_check
       ansible.builtin.stat:

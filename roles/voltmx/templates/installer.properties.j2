@@ -120,7 +120,7 @@ USER_INPUT_PROTOCOL_1=HTTP
 # and if you are using then CONSOLE_HOST_DETAILS_3 should be uncommented.
 #---------------------------------------------------------------------------------------------------------------------------
 {% if voltmx_port_forwards[1].guest is defined %}
-CONSOLE_HOST_DETAILS_1={{ voltmx_port_forwards[1].url }}.{{ settings.hostname }}.{{ settings.domain }}
+CONSOLE_HOST_DETAILS_1={{ settings.hostname }}.{{ settings.domain }}
 CONSOLE_HOST_DETAILS_2={{ voltmx_port_forwards[0].guest }}
 CONSOLE_HOST_DETAILS_3={{ voltmx_port_forwards[1].guest }}
 {% else %}
@@ -526,9 +526,9 @@ USER_INPUT_AUTO_REG_1=https://{{ voltmx_port_forwards[1].url }}.{{ settings.host
 USER_INPUT_AUTO_REG_1=http://{{ settings.hostname }}.{{ settings.domain }}:{{ voltmx_port_forwards[0].guest }}
 {% endif %}
 {% endif %}
-USER_INPUT_AUTO_REG_2={{ voltmx_auto_reg_firstname }}
-USER_INPUT_AUTO_REG_3={{ voltmx_auto_reg_lastname }}
-USER_INPUT_AUTO_REG_4={{ voltmx_auto_reg_email }}
+USER_INPUT_AUTO_REG_2={{ voltmx_admin_first_name }}
+USER_INPUT_AUTO_REG_3={{ voltmx_admin_last_name }}
+USER_INPUT_AUTO_REG_4={{ voltmx_admin_email }}
 {% endif %}
 
 #Enter Password for Environment Setup
@@ -538,7 +538,7 @@ USER_INPUT_AUTO_REG_4={{ voltmx_auto_reg_email }}
 #Note:Passwords must contain at least 6 characters, maximum of 20 characters including uppercase, lowercase letters and numbers.
 #-------------------------------------------------------------------------------------------------------------------------------
 {% if voltmx_auto_register %}
-USER_SUPPLIED_AUTO_REG_PASSWORD={{ voltmx_auto_reg_password }}
+USER_SUPPLIED_AUTO_REG_PASSWORD={{ voltmx_admin_pass }}
 INDEX_OF_MATCHING_PASSWORD=0
 {% else %}
 USER_SUPPLIED_AUTO_REG_PASSWORD=
@@ -552,7 +552,7 @@ INDEX_OF_MATCHING_PASSWORD=0
 #Note: Make sure USER_SUPPLIED_AUTO_REG_PASSWORD and USER_SUPPLIED_AUTO_REG_CONFIRM_PASSWORD match.
 #--------------------------------------------------------------------------------------------------------------
 {% if voltmx_auto_register %}
-USER_SUPPLIED_AUTO_REG_CONFIRM_PASSWORD={{ voltmx_auto_reg_password }}
+USER_SUPPLIED_AUTO_REG_CONFIRM_PASSWORD={{ voltmx_admin_pass }}
 INDEX_OF_MATCHING_PASSWORD=0
 {% else %}
 USER_SUPPLIED_AUTO_REG_CONFIRM_PASSWORD=
@@ -569,8 +569,8 @@ INDEX_OF_MATCHING_PASSWORD=0
 #Use the below property if you want to start/stop the MobileFoundry server after the successful installation of Mobile Foundry.
 #To start the server START_SERVER_1 should be set as Yes or else START_SERVER_2 should be set as Yes
 #---------------------------------------
-START_SERVER_1=Yes
-START_SERVER_2=
+START_SERVER_1=
+START_SERVER_2=Yes
 
 #Delete Database During Uninstall
 #--------------------------------
