@@ -386,13 +386,33 @@
             - "mfconsole.war"
 
         -
+          name: "Clear existing war builder directories"
+          ansible.builtin.file:
+            path: "{{ voltmx_war_builder_dir }}/{{ item }}"
+            state: absent
+          loop:
+            - "accounts"
+            - "mfconsole"
+
+        -
+          name: "Recreate war builder directories"
+          ansible.builtin.file:
+            path: "{{ voltmx_war_builder_dir }}/{{ item }}"
+            state: directory
+            mode: "0755"
+            owner: "{{ service_user }}"
+            group: "{{ service_group }}"
+          loop:
+            - "accounts"
+            - "mfconsole"
+
+        -
           name: "Expanding war files for editing"
           become_user: "{{ service_user }}"
           changed_when: false
-          ansible.builtin.shell: "jar -xvf {{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war"
+          ansible.builtin.shell: "jar -xvf {{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war -C {{ voltmx_war_builder_dir }}/{{ item }}"
           args:
             executable: "/bin/bash"
-            chdir: "{{ voltmx_war_builder_dir }}"
           environment:
             PATH: "{{ ansible_env.PATH }}:{{ service_home_dir }}/.sdkman/candidates/java/current/bin"
           loop:
@@ -400,17 +420,34 @@
             - "mfconsole"
 
         -
-          name: "Replacing URLs"
+          name: "Ensure properties directories exist"
+          ansible.builtin.file:
+            path: "{{ voltmx_war_builder_dir }}/{{ item }}/WEB-INF/classes"
+            state: directory
+            mode: "0755"
+            owner: "{{ service_user }}"
+            group: "{{ service_group }}"
+          loop:
+            - "accounts"
+            - "mfconsole"
+
+        -
+          name: "Updating property files"
           ansible.builtin.lineinfile:
             path: "{{ item.path }}"
             regexp: "{{ item.regexp }}"
             line: "{{ item.line }}"
+            create: yes
+            mode: "0644"
+            owner: "{{ service_user }}"
+            group: "{{ service_group }}"
+            insertafter: EOF
           loop:
             - path: "{{ voltmx_war_builder_dir }}/accounts/WEB-INF/classes/accounts.properties"
-              regexp: 'WAAS_BASE_URL=(.*)'
+              regexp: '^WAAS_BASE_URL=.*'
               line: "WAAS_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ voltmx_port_forwards[1].guest }}/workspace"
             - path: "{{ voltmx_war_builder_dir }}/mfconsole/WEB-INF/classes/config.properties"
-              regexp: 'KONY_ACCOUNT_API_BASE_URL=(.*)' ## because they use kony in the release
+              regexp: '^KONY_ACCOUNT_API_BASE_URL=.*'
               line: "KONY_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ voltmx_port_forwards[1].guest }}/accounts/api/v1_0/"
 
         -
