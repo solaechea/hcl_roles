@@ -163,6 +163,7 @@
         src: "{{ installer_dir }}/voltmx/archives/{{ voltmx_installer_archive }}"
         dest: "{{ installer_dir }}/voltmx/core"
         remote_src: true
+        creates: "{{ installer_dir }}/voltmx/core/VoltFoundry_Installer_Linux"
 
     -
       name: "Adding VoltMX silent install response file"
@@ -224,12 +225,6 @@
         chdir: "{{ installer_dir }}/voltmx/core/VoltFoundry_Installer_Linux"
         executable: /bin/bash
         creates: "{{ completed_dir }}/voltmx_installer_completed"
-
-    -
-      name: "Waiting for 120 seconds to allow any temporary processes to complete"
-      when: not voltmx_server_installed.stat.exists
-      ansible.builtin.pause:
-        seconds: 120
 
     -
       name: "Getting updated process IDs of java"
