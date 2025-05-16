@@ -371,27 +371,77 @@
             group: "{{ service_group }}"
 
         -
-          name: "Create MySQL host and port update script"
-          ansible.builtin.template:
-            dest: "{{ voltmx_installation_dir }}/scripts/MySQL_changeHostDetails_script.sql"
-            mode: "0644"
-            owner: "{{ service_user }}"
-            group: "{{ service_group }}"
-            src: "MySQL_changeHostDetails_script.sql.j2"
-
-        -
-          name: "Running MySQL host and port update script"
+          name: "Drop existing dyn_update3 procedure"
           community.mysql.mysql_query:
             login_user: "{{ mysql_root_username }}"
             login_password: "{{ mysql_root_password }}"
-            login_db: "mysql"  # Connect to mysql database to run script that accesses multiple databases
-            query: "{{ lookup('file', voltmx_installation_dir + '/scripts/MySQL_changeHostDetails_script.sql') }}"
-          register: db_update_result
+            login_db: "mysql"
+            query: "DROP PROCEDURE IF EXISTS dyn_update3;"
+          register: drop_procedure_result
+          changed_when: drop_procedure_result.rowcount | default(0) > 0 or "0 rows affected" not in drop_procedure_result.stdout | default('')
+          ignore_errors: true # Ignore if procedure doesn't exist
 
         -
-          name: "Displaying database update result"
+          name: "Render stored procedure to a temporary file"
+          ansible.builtin.template:
+            src: "MySQL_changeHostDetails_script.sql.j2"
+            dest: "/tmp/MySQL_changeHostDetails_script_rendered.sql"
+            mode: "0644"
+
+        -
+          name: "Create dyn_update3 procedure from rendered file"
+          community.mysql.mysql_query:
+            login_user: "{{ mysql_root_username }}"
+            login_password: "{{ mysql_root_password }}"
+            login_db: "mysql"
+            query: "{{ lookup('file', '/tmp/MySQL_changeHostDetails_script_rendered.sql') }}"
+          register: create_procedure_result
+
+        -
+          name: "Call dyn_update3 procedure"
+          community.mysql.mysql_query:
+            login_user: "{{ mysql_root_username }}"
+            login_password: "{{ mysql_root_password }}"
+            login_db: "mysql"
+            query: |
+              CALL dyn_update3(
+                  '{{ voltmx_db_prefix }}idconfigdb{{ voltmx_db_suffix }}',
+                  '{{ voltmx_db_prefix }}mfaccountsdb{{ voltmx_db_suffix }}',
+                  '{{ voltmx_db_prefix }}mfconsoledb{{ voltmx_db_suffix }}',
+                  '{{ voltmx_db_prefix }}admindb{{ voltmx_db_suffix }}',
+                  '{{ voltmx_db_prefix }}kpnsdb{{ voltmx_db_suffix }}',
+                  '{{ voltmx_db_prefix }}mfreportsdb{{ voltmx_db_suffix }}',
+                  '{{ settings.hostname }}.{{ settings.domain }}',
+                  '{{ settings.hostname }}.{{ settings.domain }}',
+                  '{{ voltmx_port_forwards[1].guest }}',
+                  '{{ haproxy_https_port }}'
+              );
+          register: call_procedure_result
+
+        -
+          name: "Drop dyn_update3 procedure after execution"
+          community.mysql.mysql_query:
+            login_user: "{{ mysql_root_username }}"
+            login_password: "{{ mysql_root_password }}"
+            login_db: "mysql"
+            query: "DROP PROCEDURE IF EXISTS dyn_update3;"
+          register: drop_after_call_result
+          changed_when: drop_after_call_result.rowcount | default(0) > 0 or "0 rows affected" not in drop_after_call_result.stdout | default('')
+
+        -
+          name: "Remove temporary rendered SQL script"
+          ansible.builtin.file:
+            path: "/tmp/MySQL_changeHostDetails_script_rendered.sql"
+            state: absent
+
+        -
+          name: "Displaying database update results"
           ansible.builtin.debug:
-            var: db_update_result
+            msg:
+              - "Drop procedure (before) result: {{ drop_procedure_result }}"
+              - "Create procedure result: {{ create_procedure_result }}"
+              - "Call procedure result: {{ call_procedure_result }}"
+              - "Drop procedure (after) result: {{ drop_after_call_result }}"
 
         -
           name: "Rebuilding VoltMX war files"
