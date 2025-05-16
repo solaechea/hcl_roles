@@ -18,7 +18,9 @@ id_vault_enable_vault_bearer: "1"
 domino_admin_user_first_name: Prominic
 domino_admin_user_last_name: Admin
 domino_admin_user_id: admin-user.id
-domino_admin_notes_id_password: "password"
+domino_admin_notes_id_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=16') }}"
+domino_certifier_id: cert.id
+domino_certifier_id_password: "{{ domino_admin_notes_id_password | default(domino_admin_notes_id_password) }}"
 auto_register_users_enable_full_text_index: true
 auto_register_users_cert_expiry_months: 48
 auto_register_users_save_id_to_person_doc: false

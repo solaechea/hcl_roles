@@ -553,6 +553,11 @@
         enabled: true
 
     -
+      name: "Adding installer.properties to cleanup list"
+      ansible.builtin.set_fact:
+        lockdown_file_cleanups_list: "{{ lockdown_file_cleanups_list | default([]) + [installer_dir + '/voltmx/installer.properties'] }}"
+
+    -
       name: "Marking VoltMX as Installed"
       when: not voltmx_server_installed.stat.exists
       ansible.builtin.file:
