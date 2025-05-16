@@ -19,7 +19,7 @@ installer_url_app_path: "Super.Human.Installer/VoltMX"
 voltmx_war_builder_dir: "/tmp/war-builder"
 voltmx_admin_first_name: VoltMX
 voltmx_admin_last_name: Admin
-voltmx_admin_email: support@prominic.net
+voltmx_admin_email: "{{ email }} | default('support@startcloud.com')"
 voltmx_admin_pass: "SomeRandomPasswordSecureMe@!"
 voltmx_port_forwards:
   -
