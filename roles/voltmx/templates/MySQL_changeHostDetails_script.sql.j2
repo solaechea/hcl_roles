@@ -53,25 +53,26 @@ call DYN_UPDATE3 ('{{ voltmx_db_prefix }}idconfigdb{{ voltmx_db_suffix }}',
                   '{{ voltmx_port_forwards[1].guest }}', 
                   '{{ haproxy_https_port }}');
 
--- Handle the reports database separately, checking if the table exists first
+-- Handle the reports database separately
 SELECT COUNT(TABLE_NAME) INTO @table_exists 
 FROM information_schema.TABLES 
 WHERE TABLE_SCHEMA = '{{ voltmx_db_prefix }}mfreportsdb{{ voltmx_db_suffix }}' 
 AND TABLE_NAME = 'accounts_configurations';
 
-SET @sql = CONCAT('USE {{ voltmx_db_prefix }}mfreportsdb{{ voltmx_db_suffix }}; 
-  UPDATE accounts_configurations 
-  SET value = REPLACE(value, ''{{ settings.hostname }}.{{ settings.domain }}:{{ voltmx_port_forwards[1].guest }}'', 
-                          ''{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}'')
-  WHERE name = ''WAAS_BASE_URL'';');
-
--- Only run the update if the table exists
+-- Output whether we'll update the reports database
 SELECT IF(@table_exists > 0, 
-  'Table exists, will update reports database', 
-  'Table does not exist in reports database, skipping') as message;
-  
-PREPARE stmt FROM @sql;
+  'Table accounts_configurations exists in reports database, will update', 
+  'Table accounts_configurations does not exist in reports database, skipping') as message;
+
+-- Only attempt to update if the table exists
 IF @table_exists > 0 THEN
-  EXECUTE stmt;
+  -- Use the database
+  USE {{ voltmx_db_prefix }}mfreportsdb{{ voltmx_db_suffix }};
+  
+  -- Run the update directly
+  UPDATE accounts_configurations 
+  SET value = REPLACE(value, 
+                     '{{ settings.hostname }}.{{ settings.domain }}:{{ voltmx_port_forwards[1].guest }}', 
+                     '{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}')
+  WHERE name = 'WAAS_BASE_URL';
 END IF;
-DEALLOCATE PREPARE stmt;
