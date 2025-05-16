@@ -59,15 +59,9 @@ FROM information_schema.TABLES
 WHERE TABLE_SCHEMA = '{{ voltmx_db_prefix }}mfreportsdb{{ voltmx_db_suffix }}' 
 AND TABLE_NAME = 'accounts_configurations';
 
--- Handle the reports database separately
+-- Output whether we'll update the reports database
 SET @db_name = '{{ voltmx_db_prefix }}mfreportsdb{{ voltmx_db_suffix }}';
 
-SELECT COUNT(TABLE_NAME) INTO @table_exists 
-FROM information_schema.TABLES 
-WHERE TABLE_SCHEMA = @db_name
-AND TABLE_NAME = 'accounts_configurations';
-
--- Output whether we'll update the reports database
 SELECT IF(@table_exists > 0, 
   CONCAT('Table accounts_configurations exists in database ', @db_name, ', will update'), 
   CONCAT('Table accounts_configurations does not exist in database ', @db_name, ', skipping')) as message;

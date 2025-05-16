@@ -381,12 +381,11 @@
 
         -
           name: "Running MySQL host and port update script"
-          community.mysql.mysql_db:
+          community.mysql.mysql_query:
             login_user: "{{ mysql_root_username }}"
             login_password: "{{ mysql_root_password }}"
-            state: import
-            name: "mysql"
-            target: "{{ voltmx_installation_dir }}/scripts/MySQL_changeHostDetails_script.sql"
+            login_db: "mysql"  # Connect to mysql database to run script that accesses multiple databases
+            query: "{{ lookup('file', voltmx_installation_dir + '/scripts/MySQL_changeHostDetails_script.sql') }}"
           register: db_update_result
 
         -
