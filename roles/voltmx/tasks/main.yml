@@ -356,47 +356,21 @@
                   proxyPort: "{{ haproxy_https_port | string }}"
             namespaces: {}
 
-        #-
-        #  name: "Create scripts directory"
-        #  ansible.builtin.file:
-        #    path: "{{ voltmx_installation_dir }}/scripts"
-        #    state: directory
-        #    mode: "0755"
-        #    owner: "{{ service_user }}"
-        #    group: "{{ service_group }}"
+        -
+          name: "Create scripts directory"
+          ansible.builtin.file:
+            path: "{{ voltmx_installation_dir }}/scripts"
+            state: directory
+            mode: "0755"
+            owner: "{{ service_user }}"
+            group: "{{ service_group }}"
 
-        #-
-        #  name: "Render stored procedure to a temporary file"
-        #  ansible.builtin.template:
-        #    src: "MySQL_changeHostDetails_script.sql.j2"
-        #    dest: "/tmp/MySQL_changeHostDetails_script_rendered.sql"
-        #    mode: "0644"
-
-        #-
-        #  name: "Call dyn_update3 procedure"
-        #  community.mysql.mysql_query:
-        #    login_user: "{{ mysql_root_username }}"
-        #    login_password: "{{ mysql_root_password }}"
-        #    login_db: "mysql"
-        #    query: |
-        #      CALL dyn_update3(
-        #          '{{ voltmx_db_prefix }}idconfigdb{{ voltmx_db_suffix }}',
-        #          '{{ voltmx_db_prefix }}mfaccountsdb{{ voltmx_db_suffix }}',
-        #          '{{ voltmx_db_prefix }}mfconsoledb{{ voltmx_db_suffix }}',
-        #          '{{ voltmx_db_prefix }}admindb{{ voltmx_db_suffix }}',
-        #          '{{ voltmx_db_prefix }}kpnsdb{{ voltmx_db_suffix }}',
-        #          '{{ voltmx_db_prefix }}mfreportsdb{{ voltmx_db_suffix }}',
-        #          '{{ settings.hostname }}.{{ settings.domain }}',
-        #          '{{ settings.hostname }}.{{ settings.domain }}',
-        #          '{{ voltmx_port_forwards[1].guest }}',
-        #          '{{ haproxy_https_port }}'
-        #      );
-        #  register: call_procedure_result
-#
-        #-
-        #  name: "Displaying database update results from procedure call"
-        #  ansible.builtin.debug:
-        #    var: call_procedure_result
+        -
+          name: "Rendering stored procedure to a temporary file"
+          ansible.builtin.template:
+            src: "voltmx_change_host_and_port.sql.j2"
+            dest: "/tmp/voltmx_change_host_and_port.sql"
+            mode: "0644"
 
         -
           name: "Rebuilding VoltMX war files"

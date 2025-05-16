@@ -126,6 +126,11 @@ frontend  HTTPS-IN
         #### ACL's  ####
 {% if voltmx_port_forwards[0].url is defined %}
         acl host_voltmx               hdr(host)            -i {{ settings.hostname }}.{{ settings.domain }}
+        acl path_root                 path                 -i /
+        acl path_mfconsole            path                 -i /mfconsole
+
+        # Redirect root path to /mfconsole but only for the exact root path
+        http-request redirect code 302 location /mfconsole if host_voltmx path_root !path_mfconsole
 {% endif %}
 {% if voltmx_port_forwards[0].url is defined %}
         use_backend                   voltmx               if host_voltmx
