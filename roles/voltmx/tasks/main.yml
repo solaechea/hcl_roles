@@ -373,7 +373,7 @@
             login_db: "mysql"
             query: "DROP PROCEDURE IF EXISTS dyn_update3;"
           register: drop_procedure_result
-          changed_when: drop_procedure_result.rowcount | default(0) > 0 or "0 rows affected" not in drop_procedure_result.stdout | default('')
+          changed_when: drop_procedure_result.rowcount[0] | default(0) > 0 or (drop_procedure_result.stdout is defined and "0 rows affected" not in drop_procedure_result.stdout)
           ignore_errors: true # Ignore if procedure doesn't exist
 
         -
@@ -421,7 +421,7 @@
             login_db: "mysql"
             query: "DROP PROCEDURE IF EXISTS dyn_update3;"
           register: drop_after_call_result
-          changed_when: drop_after_call_result.rowcount | default(0) > 0 or "0 rows affected" not in drop_after_call_result.stdout | default('')
+          changed_when: drop_after_call_result.rowcount[0] | default(0) > 0 or (drop_after_call_result.stdout is defined and "0 rows affected" not in drop_after_call_result.stdout)
 
         -
           name: "Remove temporary rendered SQL script"
