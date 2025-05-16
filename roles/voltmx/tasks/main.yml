@@ -364,34 +364,14 @@
         #    mode: "0755"
         #    owner: "{{ service_user }}"
         #    group: "{{ service_group }}"
-#
-        #-
-        #  name: "Drop existing dyn_update3 procedure"
-        #  community.mysql.mysql_query:
-        #    login_user: "{{ mysql_root_username }}"
-        #    login_password: "{{ mysql_root_password }}"
-        #    login_db: "mysql"
-        #    query: "DROP PROCEDURE IF EXISTS dyn_update3;"
-        #  register: drop_procedure_result
-        #  changed_when: drop_procedure_result.rowcount[0] | default(0) > 0 or (drop_procedure_result.stdout is defined and "0 rows affected" not in drop_procedure_result.stdout)
-        #  ignore_errors: true # Ignore if procedure doesn't exist
-#
+
         #-
         #  name: "Render stored procedure to a temporary file"
         #  ansible.builtin.template:
         #    src: "MySQL_changeHostDetails_script.sql.j2"
         #    dest: "/tmp/MySQL_changeHostDetails_script_rendered.sql"
         #    mode: "0644"
-#
-        #-
-        #  name: "Create dyn_update3 procedure from rendered file"
-        #  community.mysql.mysql_query:
-        #    login_user: "{{ mysql_root_username }}"
-        #    login_password: "{{ mysql_root_password }}"
-        #    login_db: "mysql"
-        #    query: "{{ lookup('file', '/tmp/MySQL_changeHostDetails_script_rendered.sql') }}"
-        #  register: create_procedure_result
-#
+
         #-
         #  name: "Call dyn_update3 procedure"
         #  community.mysql.mysql_query:
@@ -414,135 +394,150 @@
         #  register: call_procedure_result
 #
         #-
-        #  name: "Drop dyn_update3 procedure after execution"
-        #  community.mysql.mysql_query:
-        #    login_user: "{{ mysql_root_username }}"
-        #    login_password: "{{ mysql_root_password }}"
-        #    login_db: "mysql"
-        #    query: "DROP PROCEDURE IF EXISTS dyn_update3;"
-        #  register: drop_after_call_result
-        #  changed_when: drop_after_call_result.rowcount[0] | default(0) > 0 or (drop_after_call_result.stdout is defined and "0 rows affected" not in drop_after_call_result.stdout)
-#
-        #-
-        #  name: "Remove temporary rendered SQL script"
-        #  ansible.builtin.file:
-        #    path: "/tmp/MySQL_changeHostDetails_script_rendered.sql"
-        #    state: absent
-#
-        #-
         #  name: "Displaying database update results from procedure call"
         #  ansible.builtin.debug:
         #    var: call_procedure_result
 
         -
           name: "Rebuilding VoltMX war files"
-          become_user: "{{ service_user }}"
           when: voltmx_rebuild_war_files
           block:
             -
-              name: "Creating War-Builder"
-              ansible.builtin.file:
-                path: "{{ voltmx_war_builder_dir }}/{{ item }}"
-                state: directory
-                mode: "0755"
-                owner: "{{ service_user }}"
-                group: "{{ service_group }}"
-              loop:
-                - "accounts"
-                - "mfconsole"
-
-            -
-              name: "Copying orignal war files"
-              ansible.builtin.copy:
-                remote_src: true
-                mode: "0644"
-                src: "{{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}"
-                dest: "{{ voltmx_war_builder_dir }}/{{ item }}"
-              loop:
-                - "accounts.war"
-                - "mfconsole.war"
-
-            -
-              name: "Clear existing war builder directories"
-              ansible.builtin.file:
-                path: "{{ voltmx_war_builder_dir }}/{{ item }}"
-                state: absent
-              loop:
-                - "accounts"
-                - "mfconsole"
-
-            -
-              name: "Recreate war builder directories"
-              ansible.builtin.file:
-                path: "{{ voltmx_war_builder_dir }}/{{ item }}"
-                state: directory
-                mode: "0755"
-                owner: "{{ service_user }}"
-                group: "{{ service_group }}"
-              loop:
-                - "accounts"
-                - "mfconsole"
-
-            -
-              name: "Expanding war files for editing"
+              name: "Tasks to prepare and build WARs in builder directory"
               become_user: "{{ service_user }}"
-              changed_when: false
-              ansible.builtin.shell: "cd {{ voltmx_war_builder_dir }}/{{ item }} && jar xvf {{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war"
-              args:
-                executable: "/bin/bash"
-              environment:
-                PATH: "{{ ansible_env.PATH }}:{{ service_home_dir }}/.sdkman/candidates/java/current/bin"
-              loop:
-                - "accounts"
-                - "mfconsole"
+              block:
+                -
+                  name: "Ensuring war-builder parent directory exists"
+                  ansible.builtin.file:
+                    path: "{{ voltmx_war_builder_dir }}"
+                    state: directory
+                    mode: "0755"
+                    owner: "{{ service_user }}"
+                    group: "{{ service_group }}"
+
+                -
+                  name: "Copying original war files to war-builder directory"
+                  ansible.builtin.copy:
+                    remote_src: true
+                    mode: "0644"
+                    src: "{{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war"
+                    dest: "{{ voltmx_war_builder_dir }}/{{ item }}.war"
+                    owner: "{{ service_user }}"
+                    group: "{{ service_group }}"
+                  loop:
+                    - "accounts"
+                    - "mfconsole"
+
+                -
+                  name: "Clearing existing war builder extraction directories"
+                  ansible.builtin.file:
+                    path: "{{ voltmx_war_builder_dir }}/{{ item }}"
+                    state: absent
+                  loop:
+                    - "accounts"
+                    - "mfconsole"
+
+                -
+                  name: "Recreating war builder extraction directories"
+                  ansible.builtin.file:
+                    path: "{{ voltmx_war_builder_dir }}/{{ item }}"
+                    state: directory
+                    mode: "0755"
+                    owner: "{{ service_user }}"
+                    group: "{{ service_group }}"
+                  loop:
+                    - "accounts"
+                    - "mfconsole"
+
+                -
+                  name: "Expanding war files using unarchive module"
+                  ansible.builtin.unarchive:
+                    src: "{{ voltmx_war_builder_dir }}/{{ item }}.war"
+                    dest: "{{ voltmx_war_builder_dir }}/{{ item }}/"
+                    remote_src: yes
+                    owner: "{{ service_user }}"
+                    group: "{{ service_group }}"
+                  loop:
+                    - "accounts"
+                    - "mfconsole"
+
+                -
+                  name: "Ensure properties directories exist after extraction"
+                  ansible.builtin.file:
+                    path: "{{ voltmx_war_builder_dir }}/{{ item }}/WEB-INF/classes"
+                    state: directory
+                    mode: "0755"
+                    owner: "{{ service_user }}"
+                    group: "{{ service_group }}"
+                  loop:
+                    - "accounts"
+                    - "mfconsole"
+
+                -
+                  name: "Updating property files"
+                  ansible.builtin.lineinfile:
+                    path: "{{ item.path }}"
+                    regexp: "{{ item.regexp }}"
+                    line: "{{ item.line }}"
+                    create: yes
+                    mode: "0644"
+                    owner: "{{ service_user }}"
+                    group: "{{ service_group }}"
+                    insertafter: EOF
+                  loop:
+                    - path: "{{ voltmx_war_builder_dir }}/accounts/WEB-INF/classes/accounts.properties"
+                      regexp: '^WAAS_BASE_URL='
+                      line: "WAAS_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}/workspace"
+                    - path: "{{ voltmx_war_builder_dir }}/mfconsole/WEB-INF/classes/config.properties"
+                      regexp: '^KONY_ACCOUNT_API_BASE_URL='
+                      line: "KONY_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}/accounts/api/v1_0/"
+
+                -
+                  name: "Creating new war files with archive module"
+                  community.general.archive:
+                    path: "{{ voltmx_war_builder_dir }}/{{ item }}/"
+                    dest: "{{ voltmx_war_builder_dir }}/{{ item }}.war-new"
+                    format: "zip"
+                    owner: "{{ service_user }}"
+                    group: "{{ service_group }}"
+                    mode: "0644"
+                  loop:
+                    - "accounts"
+                    - "mfconsole"
 
             -
-              name: "Ensure properties directories exist"
-              ansible.builtin.file:
-                path: "{{ voltmx_war_builder_dir }}/{{ item }}/WEB-INF/classes"
-                state: directory
-                mode: "0755"
-                owner: "{{ service_user }}"
-                group: "{{ service_group }}"
-              loop:
-                - "accounts"
-                - "mfconsole"
+              name: "Deploying new WARs to Tomcat"
+              become: true
+              block:
+                - name: "Removing original war files from Tomcat webapps"
+                  ansible.builtin.file:
+                    path: "{{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war"
+                    state: absent
+                  loop:
+                    - "accounts"
+                    - "mfconsole"
 
-            -
-              name: "Updating property files"
-              ansible.builtin.lineinfile:
-                path: "{{ item.path }}"
-                regexp: "{{ item.regexp }}"
-                line: "{{ item.line }}"
-                create: yes
-                mode: "0644"
-                owner: "{{ service_user }}"
-                group: "{{ service_group }}"
-                insertafter: EOF
-              loop:
-                - path: "{{ voltmx_war_builder_dir }}/accounts/WEB-INF/classes/accounts.properties"
-                  regexp: '^WAAS_BASE_URL=.*'
-                  line: "WAAS_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/workspace"
-                - path: "{{ voltmx_war_builder_dir }}/mfconsole/WEB-INF/classes/config.properties"
-                  regexp: '^KONY_ACCOUNT_API_BASE_URL=.*'
-                  line: "KONY_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/accounts/api/v1_0/"
-                - path: "{{ voltmx_war_builder_dir }}/mfconsole/WEB-INF/classes/config.properties"
-                  regexp: '^VOLTMX_ACCOUNT_API_BASE_URL=.*'
-                  line: "VOLTMX_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/accounts/api/v1_0/"
+                -
+                  name: "Removing original extracted war directories from Tomcat webapps"
+                  ansible.builtin.file:
+                    path: "{{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}"
+                    state: absent
+                  loop:
+                    - "accounts"
+                    - "mfconsole"
 
-            -
-              name: "Creating new war files"
-              changed_when: false
-              become_user: "{{ service_user }}"
-              ansible.builtin.shell: "jar -cvf {{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war *"
-              args:
-                executable: "/bin/bash"
-                chdir: "{{ voltmx_war_builder_dir }}/{{ item }}"
-              environment:
-                PATH: "{{ ansible_env.PATH }}:{{ service_home_dir }}/.sdkman/candidates/java/current/bin"
-              loop:
-                - "accounts"
-                - "mfconsole"
+                -
+                  name: "Copying new war files to Tomcat webapps directory"
+                  ansible.builtin.copy:
+                    remote_src: true
+                    src: "{{ voltmx_war_builder_dir }}/{{ item }}.war-new"
+                    dest: "{{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war"
+                    owner: "{{ service_user }}"
+                    group: "{{ service_group }}"
+                    mode: "0644"
+                  loop:
+                    - "accounts"
+                    - "mfconsole"
 
     -
       name: "Starting VoltMX via systemd Service"
