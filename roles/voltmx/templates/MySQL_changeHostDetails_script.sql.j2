@@ -43,7 +43,15 @@ CLOSE cur1;
 END $$
 
 
-call DYN_UPDATE3 ( {{ voltmx_db_prefix }}idconfigdb{{ voltmx_db_suffix }}, {{ voltmx_db_prefix }}mfaccountsdb{{ voltmx_db_suffix }}, {{ voltmx_db_prefix }}mfconsoledb{{ voltmx_db_suffix }}, {{ voltmx_db_prefix }}admindb{{ voltmx_db_suffix }}, {{ voltmx_db_prefix }}kpnsdb{{ voltmx_db_suffix }}, {{ settings.hostname }}.{{ settings.domain }}, {{ settings.hostname }}.{{ settings.domain }}, {{ voltmx_port_forwards[1].guest }}, {{ haproxy_https_port }} );
+call DYN_UPDATE3 ('{{ voltmx_db_prefix }}idconfigdb{{ voltmx_db_suffix }}', 
+                  '{{ voltmx_db_prefix }}mfaccountsdb{{ voltmx_db_suffix }}', 
+                  '{{ voltmx_db_prefix }}mfconsoledb{{ voltmx_db_suffix }}', 
+                  '{{ voltmx_db_prefix }}admindb{{ voltmx_db_suffix }}', 
+                  '{{ voltmx_db_prefix }}kpnsdb{{ voltmx_db_suffix }}', 
+                  '{{ settings.hostname }}.{{ settings.domain }}', 
+                  '{{ settings.hostname }}.{{ settings.domain }}', 
+                  '{{ voltmx_port_forwards[1].guest }}', 
+                  '{{ haproxy_https_port }}');
 
 use {{ voltmx_db_prefix }}mfreportsdb{{ voltmx_db_suffix }};
 
