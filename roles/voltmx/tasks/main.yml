@@ -430,13 +430,9 @@
             state: absent
 
         -
-          name: "Displaying database update results"
+          name: "Displaying database update results from procedure call"
           ansible.builtin.debug:
-            msg:
-              - "Drop procedure (before) result: {{ drop_procedure_result }}"
-              - "Create procedure result: {{ create_procedure_result }}"
-              - "Call procedure result: {{ call_procedure_result }}"
-              - "Drop procedure (after) result: {{ drop_after_call_result }}"
+            var: call_procedure_result
 
         -
           name: "Rebuilding VoltMX war files"
