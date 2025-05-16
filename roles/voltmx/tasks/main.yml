@@ -362,148 +362,147 @@
             namespaces: {}
 
         -
-          name: "Creating War-Builder"
-          when: not voltmx_server_installed.stat.exists
+          name: "Create scripts directory"
           ansible.builtin.file:
-            path: "{{ voltmx_war_builder_dir }}/{{ item }}"
+            path: "{{ voltmx_installation_dir }}/scripts"
             state: directory
             mode: "0755"
             owner: "{{ service_user }}"
             group: "{{ service_group }}"
-          loop:
-            - "accounts"
-            - "mfconsole"
-      #      - "apiportal"
 
         -
-          name: "Copying orignal war files"
-          ansible.builtin.copy:
-            remote_src: true
-            mode: "0644"
-            src: "{{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}"
-            dest: "{{ voltmx_war_builder_dir }}/{{ item }}"
-          loop:
-            - "accounts.war"
-            - "mfconsole.war"
-      #      - "apiportal.war"
-
-        -
-          name: "Clear existing war builder directories"
-          ansible.builtin.file:
-            path: "{{ voltmx_war_builder_dir }}/{{ item }}"
-            state: absent
-          loop:
-            - "accounts"
-            - "mfconsole"
-          #  - "apiportal"
-
-        -
-          name: "Recreate war builder directories"
-          ansible.builtin.file:
-            path: "{{ voltmx_war_builder_dir }}/{{ item }}"
-            state: directory
-            mode: "0755"
-            owner: "{{ service_user }}"
-            group: "{{ service_group }}"
-          loop:
-            - "accounts"
-            - "mfconsole"
-          #  - "apiportal"
-
-        -
-          name: "Expanding war files for editing"
-          become_user: "{{ service_user }}"
-          changed_when: false
-          ansible.builtin.shell: "cd {{ voltmx_war_builder_dir }}/{{ item }} && jar xvf {{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war"
-          args:
-            executable: "/bin/bash"
-          environment:
-            PATH: "{{ ansible_env.PATH }}:{{ service_home_dir }}/.sdkman/candidates/java/current/bin"
-          loop:
-            - "accounts"
-            - "mfconsole"
-          #  - "apiportal"
-
-        -
-          name: "Ensure properties directories exist"
-          ansible.builtin.file:
-            path: "{{ voltmx_war_builder_dir }}/{{ item }}/WEB-INF/classes"
-            state: directory
-            mode: "0755"
-            owner: "{{ service_user }}"
-            group: "{{ service_group }}"
-          loop:
-            - "accounts"
-            - "mfconsole"
-          #  - "apiportal"
-
-        -
-          name: "Updating property files"
-          ansible.builtin.lineinfile:
-            path: "{{ item.path }}"
-            regexp: "{{ item.regexp }}"
-            line: "{{ item.line }}"
-            create: yes
+          name: "Create MySQL host and port update script"
+          ansible.builtin.template:
+            dest: "{{ voltmx_installation_dir }}/scripts/MySQL_changeHostDetails_script.sql"
             mode: "0644"
             owner: "{{ service_user }}"
             group: "{{ service_group }}"
-            insertafter: EOF
-          loop:
-            - path: "{{ voltmx_war_builder_dir }}/accounts/WEB-INF/classes/accounts.properties"
-              regexp: '^WAAS_BASE_URL=.*'
-              line: "WAAS_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/workspace"
-            - path: "{{ voltmx_war_builder_dir }}/mfconsole/WEB-INF/classes/config.properties"
-              regexp: '^KONY_ACCOUNT_API_BASE_URL=.*'
-              line: "KONY_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/accounts/api/v1_0/"
-            - path: "{{ voltmx_war_builder_dir }}/mfconsole/WEB-INF/classes/config.properties"
-              regexp: '^VOLTMX_ACCOUNT_API_BASE_URL=.*'
-              line: "VOLTMX_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/accounts/api/v1_0/"
-            #- path: "{{ voltmx_war_builder_dir }}/apiportal/WEB-INF/classes/config.properties"
-            #  regexp: '^KONY_DEVELOPER_PORTAL_BASE_URL=.*'
-            #  line: "KONY_DEVELOPER_PORTAL_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/apiportal"
-            #- path: "{{ voltmx_war_builder_dir }}/apiportal/WEB-INF/classes/config.properties"
-            #  regexp: '^VOLTMX_DEVELOPER_PORTAL_BASE_URL=.*'
-            #  line: "VOLTMX_DEVELOPER_PORTAL_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/apiportal"
-            #- path: "{{ voltmx_war_builder_dir }}/apiportal/WEB-INF/classes/config.properties"
-            #  regexp: '^VOLTMX_ACCOUNT_API_BASE_URL=.*'
-            #  line: "VOLTMX_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/accounts/api/v1_0/"
-            #- path: "{{ voltmx_war_builder_dir }}/apiportal/WEB-INF/classes/config.properties"
-            #  regexp: '^KONY_ACCOUNT_API_BASE_URL=.*'
-            #  line: "KONY_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/accounts/api/v1_0/"
+            src: "MySQL_changeHostDetails_script.sql.j2"
 
         -
-          name: "Creating new war files"
-          changed_when: false
+          name: "Running MySQL host and port update script"
+          community.mysql.mysql_db:
+            login_user: "{{ mysql_root_username }}"
+            login_password: "{{ mysql_root_password }}"
+            state: import
+            name: "mysql"
+            target: "{{ voltmx_installation_dir }}/scripts/MySQL_changeHostDetails_script.sql"
+          register: db_update_result
+
+        -
+          name: "Displaying database update result"
+          ansible.builtin.debug:
+            var: db_update_result
+
+        -
+          name: "Rebuilding VoltMX war files"
           become_user: "{{ service_user }}"
-          ansible.builtin.shell: "jar -cvf {{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war *"
-          args:
-            executable: "/bin/bash"
-            chdir: "{{ voltmx_war_builder_dir }}/{{ item }}"
-          environment:
-            PATH: "{{ ansible_env.PATH }}:{{ service_home_dir }}/.sdkman/candidates/java/current/bin"
-          loop:
-            - "accounts"
-            - "mfconsole"
-      #      - "apiportal"
+          when: voltmx_rebuild_war_files
+          block:
+            -
+              name: "Creating War-Builder"
+              ansible.builtin.file:
+                path: "{{ voltmx_war_builder_dir }}/{{ item }}"
+                state: directory
+                mode: "0755"
+                owner: "{{ service_user }}"
+                group: "{{ service_group }}"
+              loop:
+                - "accounts"
+                - "mfconsole"
 
-        #-
-        #  name: "Updating VoltMX database configuration for WAAS_BASE_URL"
-        #  when: not voltmx_server_installed.stat.exists
-        #  community.mysql.mysql_query:
-        #    login_user: "{{ mysql_root_username }}"
-        #    login_password: "{{ mysql_root_password }}"
-        #    login_db: "{{ voltmx_db_prefix }}mfaccountsdb{{ voltmx_db_suffix }}"
-        #    query: >
-        #      UPDATE accounts_configurations 
-        #      SET value='https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/workspace' 
-        #      WHERE name='WAAS_BASE_URL';
-        #  register: db_update_result
+            -
+              name: "Copying orignal war files"
+              ansible.builtin.copy:
+                remote_src: true
+                mode: "0644"
+                src: "{{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}"
+                dest: "{{ voltmx_war_builder_dir }}/{{ item }}"
+              loop:
+                - "accounts.war"
+                - "mfconsole.war"
 
-        #-
-        #  name: "Displaying database update result"
-        #  when: not voltmx_server_installed.stat.exists
-        #  ansible.builtin.debug:
-        #    var: db_update_result
+            -
+              name: "Clear existing war builder directories"
+              ansible.builtin.file:
+                path: "{{ voltmx_war_builder_dir }}/{{ item }}"
+                state: absent
+              loop:
+                - "accounts"
+                - "mfconsole"
+
+            -
+              name: "Recreate war builder directories"
+              ansible.builtin.file:
+                path: "{{ voltmx_war_builder_dir }}/{{ item }}"
+                state: directory
+                mode: "0755"
+                owner: "{{ service_user }}"
+                group: "{{ service_group }}"
+              loop:
+                - "accounts"
+                - "mfconsole"
+
+            -
+              name: "Expanding war files for editing"
+              become_user: "{{ service_user }}"
+              changed_when: false
+              ansible.builtin.shell: "cd {{ voltmx_war_builder_dir }}/{{ item }} && jar xvf {{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war"
+              args:
+                executable: "/bin/bash"
+              environment:
+                PATH: "{{ ansible_env.PATH }}:{{ service_home_dir }}/.sdkman/candidates/java/current/bin"
+              loop:
+                - "accounts"
+                - "mfconsole"
+
+            -
+              name: "Ensure properties directories exist"
+              ansible.builtin.file:
+                path: "{{ voltmx_war_builder_dir }}/{{ item }}/WEB-INF/classes"
+                state: directory
+                mode: "0755"
+                owner: "{{ service_user }}"
+                group: "{{ service_group }}"
+              loop:
+                - "accounts"
+                - "mfconsole"
+
+            -
+              name: "Updating property files"
+              ansible.builtin.lineinfile:
+                path: "{{ item.path }}"
+                regexp: "{{ item.regexp }}"
+                line: "{{ item.line }}"
+                create: yes
+                mode: "0644"
+                owner: "{{ service_user }}"
+                group: "{{ service_group }}"
+                insertafter: EOF
+              loop:
+                - path: "{{ voltmx_war_builder_dir }}/accounts/WEB-INF/classes/accounts.properties"
+                  regexp: '^WAAS_BASE_URL=.*'
+                  line: "WAAS_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/workspace"
+                - path: "{{ voltmx_war_builder_dir }}/mfconsole/WEB-INF/classes/config.properties"
+                  regexp: '^KONY_ACCOUNT_API_BASE_URL=.*'
+                  line: "KONY_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/accounts/api/v1_0/"
+                - path: "{{ voltmx_war_builder_dir }}/mfconsole/WEB-INF/classes/config.properties"
+                  regexp: '^VOLTMX_ACCOUNT_API_BASE_URL=.*'
+                  line: "VOLTMX_ACCOUNT_API_BASE_URL=https://{{ settings.hostname }}.{{ settings.domain }}:{{ haproxy_https_port }}/accounts/api/v1_0/"
+
+            -
+              name: "Creating new war files"
+              changed_when: false
+              become_user: "{{ service_user }}"
+              ansible.builtin.shell: "jar -cvf {{ voltmx_installation_dir }}/tomcat/webapps/{{ item }}.war *"
+              args:
+                executable: "/bin/bash"
+                chdir: "{{ voltmx_war_builder_dir }}/{{ item }}"
+              environment:
+                PATH: "{{ ansible_env.PATH }}:{{ service_home_dir }}/.sdkman/candidates/java/current/bin"
+              loop:
+                - "accounts"
+                - "mfconsole"
 
     -
       name: "Starting VoltMX via systemd Service"

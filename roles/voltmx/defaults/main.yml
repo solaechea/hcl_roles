@@ -33,6 +33,8 @@ voltmx_port_forwards:
 voltmx_db_prefix: "voltmx"
 voltmx_db_suffix: "1"
 
+voltmx_rebuild_war_files: true
+
 # Auto-registration configuration
 voltmx_auto_register: false
 voltmx_auto_reg_url: "https://{{ settings.hostname }}.{{ settings.domain }}"
