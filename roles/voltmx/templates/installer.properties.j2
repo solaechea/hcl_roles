@@ -520,11 +520,7 @@ PERFORM_AUTO_REG_1=No
 {% if voltmx_auto_reg_url != "" %}
 USER_INPUT_AUTO_REG_1={{ voltmx_auto_reg_url }}
 {% else %}
-{% if voltmx_port_forwards[1].guest is defined %}
-USER_INPUT_AUTO_REG_1=https://{{ voltmx_port_forwards[1].url }}.{{ settings.hostname }}.{{ settings.domain }}:{{ voltmx_port_forwards[1].guest }}
-{% else %}
-USER_INPUT_AUTO_REG_1=http://{{ settings.hostname }}.{{ settings.domain }}:{{ voltmx_port_forwards[0].guest }}
-{% endif %}
+USER_INPUT_AUTO_REG_1=https://{{ settings.hostname }}.{{ settings.domain }}:{{ voltmx_port_forwards[1].guest }}
 {% endif %}
 USER_INPUT_AUTO_REG_2={{ voltmx_admin_first_name }}
 USER_INPUT_AUTO_REG_3={{ voltmx_admin_last_name }}
