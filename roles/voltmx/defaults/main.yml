@@ -51,3 +51,9 @@ voltmx_auto_update_encryption_keys: 1
 # Path to previous VoltMX installation - used for upgrading encryption keys
 # This is auto-populated when using the directory auto-detection
 voltmx_previous_install_dir: ""
+
+voltmx_selfsigned_cert_ou: STARTcloud
+voltmx_selfsigned_cert_company_name: STARTcloud
+voltmx_selfsigned_cert_city: Rantoul
+voltmx_selfsigned_cert_state: IL
+voltmx_selfsigned_cert_country: US

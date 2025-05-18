@@ -156,10 +156,8 @@ CONSOLE_HOST_DETAILS_2={{ voltmx_port_forwards[0].guest }}
 # If you want to create self-signed certificate from installer then use CONSOLE_SSL_CERTS_1=Generate a self-signed certificate
 # else if you have a valid SSL Certificate use CONSOLE_SSL_CERTS_2=Use existing certificate
 #-----------------------------------------------------------------------------------------------------------------------------
-{% if voltmx_port_forwards[1].guest is defined %}
-CONSOLE_SSL_CERTS_2=Use existing certificate
-{% endif %}
-
+{% if voltmx_port_forwards[1].guest is defined and voltmx_use_self_signed %}
+CONSOLE_SSL_CERTS_2=Generate a self-signed certificate
 #Details for self-signed SSL Certificate
 #---------------------------------------
 #If you have selected Tomcat or JBoss standalone mode then please provide below details.
@@ -167,12 +165,17 @@ CONSOLE_SSL_CERTS_2=Use existing certificate
 # CONSOLE_CERTS_DETAILS_1 is Organizational Unit, CONSOLE_CERTS_DETAILS_2 Hostname mapped in SSL Certificate, CONSOLE_CERTS_DETAILS_3 is Company Name
 # CONSOLE_CERTS_DETAILS_4 is City, CONSOLE_CERTS_DETAILS_5 is State and CONSOLE_CERTS_DETAILS_6 is Country.
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
-CONSOLE_CERTS_DETAILS_1=
-CONSOLE_CERTS_DETAILS_2=
-CONSOLE_CERTS_DETAILS_3=
-CONSOLE_CERTS_DETAILS_4=
-CONSOLE_CERTS_DETAILS_5=
-CONSOLE_CERTS_DETAILS_6=
+CONSOLE_CERTS_DETAILS_1={{ voltmx_selfsigned_cert_ou }}
+CONSOLE_CERTS_DETAILS_2={{ settings.hostname }}.{{ settings.domain }}
+CONSOLE_CERTS_DETAILS_3={{ voltmx_selfsigned_cert_company_name }}
+CONSOLE_CERTS_DETAILS_4={{ voltmx_selfsigned_cert_city }}
+CONSOLE_CERTS_DETAILS_5={{ voltmx_selfsigned_cert_state }}
+CONSOLE_CERTS_DETAILS_6={{ voltmx_selfsigned_cert_country }}
+{% endif %}
+
+{% if voltmx_port_forwards[1].guest is defined and not voltmx_use_self_signed %}
+CONSOLE_SSL_CERTS_2=Use existing certificate
+
 
 #SSL Certificate Details
 #-----------------------
@@ -180,7 +183,7 @@ CONSOLE_CERTS_DETAILS_6=
 # If you are suing CONSOLE_SSL_CERTS_2=Provide SSL certificate provide below details.
 # CONSOLE_APPSERVER_SSL_1 is absolute path of keystore file.
 #---------------------------------------------------------------------------------------
-{% if voltmx_port_forwards[1].guest is defined %}
+
 CONSOLE_APPSERVER_SSL_1={{ cert_dir }}/jks/{{ settings.hostname }}.{{ settings.domain }}.jks
 {% endif %}
 
@@ -566,7 +569,7 @@ INDEX_OF_MATCHING_PASSWORD=0
 #To start the server START_SERVER_1 should be set as Yes or else START_SERVER_2 should be set as Yes
 #---------------------------------------
 START_SERVER_1=
-START_SERVER_2=Yes
+START_SERVER_2=No
 
 #Delete Database During Uninstall
 #--------------------------------

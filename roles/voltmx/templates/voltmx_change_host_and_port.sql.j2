@@ -55,4 +55,4 @@ CLOSE cur1;
 END $
 delimiter ;
 
-call DYN_UPDATE3 ('voltmxidconfigdb1', 'voltmxmfaccountsdb1', 'voltmxmfconsoledb1', 'voltmxadmindb1', 'voltmxkpnsdb1', 'vmx.pmagold.com', 'v
+call DYN_UPDATE3 ('{{ voltmx_db_prefix }}idconfigdb{{ voltmx_db_suffix }}, '{{ voltmx_db_prefix }}mfaccountsdb{{ voltmx_db_suffix }}, '{{ voltmx_db_prefix }}mfconsoledb{{ voltmx_db_suffix }}, '{{ voltmx_db_prefix }}admindb{{ voltmx_db_suffix }}, '{{ voltmx_db_prefix }}kpnsdb{{ voltmx_db_suffix }}, 'vmx.pmagold.com', 'vmx.pmagold.com', '8443', '443');
