@@ -527,6 +527,16 @@
     #    lockdown_file_cleanups_list: "{{ lockdown_file_cleanups_list | default([]) + [installer_dir + '/voltmx/installer.properties'] }}"
 
     -
+      name: "Checking VoltMX is listening on port {{ voltmx_port_forwards[1].guest }}"
+      when: not voltmx_server_installed.stat.exists
+      ansible.builtin.wait_for:
+        port: "{{ voltmx_port_forwards[1].guest }}"
+        delay: 5
+        timeout: 300
+        msg: "Timeout waiting for {{ voltmx_port_forwards[1].guest }} to respond"
+      register: port_check
+
+    -
       name: "Marking VoltMX as Installed"
       when: not voltmx_server_installed.stat.exists
       ansible.builtin.file:
@@ -534,11 +544,4 @@
         mode: "0644"
         state: touch
 
-    -
-      name: "Checking VoltMX is listening on port {{ voltmx_port_forwards[1].guest }}"
-      ansible.builtin.wait_for:
-        port: "{{ voltmx_port_forwards[1].guest }}"
-        delay: 5
-        timeout: 300
-        msg: "Timeout waiting for {{ voltmx_port_forwards[1].guest }} to respond"
-      register: port_check
+

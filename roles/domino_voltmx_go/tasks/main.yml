@@ -51,6 +51,7 @@
       until: "voltmxgoresult is not failed"
       retries: 3
       ansible.builtin.get_url:
+        validate_certs: false
         mode: '0755'
         url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ voltmx_go_installer_archive }}"
         dest: "{{ installer_dir }}/voltmx/archives/{{ voltmx_go_installer_archive }}"
