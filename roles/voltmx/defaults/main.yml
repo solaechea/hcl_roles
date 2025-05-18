@@ -57,3 +57,5 @@ voltmx_selfsigned_cert_company_name: STARTcloud
 voltmx_selfsigned_cert_city: Rantoul
 voltmx_selfsigned_cert_state: IL
 voltmx_selfsigned_cert_country: US
+
+voltmx_use_self_signed: true
