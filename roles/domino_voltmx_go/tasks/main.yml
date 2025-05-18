@@ -132,6 +132,8 @@
           'Please enter the number of the option you would like to perform \(1-7\)': '1'
           'Tomcat WebApps directory': "{{ voltmx_installation_dir }}/tomcat/webapps"
         timeout: 300
+      register: voltmx_go_install_result
+      failed_when: "'Plugins have been installed' not in voltmx_go_install_result.stdout"
 
     -
       name: "Starting VoltMX via systemd Service"
