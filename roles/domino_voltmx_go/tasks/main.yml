@@ -124,7 +124,7 @@
       when: not voltmx_go_server_installed.stat.exists
       become: true
       become_user: "{{ service_user }}"
-      community.general.expect:
+      ansible.builtin.expect:
         command: "./{{ voltmx_go_installer_bin }}"
         chdir: "{{ voltmx_go_install_dir }}"
         responses:
