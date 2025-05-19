@@ -47,6 +47,7 @@ domino_installer_hotfix_install: false
 domino_hotfix_version: HF16
 domino_server_hotfix_tar: "{{ domino_major_version|string + domino_minor_version|string + domino_fixpack_version|string + domino_hotfix_version|string + '-linux64.tar' }}"
 installer_url_app_path: "Super.Human.Installer/Domino"
+installer_base_url: "{{ secrets.installer_base_url | default('https://downloads.prominic.net') }}"
 domino_install_dir: /opt/hcl/domino/notes/latest/linux
 domino_install_basedir: /opt/hcl/domino
 domino_install_chosen_feature_list: Domino,Nomad,OnTime,Verse,Help
