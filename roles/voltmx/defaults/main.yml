@@ -26,7 +26,7 @@ voltmx_port_forwards:
     guest: 8080
     url: "voltmx"
   -
-    guest: 8443
+    guest: 443
     url: "voltmx"
 
 # Database configuration
