@@ -101,12 +101,9 @@ USER_INPUT_INSTALL_MODE_3=
 # If you want to HTTP use USER_INPUT_PROTOCOL_1=HTTP
 # If you want to HTTPS use USER_INPUT_PROTOCOL_2=HTTPS
 #---------------------------------------------------------------------------------------
-{% if voltmx_port_forwards[1].guest is defined %}
-USER_INPUT_PROTOCOL_1=HTTP
+USER_INPUT_PROTOCOL_1=
 USER_INPUT_PROTOCOL_2=HTTPS
-{% else %}
-USER_INPUT_PROTOCOL_1=HTTP
-{% endif %}
+
 
 
 #Details for Application Server
@@ -119,14 +116,10 @@ USER_INPUT_PROTOCOL_1=HTTP
 # Please make sure that if you using HTTP then CONSOLE_HOST_DETAILS_3 should be commented
 # and if you are using then CONSOLE_HOST_DETAILS_3 should be uncommented.
 #---------------------------------------------------------------------------------------------------------------------------
-{% if voltmx_port_forwards[1].guest is defined %}
+
 CONSOLE_HOST_DETAILS_1={{ settings.hostname }}.{{ settings.domain }}
-CONSOLE_HOST_DETAILS_2={{ voltmx_port_forwards[0].guest }}
 CONSOLE_HOST_DETAILS_3={{ voltmx_port_forwards[1].guest }}
-{% else %}
-CONSOLE_HOST_DETAILS_1={{ settings.hostname }}.{{ settings.domain }}
-CONSOLE_HOST_DETAILS_2={{ voltmx_port_forwards[0].guest }}
-{% endif %}
+
 
 #Details for Application Server
 #------------------------------

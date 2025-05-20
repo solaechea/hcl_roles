@@ -122,7 +122,7 @@
 
     -
       name: "Installing VoltMX go via Installed Plugin Installer"
-      when: not voltmx_go_server_installed.stat.exists
+      when: not voltmx_go_server_installed.stat.exists and install_voltmx_go_plugin
       become: true
       become_user: "{{ service_user }}"
       ansible.builtin.expect:

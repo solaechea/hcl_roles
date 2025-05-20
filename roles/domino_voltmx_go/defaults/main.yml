@@ -15,3 +15,5 @@ voltmx_go_plugin_installer_bin: "VoltMXGoInstallationTool-9.5.18.3.bin"
 ## VoltMX Go Installer
 voltmx_go_install_dir: "{{ voltmx_installation_dir }}/VoltMXGoPluginInstaller"
 voltmx_go_installer_bin: "VoltMXGoPluginInstaller"
+
+install_voltmx_go_plugin: true

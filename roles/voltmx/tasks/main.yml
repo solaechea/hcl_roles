@@ -228,7 +228,7 @@
     -
       name: "Installing VoltMX Via Silent Installer"
       when: not voltmx_server_installed.stat.exists
-      ansible.builtin.shell: "./{{ voltmx_installer_bin }} -f {{ installer_dir }}/voltmx/installer.properties -i silent && touch {{ completed_dir }}/voltmx_installer_completed"
+      ansible.builtin.shell: "/usr/bin/authbind --deep ./{{ voltmx_installer_bin }} -f {{ installer_dir }}/voltmx/installer.properties -i silent && touch {{ completed_dir }}/voltmx_installer_completed"
       become: true
       become_user: "{{ service_user }}"
       args:
