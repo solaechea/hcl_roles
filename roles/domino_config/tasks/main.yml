@@ -311,7 +311,7 @@
         path: "{{ domino_home_dir }}/IBM_TECHNICAL_SUPPORT/autoconfigure.log"
         search_regex: "Application configuration completed successfully"
         state: present
-        timeout: 300
+        timeout: 600
 
     -
       name: "Capturing autoconfigure log output"
@@ -366,7 +366,6 @@
       register: domino_service_start_details
       retries: 3
       delay: 5
-      until: domino_service_start_details.state == "started"
     
     -
       name: "Waiting for 60 seconds to let Domino fully configure"
