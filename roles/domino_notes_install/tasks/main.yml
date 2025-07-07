@@ -1,144 +1,25 @@
 ---
 -
-  name: "Block to Allow Loading of Variables without running task"
-  when: run_tasks and ansible_os_family == 'Windows'
+  name: "Managing progress for {{ ansible_role_name }}"
+  when: count_progress | default(false)
+  run_once: true
   block:
-    # Phase A: Directory Creation & Preparation
-    -
-      name: "Creating Notes installation directories"
-      ansible.windows.win_file:
-        path: "{{ item }}"
-        state: directory
-      with_items:
-        - "{{ notes_temp_dir }}"
-        - "{{ notes_unpack_dir }}"
-        - "{{ notes_install_dir }}"
+    - name: "Incrementing global progress step counter for {{ ansible_role_name }}"
+      ansible.builtin.set_fact:
+        global_current_progress_step: "{{ global_current_progress_step | default(0) | int + 1 }}"
 
-    # Phase B: Installation Checks
-    -
-      name: "Checking if Notes is already installed"
-      register: notes_installed
-      ansible.windows.win_stat:
-        path: "{{ notes_exe_path }}"
+    - name: "Including progress reporting task for {{ ansible_role_name }}"
+      ansible.builtin.include_role:
+        name: startcloud.startcloud_roles.progress
+      vars:
+        _progress_role_is_setup_run: false
+        current_progress_step: "{{ global_current_progress_step | default(0) }}"
+        progress_description: "{{ progress_role_description | default('Processing ' + ansible_role_name) }}"
 
+-
+  name: "Block to Allow Loading of Variables without running task"
+  when: run_tasks
+  block:
     -
-      name: "Removing existing Notes installation (always replace)"
-      ansible.windows.win_command:
-        cmd: "{{ notes_install_dir }}\\uninstall.exe /S"
-      when: notes_installed.stat.exists
-      ignore_errors: true
-
-    # Phase C: Installer Download Management
-    -
-      name: "Checking if Notes installer exists"
-      register: notes_installer_check
-      ansible.windows.win_stat:
-        path: "{{ notes_temp_dir }}\\{{ notes_installer_exe }}"
-
-    -
-      name: "Downloading Notes installer from {{ installer_base_url }}"
-      ansible.windows.win_get_url:
-        url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ notes_installer_exe }}"
-        dest: "{{ notes_temp_dir }}\\{{ notes_installer_exe }}"
-        username: "{{ installer_url_user }}"
-        password: "{{ installer_url_pass }}"
-        validate_certs: false
-      when: not notes_installer_check.stat.exists
-
-    -
-      name: "Checking if Notes fixpack installer exists"
-      register: notes_fixpack_check
-      ansible.windows.win_stat:
-        path: "{{ notes_temp_dir }}\\{{ notes_fixpack_exe }}"
-      when: notes_installer_fixpack_install and notes_fixpack_exe != ""
-
-    -
-      name: "Downloading Notes fixpack from {{ installer_base_url }}"
-      ansible.windows.win_get_url:
-        url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ notes_fixpack_exe }}"
-        dest: "{{ notes_temp_dir }}\\{{ notes_fixpack_exe }}"
-        username: "{{ installer_url_user }}"
-        password: "{{ installer_url_pass }}"
-        validate_certs: false
-      when: notes_installer_fixpack_install and notes_fixpack_exe != "" and not notes_fixpack_check.stat.exists
-
-    -
-      name: "Checking if Notes hotfix installer exists"
-      register: notes_hotfix_check
-      ansible.windows.win_stat:
-        path: "{{ notes_temp_dir }}\\{{ notes_hotfix_exe }}"
-      when: notes_installer_hotfix_install and notes_hotfix_exe != ""
-
-    -
-      name: "Downloading Notes hotfix from {{ installer_base_url }}"
-      ansible.windows.win_get_url:
-        url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ notes_hotfix_exe }}"
-        dest: "{{ notes_temp_dir }}\\{{ notes_hotfix_exe }}"
-        username: "{{ installer_url_user }}"
-        password: "{{ installer_url_pass }}"
-        validate_certs: false
-      when: notes_installer_hotfix_install and notes_hotfix_exe != "" and not notes_hotfix_check.stat.exists
-
-    # Phase D: Installation Process
-    -
-      name: "Unpacking Notes installer to temporary directory"
-      ansible.windows.win_command:
-        cmd: "setup.exe /s /v\"UNPACK_ONLY=1 UNPACK_DIR={{ notes_unpack_dir }}\""
-        chdir: "{{ notes_temp_dir }}"
-      register: notes_unpack_result
-
-    -
-      name: "Installing Notes with multi-user configuration"
-      ansible.windows.win_command:
-        cmd: "setup.exe /s /v\"SETMULTIUSER=1 MULTIUSERBASEDIR={{ notes_multiuser_base_dir }} MULTIUSERCOMMONDIR=\\\"{{ notes_multiuser_common_dir }}\\\" CITRIX=1\""
-        chdir: "{{ notes_unpack_dir }}"
-      register: notes_install_result
-
-    -
-      name: "Installing Notes fixpack"
-      ansible.windows.win_command:
-        cmd: "{{ notes_fixpack_exe }} /S"
-        chdir: "{{ notes_temp_dir }}"
-      when: notes_installer_fixpack_install and notes_fixpack_exe != ""
-      register: notes_fixpack_result
-
-    -
-      name: "Installing Notes hotfix"
-      ansible.windows.win_command:
-        cmd: "{{ notes_hotfix_exe }} /S"
-        chdir: "{{ notes_temp_dir }}"
-      when: notes_installer_hotfix_install and notes_hotfix_exe != ""
-      register: notes_hotfix_result
-
-    # Phase E: Post-Installation Verification
-    -
-      name: "Verifying Notes installation"
-      ansible.windows.win_stat:
-        path: "{{ notes_exe_path }}"
-      register: notes_verification
-
-    -
-      name: "Notes installation verification failed"
-      ansible.builtin.fail:
-        msg: "Notes installation failed - notes.exe not found at {{ notes_exe_path }}"
-      when: not notes_verification.stat.exists
-
-    # Phase F: Cleanup
-    -
-      name: "Cleaning up unpacked installer files"
-      ansible.windows.win_file:
-        path: "{{ notes_unpack_dir }}"
-        state: absent
-      when: notes_cleanup_temp_files
-
-    -
-      name: "Cleaning up downloaded installer files"
-      ansible.windows.win_file:
-        path: "{{ notes_temp_dir }}"
-        state: absent
-      when: notes_cleanup_temp_files and not notes_keep_installers
-
-    -
-      name: "Notes installation completed successfully"
-      ansible.builtin.debug:
-        msg: "HCL Notes {{ notes_major_version }}.{{ notes_minor_version }}.{{ notes_patch_version }} {{ notes_fixpack_version }} installed successfully"
+      name: "Including OS-specific tasks"
+      ansible.builtin.include_tasks: "{{ ansible_os_family | lower }}.yml"
