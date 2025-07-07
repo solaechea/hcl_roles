@@ -8,14 +8,15 @@ progress_role_description: "Installing system dependencies"
 
 # Notes Client Version Settings
 notes_major_version: "14"
-notes_minor_version: "0"
+notes_minor_version: "5"
 notes_patch_version: "0"
 notes_fixpack_version: "FP3"
 notes_hotfix_version: "SHF20"
 
 # Installer File Names (based on available versions from Prominic server)
-notes_installer_exe: "Notes_1400FP3_Win64.exe"
-notes_fixpack_exe: ""  # Empty if fixpack included in main installer
+notes_installer_exe: "Notes_Designer_Admin_14.5_Win64_English.exe"
+#Notes_Designer_Admin_14.0_Win64_English.exe
+notes_fixpack_exe: "Notes_1400FP3_Win64.exe"  # Empty if fixpack included in main installer
 notes_hotfix_exe: "1400FP3SHF20_W64_standard.exe"
 
 # Installation Control

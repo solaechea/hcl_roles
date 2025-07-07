@@ -76,7 +76,7 @@
 -
   name: "Unpacking Notes installer to temporary directory"
   ansible.windows.win_command:
-    cmd: "setup.exe /s /v\"UNPACK_ONLY=1 UNPACK_DIR={{ notes_unpack_dir }}\""
+    cmd: "{{ notes_installer_exe }} /s /v\"UNPACK_ONLY=1 UNPACK_DIR={{ notes_unpack_dir }}\""
     chdir: "{{ notes_temp_dir }}"
   register: notes_unpack_result
 
