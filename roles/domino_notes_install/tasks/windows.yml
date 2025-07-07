@@ -34,8 +34,8 @@
   ansible.windows.win_get_url:
     url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ notes_installer_exe }}"
     dest: "{{ notes_temp_dir }}\\{{ notes_installer_exe }}"
-    username: "{{ installer_url_user }}"
-    password: "{{ installer_url_pass }}"
+    url_username: "{{ installer_url_user }}"
+    url_password: "{{ installer_url_pass }}"
     validate_certs: false
   when: not notes_installer_check.stat.exists
 
@@ -51,8 +51,8 @@
   ansible.windows.win_get_url:
     url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ notes_fixpack_exe }}"
     dest: "{{ notes_temp_dir }}\\{{ notes_fixpack_exe }}"
-    username: "{{ installer_url_user }}"
-    password: "{{ installer_url_pass }}"
+    url_username: "{{ installer_url_user }}"
+    url_password: "{{ installer_url_pass }}"
     validate_certs: false
   when: notes_installer_fixpack_install and notes_fixpack_exe != "" and not notes_fixpack_check.stat.exists
 
@@ -68,8 +68,8 @@
   ansible.windows.win_get_url:
     url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ notes_hotfix_exe }}"
     dest: "{{ notes_temp_dir }}\\{{ notes_hotfix_exe }}"
-    username: "{{ installer_url_user }}"
-    password: "{{ installer_url_pass }}"
+    url_username: "{{ installer_url_user }}"
+    url_password: "{{ installer_url_pass }}"
     validate_certs: false
   when: notes_installer_hotfix_install and notes_hotfix_exe != "" and not notes_hotfix_check.stat.exists
 
