@@ -49,3 +49,6 @@ notes_keep_installers: true
 
 # Installation Verification
 notes_exe_path: "{{ notes_install_dir }}\\notes.exe"
+
+# MST Transform File
+notes_mst_file: "HCL Notes 14.5 x64.mst"
