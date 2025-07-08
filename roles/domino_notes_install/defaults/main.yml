@@ -24,7 +24,7 @@ notes_installer_fixpack_install: false
 notes_installer_hotfix_install: false
 
 # Installation Directories
-notes_install_dir: "C:\\Program Files (x86)\\IBM\\Notes"
+notes_install_dir: "C:\\Program Files (x86)\\HCL\\Notes"
 notes_temp_dir: "C:\\temp\\notes_install"
 notes_unpack_dir: "C:\\temp\\notes_unpack"
 

@@ -89,7 +89,7 @@
 -
   name: "Installing Notes with multi-user configuration and MST transform"
   ansible.windows.win_command:
-    cmd: "setup.exe /s /v\"SETMULTIUSER=1 MULTIUSERBASEDIR=!USERPROFILE! MULTIUSERCOMMONDIR=\\\"C:\\Program Files (x86)\\IBM\\Notes\\\" CITRIX=1 TRANSFORMS=\\\"{{ notes_mst_file }}\\\"\""
+    cmd: "setup.exe /s /v\"SETMULTIUSER=1 MULTIUSERBASEDIR={{ notes_multiuser_base_dir }} MULTIUSERCOMMONDIR=\\\"{{ notes_multiuser_common_dir }}\\\" CITRIX=1 TRANSFORMS=\\\"{{ notes_mst_file }}\\\"\""
     chdir: "{{ notes_unpack_dir }}"
   register: notes_install_result
 
