@@ -33,6 +33,7 @@ notes_multiuser_enabled: true
 notes_multiuser_base_dir: "!USERPROFILE!"
 notes_multiuser_common_dir: "C:\\Program Files (x86)\\HCL\\Notes"
 notes_citrix_mode: true
+notes_include_transform: false
 
 # Download Settings (inherited from existing pattern)
 installer_base_url: "{{ secrets.installer_base_url }}"
