@@ -13,10 +13,10 @@ notes_patch_version: "0"
 notes_fixpack_version: "FP3"
 notes_hotfix_version: "SHF20"
 
-# Installer File Names (based on available versions from Prominic server)
+# Installer File Names
 notes_installer_exe: "Notes_Designer_Admin_14.5_Win64_English.exe"
 #Notes_Designer_Admin_14.0_Win64_English.exe
-notes_fixpack_exe: "Notes_1400FP3_Win64.exe"  # Empty if fixpack included in main installer
+notes_fixpack_exe: "Notes_1400FP3_Win64.exe"
 notes_hotfix_exe: "1400FP3SHF20_W64_standard.exe"
 
 # Installation Control
@@ -28,9 +28,16 @@ notes_install_dir: "C:\\Program Files\\HCL\\Notes"
 notes_temp_dir: "C:\\temp\\notes_install"
 notes_unpack_dir: "C:\\temp\\notes_unpack"
 
+# Ram Disk
+notes_use_ramdisk: false
+notes_ramdisk_path: "H:"
+notes_ramdisk_size: "100m"
+notes_ramdisk_label: "Temp"
+notes_ramdisk_filesystem: "NTFS"
+
 # Multi-user Installation Settings
 notes_multiuser_enabled: true
-notes_multiuser_base_dir: "!USERPROFILE!"
+notes_multiuser_base_dir: "{{ notes_ramdisk_path + '\\' if notes_use_ramdisk else '!USERPROFILE!' }}"
 notes_multiuser_common_dir: "C:\\Program Files (x86)\\HCL\\Notes"
 notes_citrix_mode: true
 notes_include_transform: false
@@ -38,12 +45,9 @@ notes_include_transform: false
 # Download Settings (inherited from existing pattern)
 installer_url_app_path: "Super.Human.Installer/Notes"
 
-# Installation Features (all/full features)
-notes_install_all_features: true
-
 # Cleanup Settings
 notes_cleanup_temp_files: true
-notes_keep_installers: true
+notes_keep_installers: false
 
 # Installation Verification
 notes_exe_path: "{{ notes_install_dir }}\\notes.exe"

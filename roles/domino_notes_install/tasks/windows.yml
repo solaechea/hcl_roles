@@ -10,6 +10,13 @@
     - "{{ notes_install_dir }}"
 
 -
+  name: "Installing softperfect-ramdisk"
+  when: notes_use_ramdisk
+  chocolatey.chocolatey.win_chocolatey:
+    name: "softperfect-ramdisk"
+    state: present
+
+-
   name: "Checking if Notes is already installed"
   register: notes_installed
   ansible.windows.win_stat:
@@ -87,6 +94,13 @@
     dest: "{{ notes_unpack_dir }}\\{{ notes_mst_file }}"
 
 -
+  name: "Creating temporary RAM disk"
+  when: notes_use_ramdisk
+  ansible.windows.win_command:
+    cmd: "\"C:\\Program Files\\SoftPerfect RAM Disk\\ramdiskc.exe\" /add:{{ notes_ramdisk_path }} /fs:{{ notes_ramdisk_filesystem }} /size:{{ notes_ramdisk_size }} /label:{{ notes_ramdisk_label }}"
+  register: ramdisk_create_result
+
+-
   name: "Installing Notes with multi-user configuration and MST transform"
   when: notes_include_transform
   ansible.windows.win_command:
@@ -117,6 +131,13 @@
     chdir: "{{ notes_temp_dir }}"
   when: notes_installer_hotfix_install and notes_hotfix_exe != ""
   register: notes_hotfix_result
+
+-
+  name: "Deleting temporary RAM disk"
+  when: notes_use_ramdisk
+  ansible.windows.win_command:
+    cmd: "\"C:\\Program Files\\SoftPerfect RAM Disk\\ramdiskc.exe\" /del:{{ notes_ramdisk_path }} /force"
+  register: ramdisk_delete_result
 
 -
   name: "Verifying Notes installation"
