@@ -30,15 +30,15 @@ notes_unpack_dir: "C:\\temp\\notes_unpack"
 
 # Ram Disk
 notes_use_ramdisk: false
-notes_ramdisk_path: "H:"
-notes_ramdisk_size: "100m"
-notes_ramdisk_label: "Temp"
+notes_ramdisk_path: "R"
+notes_ramdisk_size: "700m"
+notes_ramdisk_label: "Marvel"
 notes_ramdisk_filesystem: "NTFS"
 
 # Multi-user Installation Settings
 notes_multiuser_enabled: true
-notes_multiuser_base_dir: "{{ notes_ramdisk_path + '\\' if notes_use_ramdisk else '!USERPROFILE!' }}"
-notes_multiuser_common_dir: "C:\\Program Files (x86)\\HCL\\Notes"
+notes_multiuser_base_dir: "H"
+notes_multiuser_common_dir: "C:\\Program Files\\HCL\\Notes"
 notes_citrix_mode: true
 notes_include_transform: false
 
