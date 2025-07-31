@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- This is an old copy, we are using SHPs Nomadhelper that is installed via Genesis instead-->
 <head>
     <meta charset="UTF-8">
     <title>Open Link</title>
@@ -18,18 +17,35 @@
         const hrefUrl = new URL(link);
         
         if (navigator && navigator.serviceWorker && navigator.serviceWorker.controller) {
-            navigator.serviceWorker.controller.postMessage({
-                type: 'openNotesUri',
-                payload: {
-                    notesUri: decodeURIComponent(
-                        hrefUrl.hash.substring(
-                            hrefUrl.hash.indexOf(HASH_PREFIX) + HASH_PREFIX.length
-                        )
-                    )
-                }
-            });
-            
-            window.top.postMessage('[Success] Successfully called openNotesUri', '*');
+        		var messageFunction = function(event) {
+    				if (event.data.type == 'numberOfWindowClients') {
+    					if (event.data.clientCount > 1)
+    					{   		
+						navigator.serviceWorker.controller.postMessage({
+							type: 'openNotesUri',
+							payload: {
+								notesUri: decodeURIComponent(
+									hrefUrl.hash.substring(
+										hrefUrl.hash.indexOf(HASH_PREFIX) + HASH_PREFIX.length
+									)
+								)
+							}
+						});
+						      
+           			    window.top.postMessage('[Success] Successfully called openNotesUri', '*');
+					}
+					else
+					{
+						console.error('Nomad Window is closed');
+						window.top.postMessage('[Error] Nomad Window is closed', '*');
+					}
+  			    
+       			    navigator.serviceWorker.removeEventListener('message', messageFunction);
+    				}
+        		};
+        		
+       		navigator.serviceWorker.addEventListener('message', messageFunction);
+			navigator.serviceWorker.controller.postMessage({type: 'numberOfWindowClients'});
         } else {
             console.error('No service worker registered');
                     
