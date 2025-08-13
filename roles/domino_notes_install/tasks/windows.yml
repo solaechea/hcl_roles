@@ -176,3 +176,47 @@
   name: "Notes installation completed successfully"
   ansible.builtin.debug:
     msg: "HCL Notes {{ notes_major_version }}.{{ notes_minor_version }}.{{ notes_patch_version }} {{ notes_fixpack_version }} installed successfully"
+
+-
+  name: "Copying Marvel Client DLL"
+  when: notes_enable_marvel_client
+  ansible.windows.win_copy:
+    src: "{{ marvel_client_dll }}"
+    dest: "{{ notes_install_dir }}\\{{ marvel_client_dll }}"
+
+-
+  name: "Configuring main notes.ini for Marvel Client"
+  when: notes_enable_marvel_client
+  ansible.windows.win_lineinfile:
+    path: "{{ notes_install_dir }}\\notes.ini"
+    regexp: '^Directory='
+    line: "Directory={{ notes_ramdisk_path }}:\\HCL\\Notes\\Data"
+    create: yes
+
+-
+  name: "Creating shared data directory for Marvel Client"
+  when: notes_enable_marvel_client
+  ansible.windows.win_file:
+    path: "{{ notes_multiuser_common_dir }}\\HCL\\Notes\\Data\\Shared"
+    state: directory
+
+-
+  name: "Configuring shared notes.ini for Marvel Client"
+  when: notes_enable_marvel_client
+  ansible.windows.win_copy:
+    dest: "{{ notes_multiuser_common_dir }}\\HCL\\Notes\\Data\\Shared\\notes.ini"
+    content: |
+      [Notes]
+      KitType=1
+      SharedDataDirectory={{ notes_multiuser_common_dir }}\\HCL\\Notes\\Data\\Shared
+      InstallType=6
+      InstallMode=1
+      NotesProgram={{ notes_install_dir }}\\
+      EXTMGR_ADDINS={{ marvel_client_dll }}
+      MC_NetworkDirectory={{ notes_marvel_client_network_directory }}
+      MC_AllowSyncDuringSetup={{ notes_marvel_client_allow_sync_during_setup }}
+      MC_AllowSyncDuringSetup_FixPrompt={{ notes_marvel_client_allow_sync_during_setup_fixprompt }}
+      MC_DB={{ notes_marvel_client_db }}
+      MC_DB_Notresolvable={{ notes_marvel_client_db_notresolvable }}
+      MC_DB_Unavailable={{ notes_marvel_client_db_unavailable }}
+      MC_SupportIDVault={{ notes_marvel_client_support_idvault }}

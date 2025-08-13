@@ -38,7 +38,7 @@ notes_ramdisk_filesystem: "NTFS"
 # Multi-user Installation Settings
 notes_multiuser_enabled: true
 notes_multiuser_base_dir: "H"
-notes_multiuser_common_dir: "C:\\Program Files\\HCL\\Notes"
+notes_multiuser_common_dir: "C:\\Program Files"
 notes_citrix_mode: true
 notes_include_transform: false
 
@@ -54,3 +54,15 @@ notes_exe_path: "{{ notes_install_dir }}\\notes.exe"
 
 # MST Transform File
 notes_mst_file: "HCL Notes 14.5 x64.mst"
+
+marvel_client_dll: mc64.dll
+
+# Marvel Client Configuration
+notes_enable_marvel_client: false
+notes_marvel_client_network_directory: "P:\\MarvelClient"
+notes_marvel_client_db: "%notes_homeserver%!!panagenda\\panagenda.nsf"
+notes_marvel_client_db_notresolvable: "CN=domino-42.prominic.net/O=PNI!!panagenda\\panagenda.nsf"
+notes_marvel_client_db_unavailable: "CN=domino-42.prominic.net/O=PNI!!panagenda\\panagenda.nsf"
+notes_marvel_client_support_idvault: "1"
+notes_marvel_client_allow_sync_during_setup: "2"
+notes_marvel_client_allow_sync_during_setup_fixprompt: "1"
