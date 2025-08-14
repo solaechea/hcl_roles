@@ -143,8 +143,9 @@
   name: "Creating Persistant Ram Disk"
   when: notes_use_ramdisk
   ansible.windows.win_command:
-    cmd: "\"C:\\Program Files\\SoftPerfect RAM Disk\\ramdisk.exe\" /add:\"letter={{ notes_ramdisk_path }}, fs={{ notes_ramdisk_filesystem }}, size={{ notes_ramdisk_size }}, label={{ notes_ramdisk_label }}\""
+    cmd: '"C:\Program Files\SoftPerfect RAM Disk\ramdisk.exe" /add:"letter={{ notes_ramdisk_path }}, fs={{ notes_ramdisk_filesystem }}, size={{ notes_ramdisk_size }}, label={{ notes_ramdisk_label }}"'
   register: ramdisk_create_result
+  ignore_errors: true
 
 -
   name: "Verifying Notes installation"
