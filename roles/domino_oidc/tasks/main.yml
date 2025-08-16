@@ -60,7 +60,7 @@
           register: domcfg_file_check
 
         -
-          name: "Setting up IDPcat for Domino OIDC"
+          name: "Setting up Domcfg for Domino OIDC"
           when: 
             - is_additional_server
             - not domcfg_file_check.stat.exists

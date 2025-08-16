@@ -13,7 +13,7 @@ id_vault_replicate: false
 id_vault_name: "{{ domino_organization }}Vault"
 id_vault_name_allow_notes_based_apps: "1"
 id_vault_password: IDVaultPassword
-id_vault_help_text: Please create an issue in the DominoVagrant Issues Page for help!
+id_vault_help_text: Please contact your system administrator for help!
 id_vault_enable_vault_bearer: "1"
 domino_admin_user_first_name: Prominic
 domino_admin_user_last_name: Admin

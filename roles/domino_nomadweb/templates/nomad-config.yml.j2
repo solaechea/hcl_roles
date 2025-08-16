@@ -17,6 +17,11 @@ httpHeaders:
   Content-Security-Policy: "frame-ancestors 'self' https://{{ domino_install_proxy_url }}"
 {% endif %}
 {% endif %}
+#session:
+##  secret: # default: randomly generated 32 character value
+#  sameSite: none # Lax/Strict/none
+#  secure: true
+#  maxAge: 60 * 60 * 24 # 1 day
 {% if domino_oidc_provider_enabled and 
       domino_major_version >= 14 and 
       (nomadweb_version_major|int > 1 or 
