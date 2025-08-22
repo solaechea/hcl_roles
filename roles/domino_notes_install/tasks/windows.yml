@@ -209,10 +209,10 @@
     content: |
       [Notes]
       KitType=1
-      SharedDataDirectory={{ notes_multiuser_common_dir }}\\HCL\\Notes\\Data\\Shared
+      SharedDataDirectory={{ notes_multiuser_common_dir }}\HCL\Notes\Data\Shared
       InstallType=6
       InstallMode=1
-      NotesProgram={{ notes_install_dir }}\\
+      NotesProgram={{ notes_install_dir }}\
       EXTMGR_ADDINS={{ marvel_client_dll }}
       MC_NetworkDirectory={{ notes_marvel_client_network_directory }}
       MC_AllowSyncDuringSetup={{ notes_marvel_client_allow_sync_during_setup }}
