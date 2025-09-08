@@ -104,7 +104,7 @@
   name: "Installing Notes with multi-user configuration and MST transform"
   when: notes_include_transform
   ansible.windows.win_command:
-    cmd: "setup.exe /s /v\"SETMULTIUSER=1 MULTIUSERBASEDIR={{ notes_multiuser_base_dir }}:\\ MULTIUSERCOMMONDIR=\\\"{{ notes_multiuser_common_dir }}\\\" CITRIX=1 TRANSFORMS=\\\"{{ notes_mst_file }}\\\"\""
+    cmd: "setup.exe /s /v\"SETMULTIUSER=1 CITRIX=1 MULTIUSERBASEDIR=R:\\ /L*v C:\\temp\\verbose.log MULTIUSERCOMMONDIR=C:\\ProgramData\\ /qb+\""
     chdir: "{{ notes_unpack_dir }}"
   register: notes_install_result
 
@@ -112,7 +112,7 @@
   name: "Installing Notes with multi-user configuration"
   when: not notes_include_transform
   ansible.windows.win_command:
-    cmd: "setup.exe /s /v\"SETMULTIUSER=1 MULTIUSERBASEDIR={{ notes_multiuser_base_dir }}:\\ MULTIUSERCOMMONDIR=\\\"{{ notes_multiuser_common_dir }}\\\" CITRIX=1"
+    cmd: "setup.exe /s /v\"SETMULTIUSER=1 CITRIX=1 MULTIUSERBASEDIR=R:\\ /L*v C:\\temp\\verbose.log MULTIUSERCOMMONDIR=C:\\ProgramData\\ /qb+\""
     chdir: "{{ notes_unpack_dir }}"
   register: notes_install_result
 
@@ -205,13 +205,18 @@
   name: "Configuring shared notes.ini for Marvel Client"
   when: notes_enable_marvel_client
   ansible.windows.win_copy:
-    dest: "{{ notes_multiuser_common_dir }}\\HCL\\Notes\\Data\\Shared\\notes.ini"
+    dest: "{{ notes_multiuser_common_dir }}\\HCL\\Notes\\Data\\notes.ini"
     content: |
       [Notes]
       KitType=1
       SharedDataDirectory={{ notes_multiuser_common_dir }}\HCL\Notes\Data\Shared
       InstallType=6
       InstallMode=1
+      FailoverSilent=1
+      HidePromptFailoverInc=1
+      OS_DisableMMapFileCopy=1
+      Ports=TCPIP
+      TCPIP=TCP,0,15,0,,12320,
       NotesProgram={{ notes_install_dir }}\
       EXTMGR_ADDINS={{ marvel_client_dll }}
       MC_NetworkDirectory={{ notes_marvel_client_network_directory }}
