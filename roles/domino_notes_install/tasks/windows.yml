@@ -104,7 +104,7 @@
   name: "Installing Notes with multi-user configuration and MST transform"
   when: notes_include_transform
   ansible.windows.win_command:
-    cmd: "setup.exe /s /v\"SETMULTIUSER=1 CITRIX=1 MULTIUSERBASEDIR=R:\\ /L*v C:\\temp\\verbose.log MULTIUSERCOMMONDIR=C:\\ProgramData\\ /qb+\""
+    cmd: "setup.exe /s /v\"SETMULTIUSER=1 CITRIX=1 MULTIUSERBASEDIR={{ notes_multiuser_base_dir }}:\\ /L*v C:\\temp\\verbose.log MULTIUSERCOMMONDIR={{ notes_multiuser_common_dir }}\\ /qb+\""
     chdir: "{{ notes_unpack_dir }}"
   register: notes_install_result
 
@@ -112,7 +112,7 @@
   name: "Installing Notes with multi-user configuration"
   when: not notes_include_transform
   ansible.windows.win_command:
-    cmd: "setup.exe /s /v\"SETMULTIUSER=1 CITRIX=1 MULTIUSERBASEDIR=R:\\ /L*v C:\\temp\\verbose.log MULTIUSERCOMMONDIR=C:\\ProgramData\\ /qb+\""
+    cmd: "setup.exe /s /v\"SETMULTIUSER=1 CITRIX=1 MULTIUSERBASEDIR={{ notes_multiuser_base_dir }}:\\ /L*v C:\\temp\\verbose.log MULTIUSERCOMMONDIR={{ notes_multiuser_common_dir }}\\ /qb+\""
     chdir: "{{ notes_unpack_dir }}"
   register: notes_install_result
 
