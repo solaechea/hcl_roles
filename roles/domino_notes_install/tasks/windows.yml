@@ -132,20 +132,27 @@
   when: notes_installer_hotfix_install and notes_hotfix_exe != ""
   register: notes_hotfix_result
 
--
-  name: "Deleting temporary RAM disk"
-  when: notes_multiuser_enabled
-  ansible.windows.win_command:
-    cmd: "\"C:\\Program Files\\SoftPerfect RAM Disk\\ramdiskc.exe\" /del:{{ notes_multiuser_base_dir }} /force"
-  register: ramdisk_delete_result
 
 -
-  name: "Creating Persistant Ram Disk"
-  when: notes_use_ramdisk
-  ansible.windows.win_command:
-    cmd: '"C:\Program Files\SoftPerfect RAM Disk\ramdisk.exe" /add:"letter={{ notes_ramdisk_path }}, fs={{ notes_ramdisk_filesystem }}, size={{ notes_ramdisk_size }}, label={{ notes_ramdisk_label }}"'
-  register: ramdisk_create_result
-  ignore_errors: true
+  name: "Waiting for softperfect Ram Disk to be configured"
+  ansible.windows.win_wait_for:
+    path: C:\temp\softperfect_installed
+    timeout: "{{ windows_update_reboot_timeout | default(7200) }}"
+
+#-
+#  name: "Deleting temporary RAM disk"
+#  when: notes_multiuser_enabled
+#  ansible.windows.win_command:
+#    cmd: "\"C:\\Program Files\\SoftPerfect RAM Disk\\ramdiskc.exe\" /del:{{ notes_multiuser_base_dir }} /force"
+#  register: ramdisk_delete_result
+
+#-
+#  name: "Creating Persistant Ram Disk"
+#  when: notes_use_ramdisk
+#  ansible.windows.win_command:
+#    cmd: '"C:\Program Files\SoftPerfect RAM Disk\ramdisk.exe" /add:"letter={{ notes_ramdisk_path }}, fs={{ notes_ramdisk_filesystem }}, size={{ notes_ramdisk_size }}, label={{ notes_ramdisk_label }}"'
+#  register: ramdisk_create_result
+#  ignore_errors: true
 
 -
   name: "Verifying Notes installation"
@@ -185,14 +192,14 @@
     src: "{{ marvel_client_dll }}"
     dest: "{{ notes_install_dir }}\\{{ marvel_client_dll }}"
 
--
-  name: "Configuring main notes.ini for Marvel Client"
-  when: notes_enable_marvel_client
-  community.windows.win_lineinfile:
-    path: "{{ notes_install_dir }}\\notes.ini"
-    regexp: '^Directory='
-    line: "Directory={{ notes_ramdisk_path }}:\\HCL\\Notes\\Data"
-    create: yes
+#-
+#  name: "Configuring main notes.ini for Marvel Client"
+#  when: notes_enable_marvel_client
+#  community.windows.win_lineinfile:
+#    path: "{{ notes_install_dir }}\\notes.ini"
+#    regexp: '^Directory='
+#    line: "Also"
+#    create: yes
 
 -
   name: "Creating shared data directory for Marvel Client"
