@@ -18,3 +18,4 @@
 
 #Private Key should be Linux-style newlines
 id_rsa text eol=lf
+*.dll  binary
