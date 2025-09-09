@@ -39,7 +39,7 @@
 -
   name: "Downloading Notes installer from {{ installer_base_url }}"
   ansible.windows.win_get_url:
-    url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ notes_installer_exe }}"
+    url: "{{ installer_base_url }}/{{ installer_url_app_path }}/Notes/{{ notes_installer_exe }}"
     dest: "{{ notes_temp_dir }}\\{{ notes_installer_exe }}"
     url_username: "{{ installer_url_user }}"
     url_password: "{{ installer_url_pass }}"
@@ -56,7 +56,7 @@
 -
   name: "Downloading Notes fixpack from {{ installer_base_url }}"
   ansible.windows.win_get_url:
-    url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ notes_fixpack_exe }}"
+    url: "{{ installer_base_url }}/{{ installer_url_app_path }}/Notes/{{ notes_fixpack_exe }}"
     dest: "{{ notes_temp_dir }}\\{{ notes_fixpack_exe }}"
     url_username: "{{ installer_url_user }}"
     url_password: "{{ installer_url_pass }}"
@@ -73,7 +73,7 @@
 -
   name: "Downloading Notes hotfix from {{ installer_base_url }}"
   ansible.windows.win_get_url:
-    url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ notes_hotfix_exe }}"
+    url: "{{ installer_base_url }}/{{ installer_url_app_path }}/Notes/{{ notes_hotfix_exe }}"
     dest: "{{ notes_temp_dir }}\\{{ notes_hotfix_exe }}"
     url_username: "{{ installer_url_user }}"
     url_password: "{{ installer_url_pass }}"
@@ -197,20 +197,21 @@
     msg: "HCL Notes {{ notes_major_version }}.{{ notes_minor_version }}.{{ notes_patch_version }} {{ notes_fixpack_version }} installed successfully"
 
 -
-  name: "Copying Marvel Client DLL"
+  name: "Checking if Marvel Client DLL exists"
   when: notes_enable_marvel_client
-  ansible.windows.win_copy:
-    src: "{{ marvel_client_dll }}"
-    dest: "{{ notes_install_dir }}\\{{ marvel_client_dll }}"
+  register: notes_marvel_client_dll
+  ansible.windows.win_stat:
+    path: "{{ notes_install_dir }}\\{{ marvel_client_dll }}"
 
-#-
-#  name: "Configuring main notes.ini for Marvel Client"
-#  when: notes_enable_marvel_client
-#  community.windows.win_lineinfile:
-#    path: "{{ notes_install_dir }}\\notes.ini"
-#    regexp: '^Directory='
-#    line: "Also"
-#    create: yes
+-
+  name: "Downloading Marvel Client from {{ installer_base_url }}"
+  when: notes_enable_marvel_client
+  ansible.windows.win_get_url:
+    url: "{{ installer_base_url }}/{{ installer_url_app_path }}/MarvelClient/{{ marvel_client_dll_artifact }}"
+    dest: "{{ notes_install_dir }}\\{{ marvel_client_dll }}"
+    url_username: "{{ installer_url_user }}"
+    url_password: "{{ installer_url_pass }}"
+    validate_certs: false
 
 -
   name: "Creating shared data directory for Marvel Client"

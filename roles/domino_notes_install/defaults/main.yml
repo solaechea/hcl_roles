@@ -51,7 +51,7 @@ notes_citrix_mode: true
 notes_include_transform: false
 
 # Download Settings (inherited from existing pattern)
-installer_url_app_path: "Super.Human.Installer/Notes"
+installer_url_app_path: "Super.Human.Installer"
 
 # Cleanup Settings
 notes_cleanup_temp_files: true
@@ -63,6 +63,7 @@ notes_exe_path: "{{ notes_install_dir }}\\notes.exe"
 # MST Transform File
 notes_mst_file: "HCL Notes 14.5 x64.mst"
 
+marvel_client_dll_artifact: mc64-14.5.7.11267.dll
 marvel_client_dll: mc64.dll
 
 # Marvel Client Configuration
