@@ -75,3 +75,6 @@ notes_marvel_client_db_unavailable: "CN=domino-42.prominic.net/O=PNI!!panagenda\
 notes_marvel_client_support_idvault: "1"
 notes_marvel_client_allow_sync_during_setup: "2"
 notes_marvel_client_allow_sync_during_setup_fixprompt: "1"
+
+notes_14_admin_hack_for_multiuser_single_client: true
+notes_14_admin_hack_for_multiuser_single_client_url_app_path: "SHI/Notes/14-admin-hack"

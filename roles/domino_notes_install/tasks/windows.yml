@@ -251,3 +251,34 @@
       MC_DB_Notresolvable={{ notes_marvel_client_db_notresolvable }}
       MC_DB_Unavailable={{ notes_marvel_client_db_unavailable }}
       MC_SupportIDVault={{ notes_marvel_client_support_idvault }}
+
+-
+  name: "Implementing Justins Hacks, which are not proper"
+  when: notes_14_admin_hack_for_multiuser_single_client
+  block:
+    -
+      name: "Downloading DomAdmin.ntf {{ notes_14_admin_hack_for_multiuser_single_client_url_app_path }}"
+      ansible.windows.win_get_url:
+        url: "{{ installer_base_url }}/{{ notes_14_admin_hack_for_multiuser_single_client_url_app_path }}/domadmin.ntf"
+        dest: "{{ notes_multiuser_common_dir }}\\HCL\\Notes\\Data\\Shared\\domadmin.ntf"
+        url_username: "{{ installer_url_user }}"
+        url_password: "{{ installer_url_pass }}"
+        validate_certs: false
+
+    -
+      name: "Downloading events4.ntf {{ notes_14_admin_hack_for_multiuser_single_client_url_app_path }}"
+      ansible.windows.win_get_url:
+        url: "{{ installer_base_url }}/{{ notes_14_admin_hack_for_multiuser_single_client_url_app_path }}/events4.ntf"
+        dest: "{{ notes_multiuser_common_dir }}\\HCL\\Notes\\Data\\Shared\\events4.ntf"
+        url_username: "{{ installer_url_user }}"
+        url_password: "{{ installer_url_pass }}"
+        validate_certs: false
+
+    -
+      name: "Downloading Admin.exe {{ notes_14_admin_hack_for_multiuser_single_client_url_app_path }}"
+      ansible.windows.win_get_url:
+        url: "{{ installer_base_url }}/{{ notes_14_admin_hack_for_multiuser_single_client_url_app_path }}/admin.exe"
+        dest: "{{ notes_install_dir }}\\admin.exe"
+        url_username: "{{ installer_url_user }}"
+        url_password: "{{ installer_url_pass }}"
+        validate_certs: false

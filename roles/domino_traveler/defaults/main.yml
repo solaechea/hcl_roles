@@ -10,7 +10,7 @@ traveler_archive: "Traveler_{{ '14.0' if traveler_version == '14.0.0' else trave
 
 traveler_fixpack_archive: "Traveler_{{ traveler_version }}{{ traveler_fixpack_version }}_Linux_ML.tar.gz"
 
-installer_url_app_path: "Super.Human.Installer/Traveler"
+installer_url_app_path: "SHI/Traveler"
 domino_traveler_port_forwards:
   -
     guest: "{{ domino_install_port_forwards[0].guest }}"

@@ -23,7 +23,7 @@ nomadweb_app_switcher_enabled: true
 nomad_hotfix_install: false
 nomad_hotfix_version: "IF1"
 nomad_hotfix_archive: "HCL_Nomad_server_{{ nomadweb_version }}-{{ nomad_hotfix_version }}_linux.tar.gz"
-installer_url_app_path: "Super.Human.Installer/Nomad"
+installer_url_app_path: "SHI/Nomad"
 domino_nomadweb_port_forwards:
   -
     guest: 9443

@@ -16,7 +16,7 @@ leap_build_map:
 leap_archive: "hcl.dleap-{{ leap_version }}.{{ leap_build_map[leap_version] }}.zip"
 
 leap_debug: false
-installer_url_app_path: "Super.Human.Installer/Leap"
+installer_url_app_path: "SHI/Leap"
 domino_leap_port_forwards:
   -
     guest: "{{ domino_install_port_forwards[0].guest }}"

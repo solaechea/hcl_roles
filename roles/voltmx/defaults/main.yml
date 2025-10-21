@@ -15,7 +15,7 @@ voltmx_intaller_version: 9.5.18.1 # Name changed from VoltMXFoundrySetup to Volt
 #voltmx_installer_archive: "VoltMXFoundrySetup-{{ voltmx_intaller_version }}_GA.tar.gz"
 voltmx_installer_archive: "VoltFoundrySetup-{{ voltmx_intaller_version }}_GA.tar.gz"
 voltmx_installer_bin: "VoltFoundryInstaller-{{ voltmx_intaller_version }}_GA.bin"
-installer_url_app_path: "Super.Human.Installer/VoltMX"
+installer_url_app_path: "SHI/VoltMX"
 voltmx_war_builder_dir: "/tmp/war-builder"
 voltmx_admin_first_name: VoltMX
 voltmx_admin_last_name: Admin

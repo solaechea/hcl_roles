@@ -4,7 +4,7 @@ count_progress: true
 progress_units: 1
 progress_role_description: "Installing VoltMX Go"
 
-installer_url_app_path: "Super.Human.Installer/VoltMXGo"
+installer_url_app_path: "SHI/VoltMXGo"
 
 # Download File
 voltmx_go_installer_archive: HCLVoltMXGO_Plugin_Installer_Tool_Linux_V2.1.tar.gz
