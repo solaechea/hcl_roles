@@ -50,8 +50,8 @@ notes_multiuser_common_dir: "C:\\ProgramData"
 notes_citrix_mode: true
 notes_include_transform: false
 
-# Download Settings (inherited from existing pattern)
-installer_url_app_path: "Super.Human.Installer"
+# Download Settings
+installer_url_app_path: "SHI"
 
 # Cleanup Settings
 notes_cleanup_temp_files: true
