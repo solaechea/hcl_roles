@@ -21,6 +21,3 @@ domino_vagrant_restapi_supporting_dirs:
 # option to replace the {{ rest_interface_jar }} with a custom file
 # If enabled, put the file at installers/custom_restapi_jar/{{ rest_interface_jar }}
 use_custom_rest_interface_jar: false
-
-additional_java_versions:
-  - version: "17.0.16-zulu"
