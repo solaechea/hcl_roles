@@ -18,21 +18,21 @@
   register: voltmx_server_installer_check
   ansible.builtin.stat:
     path: "{{ installer_dir }}/voltmx/archives/{{ voltmx_installer_archive }}"
-    get_md5: false
+    checksum_algorithm: sha256
 
 -
   name: "Checking if VoltMX has been installed"
   register: voltmx_server_installed
   ansible.builtin.stat:
     path: "{{ completed_dir }}/voltmxsetup"
-    get_md5: false
+    checksum_algorithm: sha256
 
 -
   name: "Checking if the VoltMX was extracted extracted installer is at {{ installer_dir }}/voltmx/core"
   register: voltmx_extracted
   ansible.builtin.stat:
     path: "{{ installer_dir }}/voltmx/core/VoltMXFoundry_Installer_Linux"
-    get_md5: false
+    checksum_algorithm: sha256
 
 - 
   name: "Increase maximum SQL connections"
@@ -48,18 +48,40 @@
     state: restarted
 
 -
-  name: "Downloading VoltMX from {{ installer_base_url }}"
-  when: not voltmx_server_installer_check.stat.exists and not voltmx_server_installed.stat.exists and not voltmx_extracted.stat.exists
+  name: "Downloading VoltMX from {{ installer_base_url }} using Bearer token"
+  register: voltlsresult_bearer
+  ansible.builtin.get_url:
+    mode: u=rwX,g=rX,o=rX
+    validate_certs: false
+    url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ voltmx_installer_archive }}"
+    dest: "{{ installer_dir }}/voltmx/archives/{{ voltmx_installer_archive }}"
+    headers:
+      Authorization: "Bearer {{ secrets.installer_url_bearer }}"
+  when: 
+    - not voltmx_server_installer_check.stat.exists 
+    - not voltmx_server_installed.stat.exists 
+    - not voltmx_extracted.stat.exists
+    - secrets.installer_url_bearer is defined
+    - secrets.installer_url_bearer != ''
+  failed_when: false
+
+-
+  name: "Downloading VoltMX from {{ installer_base_url }} using basic auth"
   register: voltlsresult
   until: "voltlsresult is not failed"
   retries: 3
   ansible.builtin.get_url:
     mode: u=rwX,g=rX,o=rX
     validate_certs: false
-    url: "{{ installer_base_url }}"
+    url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ voltmx_installer_archive }}"
     dest: "{{ installer_dir }}/voltmx/archives/{{ voltmx_installer_archive }}"
     username: "{{ installer_url_user }}"
-    password: "{{ installer_url_pass }}"
+    password: "{{ secrets.installer_url_pass }}"
+  when: 
+    - not voltmx_server_installer_check.stat.exists 
+    - not voltmx_server_installed.stat.exists 
+    - not voltmx_extracted.stat.exists
+    - (secrets.installer_url_bearer is not defined or secrets.installer_url_bearer == '' or voltlsresult_bearer is failed)
 
 -
   name: "Extracting voltmx from {{ voltmx_installer_archive }}"

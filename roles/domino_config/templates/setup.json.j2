@@ -287,7 +287,7 @@
               "HTTP_NormalMode": "{{ domino_http_normal_mode }}",
               "HTTP_MaxActiveThreads": {{ domino_http_max_active_threads }},
               "HTTP_Port": {{ domino_install_port_forwards[1].guest }},
-              "HTTP_SSLMode": "{{ domino_https_enabled }}",
+              "HTTP_SSLMode": "{{ domino_https_mode }}",
               "HTTP_SSLPort": {{ domino_install_port_forwards[0].guest }},
               "HTTP_SSLKeyFile": "{{ cert_dir }}/kyr/{{ kyr_cert }}",
               "HTTP_SSLAnonymous": "{{ domino_http_ssl_anonymous }}",

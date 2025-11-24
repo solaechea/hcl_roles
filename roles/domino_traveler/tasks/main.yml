@@ -9,7 +9,7 @@
       register: traveler_installed_check
       ansible.builtin.stat:
         path: "{{ completed_dir }}/traveler_installed"
-        get_md5: false
+        checksum_algorithm: sha256
 
     -
       name: "Block to Allow Loading of Variables without running task"
@@ -30,10 +30,26 @@
           register: traveler_installer_check
           ansible.builtin.stat:
             path: "{{ installer_dir }}/traveler/archives/{{ traveler_archive }}"
-            get_md5: false
+            checksum_algorithm: sha256
 
         -
-          name: "Downloading Traveler from {{ installer_base_url }}"
+          name: "Downloading Traveler from {{ installer_base_url }} using Bearer token"
+          register: travelerresult_bearer
+          ansible.builtin.get_url:
+            mode: '0755'
+            validate_certs: false
+            url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ traveler_archive }}"
+            dest: "{{ installer_dir }}/traveler/archives/{{ traveler_archive }}"
+            headers:
+              Authorization: "Bearer {{ secrets.installer_url_bearer }}"
+          when: 
+            - not traveler_installer_check.stat.exists
+            - secrets.installer_url_bearer is defined
+            - secrets.installer_url_bearer != ''
+          failed_when: false
+
+        -
+          name: "Downloading Traveler from {{ installer_base_url }} using basic auth"
           register: travelerresult
           until: "travelerresult is not failed"
           retries: 3
@@ -44,7 +60,9 @@
             dest: "{{ installer_dir }}/traveler/archives/{{ traveler_archive }}"
             username: "{{ installer_url_user }}"
             password: "{{ secrets.installer_url_pass }}"
-          when: not traveler_installer_check.stat.exists
+          when: 
+            - not traveler_installer_check.stat.exists
+            - (secrets.installer_url_bearer is not defined or secrets.installer_url_bearer == '' or travelerresult_bearer is failed)
 
         -
           name: "Extracting Traveler from {{ traveler_archive }}"
@@ -97,7 +115,7 @@
           register: traveler_fp_installed_check
           ansible.builtin.stat:
             path: "{{ completed_dir }}/traveler_fp_installed"
-            get_md5: false
+            checksum_algorithm: sha256
 
         -
           name: "Block to Allow Installation of Traveler Fixpack"
@@ -117,10 +135,26 @@
               register: traveler_fp_installer_check
               ansible.builtin.stat:
                 path: "{{ installer_dir }}/traveler/archives/{{ traveler_fixpack_archive }}"
-                get_md5: false
+                checksum_algorithm: sha256
 
             -
-              name: "Downloading Traveler FP from {{ installer_base_url }}"
+              name: "Downloading Traveler FP from {{ installer_base_url }} using Bearer token"
+              register: travelerfpresult_bearer
+              ansible.builtin.get_url:
+                mode: '0755'
+                validate_certs: false
+                url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ traveler_fixpack_archive }}"
+                dest: "{{ installer_dir }}/traveler/archives/{{ traveler_fixpack_archive }}"
+                headers:
+                  Authorization: "Bearer {{ secrets.installer_url_bearer }}"
+              when: 
+                - not traveler_fp_installer_check.stat.exists
+                - secrets.installer_url_bearer is defined
+                - secrets.installer_url_bearer != ''
+              failed_when: false
+
+            -
+              name: "Downloading Traveler FP from {{ installer_base_url }} using basic auth"
               register: travelerfpresult
               until: "travelerfpresult is not failed"
               retries: 3
@@ -131,7 +165,9 @@
                 dest: "{{ installer_dir }}/traveler/archives/{{ traveler_fixpack_archive }}"
                 username: "{{ installer_url_user }}"
                 password: "{{ secrets.installer_url_pass }}"
-              when: not traveler_fp_installer_check.stat.exists
+              when: 
+                - not traveler_fp_installer_check.stat.exists
+                - (secrets.installer_url_bearer is not defined or secrets.installer_url_bearer == '' or travelerfpresult_bearer is failed)
 
             -
               name: "Extracting Traveler FP from {{ traveler_fixpack_archive }}"
@@ -194,7 +230,7 @@
                 register: traveler_internet_site_doc_check
                 ansible.builtin.stat:
                   path: "/JavaAddin/Genesis/jsonresponse/oidc_domino_traveler_internet_site_doc.txt"
-                  get_md5: false
+                  checksum_algorithm: sha256
 
               -
                 name: "Reading OIDC hostnames from file"

@@ -23,14 +23,14 @@
       register: domino_server_nash_installed
       ansible.builtin.stat:
         path: "{{ completed_dir }}/service_configured"
-        get_md5: false
+        checksum_algorithm: sha256
 
     -
       name: "Checking if JEDI has been installed"
       register: nash_domino_jedi_installed
       ansible.builtin.stat:
         path: "{{ completed_dir }}/domino_jedi_installed"
-        get_md5: false
+        checksum_algorithm: sha256
 
     -
       name: "Check if Domino service is running"

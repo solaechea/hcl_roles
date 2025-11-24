@@ -23,7 +23,7 @@
       register: rest_interface_deployed
       ansible.builtin.stat:
         path: "{{ rest_app_home_dir }}/environment"
-        get_md5: false
+        checksum_algorithm: sha256
     
     -
       name: "Downloading Domino VagrantCRUD API {{ rest_vagrant_crud_version }}"

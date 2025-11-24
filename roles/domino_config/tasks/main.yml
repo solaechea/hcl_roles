@@ -231,7 +231,7 @@
       register: domino_server_touched
       ansible.builtin.stat:
         path: "{{ completed_dir }}/domsetup"
-        get_md5: false
+        checksum_algorithm: sha256
     
     -
       name: 'Copying Server ID for One Touch Additional Server setup'

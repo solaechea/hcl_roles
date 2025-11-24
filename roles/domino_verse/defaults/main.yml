@@ -1,7 +1,6 @@
 ---
 run_tasks: true
-verse_base_version: 3.2.3
-verse_archive: "HCL_Verse_{{ verse_base_version }}.zip"
+verse_base_version: 3.2.6
 verse_debug: true
 installer_url_app_path: "SHI/Verse"
 domino_oidc_provider_verse_home_url: "/verse"
@@ -20,8 +19,8 @@ verse_app_switcher_enabled_services:
  - ServerConsole
  - DominoWeb
  - Guacamole
- - "{{ 'RestAPI' if 'startcloud.hcl_roles.domino_rest_api' in (enabled_roles | default([])) }}"
- - "{{ 'Sametime' if 'startcloud.hcl_roles.domino_sametime' in (enabled_roles | default([])) }}"
- - "{{ 'Traveler' if 'startcloud.hcl_roles.domino_traveler' in (enabled_roles | default([])) }}"
- - "{{ 'Leap' if 'startcloud.hcl_roles.domino_leap' in (enabled_roles | default([])) }}"
- - "{{ 'Nomad' if 'startcloud.hcl_roles.domino_nomadweb' in (enabled_roles | default([])) }}"
+ - "{{ 'RestAPI' if 'startcloud.hcl_roles.domino_rest_api' in (enabled_roles | map(attribute='name') | list) else '' }}"
+ - "{{ 'Sametime' if 'startcloud.hcl_roles.domino_sametime' in (enabled_roles | map(attribute='name') | list) else '' }}"
+ - "{{ 'Traveler' if 'startcloud.hcl_roles.domino_traveler' in (enabled_roles | map(attribute='name') | list) else '' }}"
+ - "{{ 'Leap' if 'startcloud.hcl_roles.domino_leap' in (enabled_roles | map(attribute='name') | list) else '' }}"
+ - "{{ 'Nomad' if 'startcloud.hcl_roles.domino_nomadweb' in (enabled_roles | map(attribute='name') | list) else '' }}"

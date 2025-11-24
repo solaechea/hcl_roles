@@ -4,11 +4,18 @@
   when: run_tasks
   block:
     -
-      name: "Checking if Nomad is installed by provisioner: {{ nomadweb_version }}"
+      name: "Determine nomadweb variables from playbook vars"
+      ansible.builtin.set_fact:
+        nomad_version: "{{ nomadweb_version if (nomadweb_version is not none and nomadweb_version != '') else '1.0.17' }}"
+        nomadweb_archive: "{% if nomadweb_version is none or nomadweb_version == '' %}HCL_Nomad_server_1.0.17_linux.tar.gz{% elif nomadweb_version is version('1.0.13', '<') and domino_major_version == 14 %}nomad-server-{{ nomadweb_version }}-for-domino-{{ domino_major_version }}.0.0-linux.tgz{% elif nomadweb_version is version('1.0.13', '<') and domino_major_version == 12 %}nomad-server-{{ nomadweb_version }}-for-domino-{{ domino_major_version }}.0.2-linux.tgz{% elif nomadweb_version is version('1.0.16', '<') %}nomad-server-{{ nomadweb_version }}-linux.tar.gz{% else %}HCL_Nomad_server_{{ nomadweb_version }}_linux.tar.gz{% endif %}"
+        nomad_hotfix_archive: "HCL_Nomad_server_{{ nomadweb_version if (nomadweb_version is not none and nomadweb_version != '') else '1.0.17' }}-{{ nomad_hotfix_version }}_linux.tar.gz"
+
+    -
+      name: "Checking if Nomad is installed by provisioner: {{ nomad_version }}"
       register: nomadweb_installed_check
       ansible.builtin.stat:
         path: "{{ completed_dir }}/nomadweb_installed"
-        get_md5: false
+        checksum_algorithm: sha256
 
     -
       name: "Installing Nomad"
@@ -30,7 +37,7 @@
           register: nomadweb_installed_via_domino_check
           ansible.builtin.stat:
             path: "{{ domino_install_dir }}/nomad-server-version.txt"
-            get_md5: false
+            checksum_algorithm: sha256
 
         -
           name: "Reading Nomad version from Domino installation"
@@ -50,10 +57,33 @@
           register: nomad_archive_check
           ansible.builtin.stat:
             path: "{{ installer_dir }}/nomadweb/archives/{{ nomadweb_archive }}"
-            get_md5: false
+            checksum_algorithm: sha256
 
         -
-          name: "Downloading Nomad from {{ installer_base_url }}"
+          name: "Downloading Nomad from {{ installer_base_url }} using Bearer token"
+          register: nomadwebresult_bearer
+          ansible.builtin.get_url:
+            mode: '0755'
+            validate_certs: false
+            url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ nomadweb_archive }}"
+            dest: "{{ installer_dir }}/nomadweb/archives/{{ nomadweb_archive }}"
+            headers:
+              Authorization: "Bearer {{ secrets.installer_url_bearer }}"
+          when: >
+            not nomad_archive_check.stat.exists and 
+            (
+              domino_major_version is version('14', '<') or 
+              (
+                nomadweb_installed_via_domino_check.stat.exists and 
+                nomad_version is version(nomadweb_domino_installed_version, '>')
+              )
+            ) and
+            secrets.installer_url_bearer is defined and
+            secrets.installer_url_bearer != ''
+          failed_when: false
+
+        -
+          name: "Downloading Nomad from {{ installer_base_url }} using basic auth"
           register: nomadwebresult
           until: "nomadwebresult is not failed"
           retries: 3
@@ -70,9 +100,10 @@
               domino_major_version is version('14', '<') or 
               (
                 nomadweb_installed_via_domino_check.stat.exists and 
-                nomadweb_version is version(nomadweb_domino_installed_version, '>')
+                nomad_version is version(nomadweb_domino_installed_version, '>')
               )
-            )
+            ) and
+            (secrets.installer_url_bearer is not defined or secrets.installer_url_bearer == '' or nomadwebresult_bearer is failed)
 
         -
           name: "Extracting Nomad from {{ nomadweb_archive }}"
@@ -81,7 +112,7 @@
               domino_major_version is version('14', '<') or 
               (
                 nomadweb_installed_via_domino_check.stat.exists and 
-                nomadweb_version is version(nomadweb_domino_installed_version, '>')
+                nomad_version is version(nomadweb_domino_installed_version, '>')
               )
             )
           ansible.builtin.unarchive:
@@ -100,7 +131,7 @@
               domino_major_version is version('14', '<') or 
               (
                 nomadweb_installed_via_domino_check.stat.exists and 
-                nomadweb_version is version(nomadweb_domino_installed_version, '>')
+                nomad_version is version(nomadweb_domino_installed_version, '>')
               )
             )
           ansible.builtin.copy:
@@ -137,7 +168,30 @@
           when: not nomadweb_installed_check.stat.exists and nomad_hotfix_install
           block:
             -
-              name: "Downloading Nomad Hotfix from {{ installer_base_url }}"
+              name: "Downloading Nomad Hotfix from {{ installer_base_url }} using Bearer token"
+              register: nomadwebresulthotfix_bearer
+              ansible.builtin.get_url:
+                mode: '0755'
+                validate_certs: false
+                url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ nomad_hotfix_archive }}"
+                dest: "{{ installer_dir }}/nomadweb/archives/{{ nomad_hotfix_archive }}"
+                headers:
+                  Authorization: "Bearer {{ secrets.installer_url_bearer }}"
+              when: >
+                not nomad_archive_check.stat.exists and
+                (
+                  domino_major_version is version('14', '<') or 
+                  (
+                    nomadweb_installed_via_domino_check.stat.exists and 
+                    nomad_version is version(nomadweb_domino_installed_version, '>')
+                  )
+                ) and
+                secrets.installer_url_bearer is defined and
+                secrets.installer_url_bearer != ''
+              failed_when: false
+
+            -
+              name: "Downloading Nomad Hotfix from {{ installer_base_url }} using basic auth"
               register: nomadwebresulthotfix
               until: "nomadwebresulthotfix is not failed"
               retries: 3
@@ -154,9 +208,10 @@
                   domino_major_version is version('14', '<') or 
                   (
                     nomadweb_installed_via_domino_check.stat.exists and 
-                    nomadweb_version is version(nomadweb_domino_installed_version, '>')
+                    nomad_version is version(nomadweb_domino_installed_version, '>')
                   )
-                )
+                ) and
+                (secrets.installer_url_bearer is not defined or secrets.installer_url_bearer == '' or nomadwebresulthotfix_bearer is failed)
     
             -
               name: "Extracting Nomad Hotfix from {{ nomad_hotfix_archive }}"
@@ -165,7 +220,7 @@
                   domino_major_version is version('14', '<') or 
                   (
                     nomadweb_installed_via_domino_check.stat.exists and 
-                    nomadweb_version is version(nomadweb_domino_installed_version, '>')
+                    nomad_version is version(nomadweb_domino_installed_version, '>')
                   )
                 )
               ansible.builtin.unarchive:
@@ -184,7 +239,7 @@
                   domino_major_version is version('14', '<') or 
                   (
                     nomadweb_installed_via_domino_check.stat.exists and 
-                    nomadweb_version is version(nomadweb_domino_installed_version, '>')
+                    nomad_version is version(nomadweb_domino_installed_version, '>')
                   )
                 )
               ansible.builtin.copy:
@@ -295,7 +350,7 @@
           register: shp_nomadhelper_check
           ansible.builtin.stat:
             path: "{{ domino_home_dir }}/domino/html/Super.Human.Portal/js-release/resources/nomadhelper.html"
-            get_md5: false
+            checksum_algorithm: sha256
 
         -
           name: "Configuring Nomad Helper for Super.Human.Portal from SHP"
