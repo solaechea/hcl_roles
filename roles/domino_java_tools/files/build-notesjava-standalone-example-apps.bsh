@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# terminate on any failed comand
+set -e
+
 NOTES_JAR=/opt/hcl/domino/notes/latest/linux/jvm/lib/ext/Notes.jar
 ls -la $NOTES_JAR
 ls -lRl src
@@ -22,7 +25,7 @@ javac -verbose -source 1.8 -target 1.8 -d dist-built -classpath $NOTES_JAR src/m
 cp ./manifest.txt ./manifest-temp.txt
 echo "Main-Class: net.prominic.domino.vagrant.CheckNotesUser" >> ./manifest-temp.txt
 
-jar -cvfm CheckNotesUser2.jar ./manifest-temp.txt net.prominic.domino.vagrant.CheckNotesUser -C dist-built/ .
+jar -cvfm CheckNotesUser2.jar ./manifest-temp.txt -C dist-built/ .
 
 
 #############
@@ -50,6 +53,30 @@ echo "Main-Class: net.prominic.domino.vagrant.CheckDatabase" >> ./manifest-temp.
 jar -cvfm CheckDatabase2.jar ./manifest-temp.txt -C dist-built/ .
 
 
+#############
+
+echo "Building and creating a runnable JAR for: CreateDatabase.java "
+
+javac -verbose -source 1.8 -target 1.8 -d dist-built -classpath $NOTES_JAR src/main/java/net/prominic/domino/vagrant/CreateDatabase.java
+
+cp ./manifest.txt ./manifest-temp.txt
+echo "Main-Class: net.prominic.domino.vagrant.CreateDatabase" >> ./manifest-temp.txt
+
+jar -cvfm CreateDatabase2.jar ./manifest-temp.txt -C dist-built/ .
+
+
+#############
+
+echo "Building and creating a runnable JAR for: DXLImport.java "
+
+javac -verbose -source 1.8 -target 1.8 -d dist-built -classpath $NOTES_JAR src/main/java/net/prominic/domino/vagrant/DXLImport.java
+
+cp ./manifest.txt ./manifest-temp.txt
+echo "Main-Class: net.prominic.domino.vagrant.DXLImport" >> ./manifest-temp.txt
+
+jar -cvfm DXLImport2.jar ./manifest-temp.txt -C dist-built/ .
+
+
 
 #############
 
@@ -61,6 +88,7 @@ jar tf CheckNotesUser2.jar
 echo "Attempting to run one of the new builds..."
 
 # copy the notes.ini to configure the Notes ID
+rm -f notes.ini
 ln -s /local/notesjava/notes.ini notes.ini
 
 java -jar ./CheckNotesUser2.jar
