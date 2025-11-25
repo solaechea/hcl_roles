@@ -8,7 +8,7 @@
       register: genesis_installed_check
       ansible.builtin.stat:
         path: "{{ completed_dir }}/genesis_installed_check"
-        get_md5: false
+        checksum_algorithm: sha256
     
     -
       name: "Installing Genesis"

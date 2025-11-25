@@ -4,11 +4,16 @@
   when: run_tasks
   block:
     -
+      name: "Determining verse archive from version"
+      ansible.builtin.set_fact:
+        verse_archive: "HCL_Verse_{{ verse_base_version if (verse_base_version is not none and verse_base_version != '') else '3.2.3' }}.zip"
+
+    -
       name: "Checking if Verse is installed: {{ verse_base_version }}"
       register: verse_installed_check
       ansible.builtin.stat:
         path: "{{ completed_dir }}/verse_installed"
-        get_md5: false
+        checksum_algorithm: sha256
 
     -
       name: "Installing Verse"
@@ -48,10 +53,26 @@
           register: verse_installer_check
           ansible.builtin.stat:
             path: "{{ installer_dir }}/verse/archives/{{ verse_archive }}"
-            get_md5: false
+            checksum_algorithm: sha256
 
         -
-          name: "Downloading Verse from {{ installer_base_url }}"
+          name: "Downloading Verse from {{ installer_base_url }} using Bearer token"
+          register: verseresult_bearer
+          ansible.builtin.get_url:
+            mode: '0755'
+            validate_certs: false
+            url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ verse_archive }}"
+            dest: "{{ installer_dir }}/verse/archives/{{ verse_archive }}"
+            headers:
+              Authorization: "Bearer {{ secrets.installer_url_bearer }}"
+          when: 
+            - not verse_installer_check.stat.exists
+            - secrets.installer_url_bearer is defined
+            - secrets.installer_url_bearer != ''
+          failed_when: false
+
+        -
+          name: "Downloading Verse from {{ installer_base_url }} using basic auth"
           register: verseresult
           until: "verseresult is not failed"
           retries: 3
@@ -62,7 +83,9 @@
             dest: "{{ installer_dir }}/verse/archives/{{ verse_archive }}"
             username: "{{ installer_url_user }}"
             password: "{{ secrets.installer_url_pass }}"
-          when: not verse_installer_check.stat.exists
+          when: 
+            - not verse_installer_check.stat.exists
+            - (secrets.installer_url_bearer is not defined or secrets.installer_url_bearer == '' or verseresult_bearer is failed)
 
         -
           name: "Extracting Verse from {{ verse_archive }}"
@@ -159,7 +182,7 @@
                 register: verse_internet_site_doc_check
                 ansible.builtin.stat:
                   path: "/JavaAddin/Genesis/jsonresponse/oidc_domino_verse_internet_site_doc.txt"
-                  get_md5: false
+                  checksum_algorithm: sha256
 
               -
                 name: "Reading OIDC hostnames from file"

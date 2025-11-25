@@ -8,7 +8,7 @@
       register: oidc_configured_check
       ansible.builtin.stat:
         path: "{{ completed_dir }}/oidc_configured_check"
-        get_md5: false
+        checksum_algorithm: sha256
 
     -
       name: "Setting up Domino OIDC"
@@ -123,7 +123,7 @@
               register: oidc_provider_configured_check
               ansible.builtin.stat:
                 path: "{{ completed_dir }}/JavaAddin/Genesis/jsonresponse/oidc_provider_for_additional.txt"
-                get_md5: false
+                checksum_algorithm: sha256
 
             -
               name: "Reading OIDC hostnames from file"
@@ -313,7 +313,7 @@
               register: gather_domino_oidc_auth_inet_site_doc_check
               ansible.builtin.stat:
                 path: "{{ completed_dir }}/JavaAddin/Genesis/jsonresponse/gather_domino_oidc_auth_inet_site_doc.txt"
-                get_md5: false
+                checksum_algorithm: sha256
 
             -
               name: "Reading OIDC hostnames from file"

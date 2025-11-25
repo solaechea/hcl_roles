@@ -3,13 +3,17 @@
   name: "Block to Allow Loading of Variables without running task"
   when: run_tasks
   block:
-    
+    -
+      name: "Determine leap archive from version"
+      ansible.builtin.set_fact:
+        leap_archive: "{% if leap_version is none or leap_version == '' %}hcl.dleap-1.1.6.25.zip{% else %}hcl.dleap-{{ leap_version }}.{{ leap_build_map[leap_version] }}.zip{% endif %}"
+
     -
       name: "Checking if Leap is installed: {{ leap_version }} "
       register: leap_installed_check
       ansible.builtin.stat:
         path: "{{ completed_dir }}/leap_installed"
-        get_md5: false
+        checksum_algorithm: sha256
     
     -
       name: "Installing Leap"
@@ -30,10 +34,26 @@
           register: domino_server_installer_check
           ansible.builtin.stat:
             path: "{{ installer_dir }}/leap/archives/{{ leap_archive }}"
-            get_md5: false
+            checksum_algorithm: sha256
 
         -
-          name: "Downloading Leap from {{ installer_base_url }}"
+          name: "Downloading Leap from {{ installer_base_url }} using Bearer token"
+          register: leapresult_bearer
+          ansible.builtin.get_url:
+            mode: '0755' 
+            validate_certs: false
+            url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ leap_archive }}"
+            dest: "{{ installer_dir }}/leap/archives/{{ leap_archive }}"
+            headers:
+              Authorization: "Bearer {{ secrets.installer_url_bearer }}"
+          when: 
+            - not domino_server_installer_check.stat.exists
+            - secrets.installer_url_bearer is defined
+            - secrets.installer_url_bearer != ''
+          failed_when: false
+
+        -
+          name: "Downloading Leap from {{ installer_base_url }} using basic auth"
           register: leapresult
           until: "leapresult is not failed"
           retries: 3
@@ -44,7 +64,9 @@
             dest: "{{ installer_dir }}/leap/archives/{{ leap_archive }}"
             username: "{{ installer_url_user }}"
             password: "{{ secrets.installer_url_pass }}"
-          when: not domino_server_installer_check.stat.exists
+          when: 
+            - not domino_server_installer_check.stat.exists
+            - (secrets.installer_url_bearer is not defined or secrets.installer_url_bearer == '' or leapresult_bearer is failed)
 
         -
           name: "Extracting Leap from {{ leap_archive }}"
@@ -179,7 +201,7 @@
                 register: leap_internet_site_doc_check
                 ansible.builtin.stat:
                   path: "/JavaAddin/Genesis/jsonresponse/oidc_domino_leap_internet_site_doc.txt"
-                  get_md5: false
+                  checksum_algorithm: sha256
 
               -
                 name: "Reading OIDC hostnames from file"

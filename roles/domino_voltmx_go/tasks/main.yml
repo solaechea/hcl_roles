@@ -28,25 +28,42 @@
       register: voltmx_go_server_installer_check
       ansible.builtin.stat:
         path: "{{ installer_dir }}/voltmx/archives/{{ voltmx_go_installer_archive }}"
-        get_md5: false
+        checksum_algorithm: sha256
     
     -
       name: "Checking if VoltMX has been installed"
       register: voltmx_go_server_installed
       ansible.builtin.stat:
         path: "{{ completed_dir }}/voltmx_go_plugin_installer_setup"
-        get_md5: false
+        checksum_algorithm: sha256
     
     -
       name: "Checking if the VoltMX Go was extracted and its installer is in voltmx/core at {{ installer_dir }}"
       register: voltmx_go_extracted
       ansible.builtin.stat:
         path: "{{ voltmx_go_install_dir }}"
-        get_md5: false
+        checksum_algorithm: sha256
     
     -
-      name: "Downloading VoltMX Go Plugin Installer from {{ installer_base_url }}"
-      when: not voltmx_go_server_installer_check.stat.exists and not voltmx_go_server_installed.stat.exists and not voltmx_go_extracted.stat.exists
+      name: "Downloading VoltMX Go Plugin Installer from {{ installer_base_url }} using Bearer token"
+      register: voltmxgoresult_bearer
+      ansible.builtin.get_url:
+        validate_certs: false
+        mode: '0755'
+        url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ voltmx_go_installer_archive }}"
+        dest: "{{ installer_dir }}/voltmx/archives/{{ voltmx_go_installer_archive }}"
+        headers:
+          Authorization: "Bearer {{ secrets.installer_url_bearer }}"
+      when: 
+        - not voltmx_go_server_installer_check.stat.exists 
+        - not voltmx_go_server_installed.stat.exists 
+        - not voltmx_go_extracted.stat.exists
+        - secrets.installer_url_bearer is defined
+        - secrets.installer_url_bearer != ''
+      failed_when: false
+
+    -
+      name: "Downloading VoltMX Go Plugin Installer from {{ installer_base_url }} using basic auth"
       register: voltmxgoresult
       until: "voltmxgoresult is not failed"
       retries: 3
@@ -56,7 +73,12 @@
         url: "{{ installer_base_url }}/{{ installer_url_app_path }}/{{ voltmx_go_installer_archive }}"
         dest: "{{ installer_dir }}/voltmx/archives/{{ voltmx_go_installer_archive }}"
         username: "{{ installer_url_user }}"
-        password: "{{ installer_url_pass }}"
+        password: "{{ secrets.installer_url_pass }}"
+      when: 
+        - not voltmx_go_server_installer_check.stat.exists 
+        - not voltmx_go_server_installed.stat.exists 
+        - not voltmx_go_extracted.stat.exists
+        - (secrets.installer_url_bearer is not defined or secrets.installer_url_bearer == '' or voltmxgoresult_bearer is failed)
     
     -
       name: "Extracting VoltMX Go plugin from {{ voltmx_go_installer_archive }}"

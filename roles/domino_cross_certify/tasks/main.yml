@@ -8,7 +8,7 @@
       register: cross_certify_check
       ansible.builtin.stat:
         path: "/id-files/user-safe-ids/{{ user_safe_id }}"
-        get_md5: false
+        checksum_algorithm: sha256
 
     -
       name: "Running Cross Certification"

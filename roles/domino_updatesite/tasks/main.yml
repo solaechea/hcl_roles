@@ -20,7 +20,7 @@
       register: updatesite_deployed
       ansible.builtin.stat:
         path: "{{ completed_dir }}/updatesite_deployed"
-        get_md5: false
+        checksum_algorithm: sha256
     
     -
       name: "Cloning updatesite to /vagrant/installers/update-site"

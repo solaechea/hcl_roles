@@ -8,7 +8,7 @@
       register: domino_server_installed
       ansible.builtin.stat:
         path: "{{ domino_home_dir }}/notes.ini"
-        get_md5: false
+        checksum_algorithm: sha256
     
     -
       name: "Stopping Domino and disabling Domino"

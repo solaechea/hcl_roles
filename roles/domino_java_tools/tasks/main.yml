@@ -8,7 +8,7 @@
       register: build_tools_deployed
       ansible.builtin.stat:
         path: "{{ completed_dir }}/javabuildtools"
-        get_md5: false
+        checksum_algorithm: sha256
     
     -
       name: "Creating Java Build Tools Directories"

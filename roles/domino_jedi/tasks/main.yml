@@ -8,7 +8,7 @@
       register: domino_jedi_installed
       ansible.builtin.stat:
         path: "{{ completed_dir }}/domino_jedi_installed"
-        get_md5: false
+        checksum_algorithm: sha256
       
     -
       name: "Disabling the nashed service to prevent conflict with JeDI"
@@ -333,14 +333,14 @@
           register: domino_jedi_installed_2
           ansible.builtin.stat:
             path: "{{ completed_dir }}/domino_jedi_installed"
-            get_md5: false
+            checksum_algorithm: sha256
 
         -
           name: "Checking if Nash's Domino Service Scripts have been installed"
           register: nash_service_installed
           ansible.builtin.stat:
             path: "{{ completed_dir }}/service_configured"
-            get_md5: false
+            checksum_algorithm: sha256
 
         -
           name: "Jedi set to Disabled, Enabling Nashed Service"

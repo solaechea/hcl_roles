@@ -51,7 +51,8 @@ installer_base_url: "{{ secrets.installer_base_url | default('https://downloads.
 domino_install_dir: /opt/hcl/domino/notes/latest/linux
 domino_install_basedir: /opt/hcl/domino
 domino_install_chosen_feature_list: Domino,Nomad,OnTime,Verse,Help
-domino_https_enabled: 1
+domino_https_enabled: true
+domino_https_mode: "{{ 1 if domino_https_enabled else 0 }}"
 ots_generate_server_id_count: 0
 domino_organization: STARTcloud
 domino_countrycode: null
