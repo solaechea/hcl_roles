@@ -57,6 +57,7 @@ public class DXLImport {
         }
         catch (Throwable throwable) {
             throwable.printStackTrace();
+            System.exit(1);  // trigger an error for scripting
         }
         finally {
             try {

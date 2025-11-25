@@ -43,12 +43,13 @@ public class CreateDatabase {
             createDatabase(session, server, databaseName);
 
 
-            System.out.println("names.nsf was successfully created.");
+            System.out.println(databaseName + " is ready for use.");
 
 
         }
         catch (Throwable throwable) {
             throwable.printStackTrace();
+            System.exit(1);  // trigger an error for scripting
         }
         finally {
             try {
@@ -66,19 +67,35 @@ public class CreateDatabase {
 
 
     public static void createDatabase(Session session, String server, String databaseName) throws NotesException, Exception {
-        DbDirectory dbDirectory = null;
-        Database database = null;
-
-        try {
+		DbDirectory dbDirectory = null;
+		Database database = null;
+		ACL acl = null;
+		View defaultView = null;
+		
+		try {
+			// Check if the database already exists
+			database = session.getDatabase(server, databaseName, false);  
+			if (null != database) {
+				System.out.println("Database '" + databaseName + "' already exists.  Skipping..."); 
+				return;
+				// TODO:  delete instead?
+			}
+        	
         		// NOTE: The database could also be created from a template.  See CreateNamesDatabase for an example.
 
         		// Create with DBDirectory:  https://help.hcl-software.com/dom_designer/14.0.0/basic/H_CREATE_METHOD_JAVA.html
         		// If "" is used for the server the database will be created in the directory configured in notes.ini
             dbDirectory = session.getDbDirectory(server);
             // The second parameter will open the database so that more options may be run.
+            System.out.println("Creating Database '" + databaseName + "'.");
             database = dbDirectory.createDatabase(databaseName, true);
             // The database is blank, with no forms or views
             // TODO:  Describe the default ACL
+            
+            // At least one view is required to open the database. 
+            System.out.println("Creating default view");
+            // check for a duplicate if I run against an existing database
+            defaultView = database.createView();   // Default is "(default)", SELECT @All, single column for @DocNumber
             
             // For the title, use the database name, but strip the directory and extension
             String title = databaseName;
@@ -93,7 +110,28 @@ public class CreateDatabase {
         		if (index >= 0) {
         			title = title.substring(index + 1);
         		}
+            System.out.println("Setting title to '" + title + "'.");
             database.setTitle(title);
+            
+            // Update the ACL
+            // Update default to allow user access from Notes or Designer
+            // TODO: support user ID
+            System.out.println("Setting ACL for database '" + databaseName + "'.");
+            acl = database.getACL();
+            ACLEntry defaultEntry = acl.getEntry("-Default-");
+            if (null == defaultEntry) {
+            		defaultEntry = acl.createACLEntry("-Default-", ACL.LEVEL_MANAGER);
+            }
+            ACLEntry anonymousEntry = acl.getEntry("Anonymous");
+            if (null == anonymousEntry) {
+            		anonymousEntry = acl.createACLEntry("Anonymous", ACL.LEVEL_EDITOR);   // this should be sufficient for most agents
+            		anonymousEntry.setUserType(ACLEntry.TYPE_PERSON);
+            		// minimal roles for agent - included in EDITOR
+            		// anonymousEntry.setPublicReader(true);
+            		// anonymousEntry.setPublicWriter(true);
+            		// anonymousEntry.setCanReplicateOrCopyDocuments(true); 
+            }
+            
         }
         finally {
             if (null != database) {
