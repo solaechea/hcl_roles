@@ -199,6 +199,31 @@
                 - "./TravelerSetup -f ./installer.properties -i SILENT -l en && touch {{ completed_dir }}/traveler_fp_installed"
 
         -
+          name: "Starting Domino for Changes to take effect"
+          become: true
+          ansible.builtin.service:
+            name: domino
+            state: started
+            enabled: true
+          register: domino_service_start_details_traveler
+          until: domino_service_start_details_traveler.state == "started"
+          retries: 10
+          delay: 10
+
+        -
+          name: "Waiting for HTTP Server to start"
+          ansible.builtin.wait_for:
+            path: /local/notesdata/IBM_TECHNICAL_SUPPORT/console.log
+            search_regex: "HTTP Server: Started"
+            timeout: 300
+            msg: "HTTP Server did not start within the timeout period."
+
+        -
+          name: "Waiting for 60 seconds to let Domino HTTP fully configure"
+          ansible.builtin.pause:
+            seconds: "{{ domino_startup_delay }}"
+
+        -
           name: "Creating/Updating Domino Traveler internet Site Document"
           block:
               -
@@ -281,27 +306,3 @@
                 register: presence_traveler
                 failed_when: presence_traveler is changed
 
-        -
-          name: "Starting Domino for Changes to take effect"
-          become: true
-          ansible.builtin.service:
-            name: domino
-            state: started
-            enabled: true
-          register: domino_service_start_details_traveler
-          until: domino_service_start_details_traveler.state == "started"
-          retries: 10
-          delay: 10
-
-        -
-          name: "Waiting for HTTP Server to start"
-          ansible.builtin.wait_for:
-            path: /local/notesdata/IBM_TECHNICAL_SUPPORT/console.log
-            search_regex: "HTTP Server: Started"
-            timeout: 300
-            msg: "HTTP Server did not start within the timeout period."
-
-        -
-          name: "Waiting for 60 seconds to let Domino HTTP fully configure"
-          ansible.builtin.pause:
-            seconds: "{{ domino_startup_delay }}"
