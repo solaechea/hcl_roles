@@ -453,7 +453,43 @@
               "HTTP_MaxActiveSessions" : "1000",
               "WSHTTPMthds_ed": [ "1", "2", "3", "4", "6", "7" ]
             }
+{% if super_human_portal_enabled %}
+          },
+          {
+            "action": "create",
+            "computeWithForm": true,
+            "items": {
+              "Form": "WebSite",
+              "AutomationComment" : "Agents API Internet site document for Domino Webapps like",
+              "ISiteOrg": "{{ domino_organization }}",
+              "WSIsDflt"           : "0",
+              "WSHomeURL"          : "",
+              "ISiteName"          : "{{ settings.hostname }} Agents API",
+              "ISiteAdrs"          : [ "api.{{ settings.hostname }}.{{ settings.domain }}" ],
+              "WSHostingSrvrs"     : "CN={{ domino_server_name_common }}/O={{ domino_organization }}",
+              "HTTP_TCP_Redirect"  : "1",
+              "HTTP_SessionCookieSecure" : "1",
+              "HTTP_sessioncookieSamesite" : "2",
+              "HTTP_SessionCookieHTTPOnly" : "1",
+              "HTTP_GenerateSessionCookie" : "1",
+              "HTTP_ForceLoginOnSSL" : "1",
+              "HTTP_EnableRedirectCmd" : "1",
+              "TCPAnonymous"       : "0",
+              "TCPNameAndPwd"      : "0",
+              "SSLAnonymous"       : "0",
+              "SSLNameAndPwd"      : "1",
+              "SSLBearerToken"     : "1",
+              "SSLPasskey"         : "1",
+              "SSLKeyFile"         : "{{ cert_dir }}/kyr/{{ kyr_cert }}",
+              "SSLCipherList"      : [ "C030", "9F", "C02F", "9E" ],
+              "HTTP_EnableSessionAuth" : "1",
+              "HTTP_MaxActiveSessions" : "1000",
+              "WSHTTPMthds_ed": [ "1", "2", "3", "4", "6", "7" ]
+            }
           }
+          {% else %}
+          }
+          {% endif %}
         ]
       },
       {
