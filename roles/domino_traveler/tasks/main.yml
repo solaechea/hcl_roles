@@ -289,7 +289,7 @@
                   mode: "a+x"
                   owner: "{{ domino_user }}"
                   group: "{{ domino_group }}"
-                  src: "domino_oidc_internet_site_traveler.json"
+                  src: "domino_oidc_internet_site_traveler.json.j2"
 
               -
                 name: "Waiting until Genesis returns OK"
